@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const publicationControl = require('../controllers/Publication')
+const publicationControl = require('../controllers/npm install mysqlPublication')
 
 router.post('/', publicationControl.createpost);
 router.put('/:id', publicationControl.modifypost);
