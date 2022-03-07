@@ -4,16 +4,23 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+// const env = process.env.NODE_ENV || 'development';
 const db = {};
 
 let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
+require('dotenv').config({path: '../.env'});
+sequelize = new Sequelize(process.env.sequelizeDb, process.env.sequelizeUser, process.env.sequelizePassword, {
+  host: 'localhost',
+  dialect: 'mysql',
+  port: '3306'
+});
+  
+  sequelize.authenticate().then( ()=> {
+    console.log('connexion réussie :)');
+}) .catch((error) => {
+    console.log(error);
+    console.log('connexion échouée :\'(');
+});
 
 fs
   .readdirSync(__dirname)
