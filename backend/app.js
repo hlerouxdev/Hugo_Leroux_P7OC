@@ -7,6 +7,6 @@ const env = require('dotenv').config({path: '../.env'});
 app.use(express.json());
 
 app.use("/api/auth", userRoutes);
-app.use("/api/publication", publicationRoutes);
+app.use("/api/post", publicationRoutes);
 
 module.exports = app;

@@ -37,9 +37,7 @@ exports.signup =
                          user.save()
                          .then(() =>{res.status(201).json({message: 'utilisateur créé'}) })
                     })
-                    .catch((error) =>{
-                         res.status(500).json({message: error})
-                    });
+                    .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
                }
           })
      };
@@ -68,9 +66,9 @@ exports.login =
                     });
                };
           })
-          .catch(error => res.status(500).json({ error }));
+          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      }})
-     .catch(error => res.status(500).json({ error }));
+     .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };
 
 exports.modifyUser =
@@ -83,9 +81,7 @@ exports.modifyUser =
           .then(() =>{
                res.status(202).json({message: 'utilisateur modifié'});
           })
-          .catch((error) =>{
-               res.status(500).json({message: error})
-          });
+          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      } else {
           res.status(403).json({message: 'utilisateur non autiorisé'})
      };
@@ -101,12 +97,12 @@ exports.deleteUser =
           if (req.auth.id === user.id) { //vérifie l'identité de l'utilisateur
                user.deleteOne({ _id: req.params.id })
                .then(() => res.status(200).json({ message: 'utilisateur supprimé'}))
-               .catch(error => res.status(400).json({ error }));
+               .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
           } else {
           return res.status(403).json ( {message: 'cette requête n\'est pas autorisé'} )
           }
      })
-     .catch(error => res.status(500).json({ error }));
+     .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };
 
 exports.getUserGroup =
@@ -118,14 +114,14 @@ exports.getUserGroup =
           res.status(200)
           res.send(JSON.stringify(db.User));
      })
-     .catch(error => res.status(500).json({ error }));
+     .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };
 
 exports.getUser =
 (req, res, next) => {
      db.User.findOne({where: { _id: req.params._id }})
      .then(user => { res.status(200).json({user}) })
-     .catch(error =>{ res.status(500).json({error}) });
+     .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };
 
 exports.getMe =

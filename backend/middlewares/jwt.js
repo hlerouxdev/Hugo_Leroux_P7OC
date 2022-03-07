@@ -8,13 +8,13 @@ try {
      const userId = decodedToken.userId;
      req.auth = { userId };
      if (req.body.userId && req.body.userId !== userId) { //vérifie l'identité de l'utilisateur
-     throw 'Invalid user ID';
+     throw 'ID utilisateur non valide';
      } else {
           next();
      }
      } catch {
           res.status(401).json({
-               error: new Error('Invalid request!')
+               error: new Error('requête incorrecte!')
           });
      }
 };

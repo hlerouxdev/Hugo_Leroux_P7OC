@@ -34,6 +34,7 @@ module.exports = function(sequelize, DataTypes) {
      
           usersLiked:{
                type: Sequelize.DataTypes.STRING,
+               default: []
           },
           
           isComment:{
