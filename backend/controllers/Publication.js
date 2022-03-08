@@ -2,15 +2,18 @@ const db = require('../models/index');
 
 exports.createPost =
 (req, res, next) => {
-     const publiBody = req.body;
-     if (!publiBody.content) {
+     const pubBody = req.body;
+     if (!pubBody.content) {
           return res.status(400).json( { message: 'votre post ne peut pas être vide' } )
      } else {
-          const publication = new db.Publication({
+          const pub = new db.Publication({
                userId: req.auth.userId,
-               ...publiBody
+               ...pubBody
           });
-          publication.save()
+          if(req.file){
+               pub.filePath = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+          }
+          pub.save()
           .then(() => res.status(201).json({ message: 'post enregistré !'}))
           .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      }
