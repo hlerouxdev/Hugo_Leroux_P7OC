@@ -1,4 +1,5 @@
 const db = require('../models/index');
+const fs = require('fs');
 
 exports.createPost =
 (req, res, next) => {
@@ -11,7 +12,9 @@ exports.createPost =
                ...pubBody
           });
           if(req.file){
+               console.log('test 1')
                pub.filePath = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+               console.log(pub)
           }
           pub.save()
           .then(() => res.status(201).json({ message: 'post enregistré !'}))

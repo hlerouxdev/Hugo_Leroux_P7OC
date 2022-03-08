@@ -14,7 +14,7 @@ try {
      }
      } catch {
           res.status(401).json({
-               error: new Error('requête incorrecte!')
+               error: new Error(`requête incorrecte! ${Error}`)
           });
      };
 };
