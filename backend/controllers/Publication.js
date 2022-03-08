@@ -4,9 +4,8 @@ exports.createPost =
 (req, res, next) => {
      const publiBody = req.body;
      if (!publiBody.content) {
-          return res.status().json( { message: 'votre post ne peut pas être vide' } )
+          return res.status(400).json( { message: 'votre post ne peut pas être vide' } )
      } else {
-          console.log(req.auth)
           const publication = new db.Publication({
                userId: req.auth.userId,
                ...publiBody
@@ -51,6 +50,28 @@ exports.deletePost =
           }
      })
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+};
+
+exports.commentPost =
+(req, res, next) => {
+     const commentBody = req.body;
+     if (!commentBody.content) {
+          return res.status(400).json( { message: 'votre post ne peut pas être vide' } )
+     } else {
+          const comment = new db.Publication({
+               userId: req.auth.userId,
+               isComment: true,
+               ...publiBody
+          });
+          comment.save()
+          db.Publication.findOne({where: {_id: req.params.id}})
+          .then(pub => {
+               pub.comments.push(comment._id)
+               .then( res.status(201).json( { message: 'commentaire créé' } ))
+               .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+          })
+          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+     }
 };
 
 exports.getAllPost =
