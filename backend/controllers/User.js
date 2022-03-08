@@ -7,23 +7,20 @@ require('dotenv').config({path: '../.env'});
 
 exports.signup =
 (req, res, next) => {
+     if(req.body.isAdmin){
+          return res.status(401).json( { message: 'vous ne pouvez pas vous donner le rôle admin' } )
+     };
      const mailValid = validator.isEmail(req.body.email);
      const passwordValid = validator.isStrongPassword(req.body.password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1});
 
      if(!mailValid || !passwordValid){
           if(!mailValid){ //vérifie l'adresse mail
-               console.log('testmail')
                return res.status(400).json({ message: 'l\'adresse mail que vous avez entrée n\'est pas une addresse mail valide' })
           };
           if(!passwordValid){ //vérifie que le mdp fasse plus de 8 charactères et contienne bien plusieurs charactères différents
-               console.log('testpass')
                return res.status(400).json({ message: 'votre mot de passe doit contenir au moins 8 charactères, dont une lettre minuscule, une majuscule, un chiffre et un charctère spécial' })
           };
      } else {
-          if(res.body.isAdmin){
-               return res.status(401).json( { message: 'vous ne pouvez pas vous donner le rôle admin' } )
-          }
-          console.log('test2')
           db.User.findOne({ where: { email: req.body.email } })
           .then(user =>{
                if (user) {
@@ -41,8 +38,8 @@ exports.signup =
                          .then(() =>{res.status(201).json({message: 'utilisateur créé'}) })
                     })
                     .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
-               }
-          })
+               };
+          });
      };
 };
 
@@ -55,7 +52,6 @@ exports.login =
      } else {
           bcrypt.compare(req.body.password, user.password) //vérifie le hash du mdp
           .then(valid => {
-               console.log(valid)
                if (!valid) {
                     return res.status(401).json( { message: `Mot de passe incorrect !` } )
                } else {
@@ -81,15 +77,20 @@ exports.modifyUser =
      };
      db.User.findOne({where: { _id: req.params.id }})
      .then(user =>{
-          if(req.auth.userId === user._id || user.isAdmin === true){
-               user= Objet.assign(...user, ...req.body)
-               .then(() =>{
-                    res.status(202).json({message: 'utilisateur modifié'});
-               })
-               .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
-          } else {
-               res.status(403).json({message: 'utilisateur non autiorisé'});
-          };
+          db.User.findOne({where: { _id: req.auth.userId }})
+          .then(userActing =>{
+               if(req.auth.userId === user._id || userActing.isAdmin === true){
+                    modUser = Object.assign(user, req.body)
+                    modUser.save()
+                    .then(() =>{
+                         res.status(202).json({message: 'utilisateur modifié'});
+                    })
+                    .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+               } else {
+                    res.status(403).json({message: 'utilisateur non autiorisé'});
+               };
+          })
+          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      })
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };
@@ -101,13 +102,17 @@ exports.deleteUser =
           if(!user) {
                return res.status(404).json ( {message: 'cette requête n\'est pas autorisé'} )
           }
-          if (req.auth.id === user.id || user.isAdmin === true) { //vérifie l'identité de l'utilisateur
-               user.destroy({ _id: req.params.id })
-               .then(() => res.status(200).json({ message: 'utilisateur supprimé'}))
-               .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
-          } else {
-          return res.status(403).json ( {message: 'cette requête n\'est pas autorisé'} )
-          }
+          db.User.findOne({where: { _id: req.auth.userId }})
+          .then(userActing =>{
+               if (req.auth.id === user.id || userActing.isAdmin === true) { //vérifie l'identité de l'utilisateur
+                    user.destroy({ _id: req.params.id })
+                    .then(() => res.status(200).json({ message: 'utilisateur supprimé'}))
+                    .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+               } else {
+               return res.status(403).json ( {message: 'cette requête n\'est pas autorisé'} )
+               }
+          })
+          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      })
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };
@@ -115,11 +120,9 @@ exports.deleteUser =
 exports.getUserGroup =
 (req, res, next) => {
      db.User.findAll()
-     .then(() =>{
-          console.log(db.User)
-          console.log(typeOf(db.User))
+     .then(users =>{
           res.status(200)
-          res.send(JSON.stringify(db.User));
+          res.send(JSON.stringify(users));
      })
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };
@@ -133,7 +136,7 @@ exports.getUser =
 
 exports.getMe =
 (req, res, next) => {
-     db.User.findOne({where: { _id: req.body.userId }})
+     db.User.findOne({where: { _id: req.auth.userId }})
      .then(user => { res.status(200).json({user}) })
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };

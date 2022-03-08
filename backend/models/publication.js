@@ -30,17 +30,13 @@ module.exports = function(sequelize, DataTypes) {
      
           usersLiked:{
                type: Sequelize.DataTypes.STRING,
-               default: '[]'
-          },
-          
-          isComment:{
-               type: Sequelize.DataTypes.BOOLEAN,
-               default: false
-          },
-
-          comments:{
-               type: Sequelize.DataTypes.STRING,
-               default: '[]'
+               get() {
+                    return this.getDataValue('usersLiked').split(';')
+                },
+                set(val) {
+                   this.setDataValue('usersLiked',val.join(';'));
+                },
+               defaultValue: '[]'
           }
      });
 
