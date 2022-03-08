@@ -126,5 +126,7 @@ exports.getUser =
 
 exports.getMe =
 (req, res, next) => {
-     res.status(200).json({message: 'test get me'});
+     db.User.findOne({where: { _id: req.body.userId }})
+     .then(user => { res.status(200).json({user}) })
+     .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };

@@ -15,7 +15,7 @@ exports.createPost =
           .then(() => res.status(201).json({ message: 'post enregistré !'}))
           .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      }
-   };
+};
 
 exports.modifyPost =
 (req, res, next) => {
@@ -27,10 +27,9 @@ exports.modifyPost =
           if(req.body.likes || req.body.usersLiked){
                return res.status(403).json ( {message: 'cette requête n\'est pas autorisé'} )
           };
-          pub = Object.assign( pub, req.body)
-          .then( newPub => {
-               newPub.save()
-          })
+          newPub = Object.assign( pub, req.body)
+          newPub.save()
+          .then(() => res.status(201).json({ message: 'post modifié !'}))
           .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      })
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));

@@ -16,5 +16,5 @@ try {
           res.status(401).json({
                error: new Error('requête incorrecte!')
           });
-     }
+     };
 };
