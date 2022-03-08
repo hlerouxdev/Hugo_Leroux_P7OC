@@ -20,6 +20,9 @@ exports.signup =
                return res.status(400).json({ message: 'votre mot de passe doit contenir au moins 8 charactères, dont une lettre minuscule, une majuscule, un chiffre et un charctère spécial' })
           };
      } else {
+          if(res.body.isAdmin){
+               return res.status(401).json( { message: 'vous ne pouvez pas vous donner le rôle admin' } )
+          }
           console.log('test2')
           db.User.findOne({ where: { email: req.body.email } })
           .then(user =>{
@@ -73,29 +76,33 @@ exports.login =
 
 exports.modifyUser =
 (req, res, next) => {
-     db.User.findOne({ where: { id: req.body.id } });
-     if(req.auth.userId === user.id){
-          user= {
-               ... req.body
-          }
-          .then(() =>{
-               res.status(202).json({message: 'utilisateur modifié'});
-          })
-          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
-     } else {
-          res.status(403).json({message: 'utilisateur non autiorisé'})
+     if(req.body.isAdmin){
+          return res.status(401).json( { message: 'vous ne pouvez pas vous donner le rôle admin' } )
      };
+     db.User.findOne({where: { _id: req.params.id }})
+     .then(user =>{
+          if(req.auth.userId === user._id || user.isAdmin === true){
+               user= Objet.assign(...user, ...req.body)
+               .then(() =>{
+                    res.status(202).json({message: 'utilisateur modifié'});
+               })
+               .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+          } else {
+               res.status(403).json({message: 'utilisateur non autiorisé'});
+          };
+     })
+     .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };
 
 exports.deleteUser =
 (req, res, next) => {
-     User.findOne({where: { _id: req.params._id }})
+     db.User.findOne({where: { _id: req.params.id }})
      .then(user => {
           if(!user) {
                return res.status(404).json ( {message: 'cette requête n\'est pas autorisé'} )
           }
-          if (req.auth.id === user.id) { //vérifie l'identité de l'utilisateur
-               user.deleteOne({ _id: req.params.id })
+          if (req.auth.id === user.id || user.isAdmin === true) { //vérifie l'identité de l'utilisateur
+               user.destroy({ _id: req.params.id })
                .then(() => res.status(200).json({ message: 'utilisateur supprimé'}))
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
           } else {

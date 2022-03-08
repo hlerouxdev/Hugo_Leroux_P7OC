@@ -4,7 +4,7 @@ const fs = require('fs');
 exports.createPost =
 (req, res, next) => {
      const pubBody = req.body;
-     if (!pubBody.content) {
+     if (!pubBody.content && !req.file) {
           return res.status(400).json( { message: 'votre post ne peut pas être vide' } )
      } else {
           const pub = new db.Publication({

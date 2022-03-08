@@ -19,10 +19,6 @@ module.exports = function(sequelize, DataTypes) {
                type: Sequelize.DataTypes.STRING,
                allowNull: false
           },
-     
-          file:{
-               type: Sequelize.DataTypes.STRING
-          },
 
           filePath:{
                type: Sequelize.DataTypes.STRING
