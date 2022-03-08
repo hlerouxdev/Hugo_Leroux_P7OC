@@ -58,7 +58,7 @@ exports.login =
                     res.status(200).json({
                     userId: user._id,
                     token: jwt.sign( //créé le token
-                         { userId: user._id },
+                         { userId: user._id, isAdmin: user.isAdmin },
                          process.env.secretToken,
                          { expiresIn: '12h' }
                     )
@@ -77,20 +77,16 @@ exports.modifyUser =
      };
      db.User.findOne({where: { _id: req.params.id }})
      .then(user =>{
-          db.User.findOne({where: { _id: req.auth.userId }})
-          .then(userActing =>{
-               if(req.auth.userId === user._id || userActing.isAdmin === true){
-                    modUser = Object.assign(user, req.body)
-                    modUser.save()
-                    .then(() =>{
-                         res.status(202).json({message: 'utilisateur modifié'});
-                    })
-                    .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
-               } else {
-                    res.status(403).json({message: 'utilisateur non autiorisé'});
-               };
-          })
-          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+          if(req.auth.userId === user._id || req.auth.isAdmin === true){
+               modUser = Object.assign(user, req.body)
+               modUser.save()
+               .then(() =>{
+                    res.status(202).json({message: 'utilisateur modifié'});
+               })
+               .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+          } else {
+               res.status(403).json({message: 'utilisateur non autiorisé'});
+          };
      })
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };
@@ -102,24 +98,20 @@ exports.deleteUser =
           if(!user) {
                return res.status(404).json ( {message: 'cette requête n\'est pas autorisé'} )
           }
-          db.User.findOne({where: { _id: req.auth.userId }})
-          .then(userActing =>{
-               if (req.auth.id === user.id || userActing.isAdmin === true) { //vérifie l'identité de l'utilisateur
-                    user.destroy({ _id: req.params.id })
-                    .then(() => res.status(200).json({ message: 'utilisateur supprimé'}))
-                    .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
-               } else {
-               return res.status(403).json ( {message: 'cette requête n\'est pas autorisé'} )
-               }
-          })
-          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+          if (req.auth.id === user.id || req.auth.isAdmin === true) { //vérifie l'identité de l'utilisateur
+               user.destroy({ _id: req.params.id })
+               .then(() => res.status(200).json({ message: 'utilisateur supprimé'}))
+               .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+          } else {
+          return res.status(403).json ( {message: 'cette requête n\'est pas autorisé'} )
+          }
      })
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };
 
 exports.getUserGroup =
 (req, res, next) => {
-     db.User.findAll()
+     db.User.findAll({attributes:['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture']})
      .then(users =>{
           res.status(200)
           res.send(JSON.stringify(users));
@@ -129,7 +121,7 @@ exports.getUserGroup =
 
 exports.getUser =
 (req, res, next) => {
-     db.User.findOne({where: { _id: req.params._id }})
+     db.User.findOne({where: { _id: req.params._id }, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture']})
      .then(user => { res.status(200).json({user}) })
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };

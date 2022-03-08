@@ -26,17 +26,6 @@ module.exports = function(sequelize, DataTypes) {
      
           likes:{
                type: Sequelize.DataTypes.INTEGER,
-          },
-     
-          usersLiked:{
-               type: Sequelize.DataTypes.STRING,
-               get() {
-                    return this.getDataValue('usersLiked').split(';')
-                },
-                set(val) {
-                   this.setDataValue('usersLiked',val.join(';'));
-                },
-               defaultValue: '[]'
           }
      });
 
