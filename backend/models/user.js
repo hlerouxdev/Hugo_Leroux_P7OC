@@ -55,9 +55,9 @@ module.exports = function(sequelize, DataTypes) {
      });
 
      User.sync( {alter: true} ).then((data) =>{
-          console.log('tableau User synchronisé')
+          console.log('tableau users synchronisé')
      }).catch((error) =>{
-          console.log(`erreur de synchronisation du tableau User: ${error}`)
+          console.log(`erreur de synchronisation du tableau users: ${error}`)
      });
      return User;
    };
