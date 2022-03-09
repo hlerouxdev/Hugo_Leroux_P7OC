@@ -14,6 +14,24 @@ module.exports = function(sequelize, DataTypes) {
           }
      });
 
+     Like.associate = models => {
+          Like.belongsTo(models.User, {
+               foreignKey: 'userId',
+               targetKey: '_id',
+               onDelete: 'cascade',
+               onUpdate: 'cascade'
+          })
+     }
+
+     Like.associate = models => {
+          Like.belongsTo(models.Publication, {
+               foreignKey: 'contentLiked',
+               targetKey: '_id',
+               onDelete: 'cascade',
+               onUpdate: 'cascade'
+          })
+     }
+
      Like.sync( {alter: true} ).then((data) =>{
           console.log('tableau likes synchronisé')
      }).catch((error) =>{

@@ -14,13 +14,7 @@ sequelize = new Sequelize(process.env.sequelizeDb, process.env.sequelizeUser, pr
   dialect: 'mysql',
   port: '3306'
 });
-  
-  sequelize.authenticate().then( ()=> {
-    console.log('connexion réussie :)');
-}) .catch((error) => {
-    console.log(error);
-    console.log('connexion échouée :\'(');
-});
+
 
 fs
   .readdirSync(__dirname)
@@ -38,7 +32,22 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
+//associations
+
+db.User.hasMany(db.Publication)
+
+  
+  sequelize.authenticate().then( ()=> {
+    console.log('connexion réussie :)');
+}) .catch((error) => {
+    console.log(error);
+    console.log('connexion échouée :\'(');
+});
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+
+
+
 
 module.exports = db;

@@ -30,6 +30,30 @@ module.exports = function(sequelize, DataTypes) {
           }
      });
 
+     Comment.associate = models => {
+          Comment.hasMany(models.Like, {
+               onDelete: "cascade"
+          });
+     };
+
+     Comment.associate = models => {
+          Comment.belongsTo(models.User, {
+               foreignKey: 'userId',
+               targetKey: '_id',
+               onDelete: 'cascade',
+               onUpdate: 'cascade'
+          })
+     }
+
+     Comment.associate = models => {
+          Comment.belongsTo(models.Publication, {
+               foreignKey: 'contentCommented',
+               targetKey: '_id',
+               onDelete: 'cascade',
+               onUpdate: 'cascade'
+          })
+     }
+
      Comment.sync( {alter: true} ).then((data) =>{
           console.log('tableau comments synchronisé')
      }).catch((error) =>{

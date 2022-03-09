@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
                autoIncrement: true,
                primaryKey: true
           },
-     
+
           userId:{
                type: Sequelize.DataTypes.INTEGER,
                allowNull: false
@@ -28,6 +28,27 @@ module.exports = function(sequelize, DataTypes) {
                type: Sequelize.DataTypes.INTEGER,
           }
      });
+
+     Publication.associate = models => {
+          Publication.belongsTo(models.User, {
+               foreignKey: 'userId',
+               targetKey: '_id',
+               onDelete: 'cascade',
+               onUpdate: 'cascade'
+          })
+     }
+
+     Publication.associate = models => {
+          Publication.hasMany(models.Like, {
+               onDelete: "cascade"
+          });
+     };
+
+     Publication.associate = models => {
+          Publication.hasMany(models.Comment, {
+               onDelete: "cascade"
+          });
+     };
 
      Publication.sync( {alter: true} ).then((data) =>{
           console.log('tableau publications synchronisé')
