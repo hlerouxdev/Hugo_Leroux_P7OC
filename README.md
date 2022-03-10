@@ -1,7 +1,8 @@
-# Instructions
+# About the project
 
 Backend made with **Nodejs/express** using **Mysql** as a database and **sequelize** for the ORM
 
+# Instructions
 
 Start by going in the backend folder with 'cd backend' and install all the dependencies with 'npm instal'
 
