@@ -2,7 +2,7 @@ const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
 module.exports = function(sequelize, DataTypes) {
-     var Publication = sequelize.define("Publication", {
+     var Publication = sequelize.define('Publication', {
           _id:{
                type: Sequelize.DataTypes.INTEGER,
                allowNull: false,
@@ -39,14 +39,14 @@ module.exports = function(sequelize, DataTypes) {
      }
 
      Publication.associate = models => {
-          Publication.hasMany(models.Like, {
-               onDelete: "cascade"
+          Publication.hasMany(models.Comment, {
+               onDelete: 'cascade'
           });
      };
 
      Publication.associate = models => {
-          Publication.hasMany(models.Comment, {
-               onDelete: "cascade"
+          Publication.hasMany(models.Like, {
+               onDelete: 'cascade'
           });
      };
 

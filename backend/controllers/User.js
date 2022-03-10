@@ -99,7 +99,7 @@ exports.deleteUser =
                return res.status(404).json ( {message: 'cette requête n\'est pas autorisé'} )
           }
           if (req.auth.id === user.id || req.auth.isAdmin === true) { //vérifie l'identité de l'utilisateur
-               user.destroy({ _id: req.params.id })
+               user.destroy()
                .then(() => res.status(200).json({ message: 'utilisateur supprimé'}))
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
           } else {

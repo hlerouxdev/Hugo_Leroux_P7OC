@@ -9,13 +9,24 @@ exports.createPost =
      } else {
           const pub = new db.Publication({
                userId: req.auth.userId,
+               likes: 1,
                ...req.body
           });
           if(req.file){
                pub.filePath = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
                console.log(pub)
           }
+          //enregistre le nouveau post
           pub.save()
+          //ajoute automatiquement le like du créateur du post
+          .then(() =>{
+               newLike = new db.Like({
+                    userLiked: req.auth.userId,
+                    contentLiked: pub._id
+               })
+               newLike.save()
+          })
+          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }))
           .then(() => res.status(201).json({ message: 'post enregistré !'}))
           .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      }
@@ -23,14 +34,11 @@ exports.createPost =
 
 exports.modifyPost =
 (req, res, next) => {
-     console.log('test 1')
      if(req.body.likes){ //empêche l'ajout de likes via la route modifyPost
           return res.status(403).json ( {message: 'cette requête n\'est pas autorisé'} );
      };
-     console.log('test 2')
      db.Publication.findOne({where: { _id: req.params.id}})
      .then(pub => {
-          console.log('test 3')
           if(req.auth.userId === pub.userId || req.auth.isAdmin === true){
                if(req.file){
                     if(pub.filePath){
@@ -38,9 +46,7 @@ exports.modifyPost =
                     };
                     pub.filePath = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
                };
-               console.log('test 4')
                newPub = Object.assign( pub, req.body);
-               console.log('test 5')
                newPub.save()
                .then(() => res.status(201).json({ message: 'post modifié !'}))
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
@@ -63,7 +69,6 @@ exports.deletePost =
                     fs.unlink(`images/${pub.filePath.split('/images/')[1]}`, () =>{});
                }
                pub.destroy()
-               db.Comment.destroy({where: {contentCommented: pub._id}})
                .then(() => res.status(200).json({ message: 'post supprimé !'}))
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
           } else {
@@ -140,12 +145,15 @@ exports.likePost =
           if(!user){
                return res.status(401).json( { message: 'cette requête n\'est pas autorisé' } );
           }
-          db.findAll({where: {userLiked: userId, contentLiked: postLiked}})
+          db.Like.find({where: {userLiked: userId, contentLiked: postLiked}})
           .then( oldLike =>{
                if(oldLike){
                     if(like = 0) {
                          oldLike.destroy()
-                         .then(() =>{res.status(200).jeons({message: 'like enlevé'})})
+                         db.Publication.find({where: {_id: postLiked}})
+                         .then(pub =>{pub.likes -= 1})
+                         .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }))
+                         .then(() =>{res.status(200).json({message: 'like enlevé'})})
                          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
                     } else{
                          return res.status(401).json( { message: 'cette requête n\'est pas autorisé' } );
@@ -157,6 +165,9 @@ exports.likePost =
                               contentLiked: postLiked
                          });
                          newLike.save()
+                         db.Publication.find({where: {_id: postLiked}})
+                         .then(pub =>{pub.likes += 1})
+                         .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }))
                          .then(() =>{res.status(200).jeons({message: 'like ajouté'})})
                          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
                     } else {

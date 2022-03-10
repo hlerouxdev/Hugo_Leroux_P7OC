@@ -2,7 +2,7 @@ const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
 module.exports = function(sequelize, DataTypes) {
-     var User = sequelize.define("User", {
+     var User = sequelize.define('User', {
           _id:{
                type: Sequelize.DataTypes.INTEGER,
                allowNull: false,
@@ -56,19 +56,19 @@ module.exports = function(sequelize, DataTypes) {
 
      User.associate = models => {
           User.hasMany(models.Publication, {
-               onDelete: "cascade"
+               onDelete: 'cascade'
           });
      };
 
      User.associate = models => {
           User.hasMany(models.Comment, {
-               onDelete: "cascade"
+               onDelete: 'cascade'
           });
      };
 
      User.associate = models => {
           User.hasMany(models.Like, {
-               onDelete: "cascade"
+               onDelete: 'cascade'
           });
      };
 

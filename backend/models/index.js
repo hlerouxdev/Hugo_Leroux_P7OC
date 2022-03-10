@@ -15,7 +15,6 @@ sequelize = new Sequelize(process.env.sequelizeDb, process.env.sequelizeUser, pr
   port: '3306'
 });
 
-
 fs
   .readdirSync(__dirname)
   .filter(file => {
@@ -33,21 +32,28 @@ Object.keys(db).forEach(modelName => {
 });
 
 //associations
+db.User.hasMany(db.Publication);
+db.User.hasMany(db.Like);
+db.User.hasMany(db.Comment);
 
-db.User.hasMany(db.Publication)
+db.Publication.hasMany(db.Comment);
+db.Publication.hasMany(db.Like);
+db.Publication.belongsTo(db.User);
 
+db.Comment.belongsTo(db.Publication);
+db.Comment.belongsTo(db.User);
+
+db.Like.belongsTo(db.Publication);
+db.Like.belongsTo(db.User);
   
-  sequelize.authenticate().then( ()=> {
+sequelize.authenticate()
+.then( ()=> {
     console.log('connexion réussie :)');
 }) .catch((error) => {
-    console.log(error);
-    console.log('connexion échouée :\'(');
+    console.log(`connexion échouée :'( ${error}`);
 });
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
-
-
-
 
 module.exports = db;

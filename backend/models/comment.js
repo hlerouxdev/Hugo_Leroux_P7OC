@@ -2,7 +2,7 @@ const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
 module.exports = function(sequelize, DataTypes) {
-     var Comment = sequelize.define("Comment", {
+     var Comment = sequelize.define('Comment', {
           _id:{
                type: Sequelize.DataTypes.INTEGER,
                allowNull: false,
@@ -32,7 +32,7 @@ module.exports = function(sequelize, DataTypes) {
 
      Comment.associate = models => {
           Comment.hasMany(models.Like, {
-               onDelete: "cascade"
+               onDelete: 'cascade'
           });
      };
 
@@ -40,8 +40,7 @@ module.exports = function(sequelize, DataTypes) {
           Comment.belongsTo(models.User, {
                foreignKey: 'userId',
                targetKey: '_id',
-               onDelete: 'cascade',
-               onUpdate: 'cascade'
+               onDelete: 'cascade'
           })
      }
 
@@ -49,8 +48,7 @@ module.exports = function(sequelize, DataTypes) {
           Comment.belongsTo(models.Publication, {
                foreignKey: 'contentCommented',
                targetKey: '_id',
-               onDelete: 'cascade',
-               onUpdate: 'cascade'
+               onDelete: 'cascade'
           })
      }
 
