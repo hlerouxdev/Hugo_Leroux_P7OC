@@ -6,7 +6,7 @@
 
 ## Backend
 
-Start by going in the backend folder with **__'cd backend'__** and install all the dependencies with **__'npm install'__**
+Start by going in the backend folder with **'cd backend'** and install all the dependencies with **'npm install'**
 
 You will need to add a .env file in the root folder with these key:
 - [ ] sequelizeDb='name of your schema'
@@ -14,6 +14,6 @@ You will need to add a .env file in the root folder with these key:
 - [ ] sequelizePassword='your Mysql password'
 - [ ] secretToken='your secret token'
 
-You can then run the server with **__'npm run start'__**. 
+You can then run the server with **'npm run start'**. 
 
 If you intend to make some changes I suggest installing [nodemon](https://www.npmjs.com/package/nodemon).
