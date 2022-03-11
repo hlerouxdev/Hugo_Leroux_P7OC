@@ -1,6 +1,6 @@
 # About the project
 
-## Backend made with **Nodejs/express** using **Mysql** as a database and **sequelize** for the ORM
+## The backend made with **Nodejs/express** using **Mysql** as a database and **sequelize** for the ORM
 
 # Instructions
 
