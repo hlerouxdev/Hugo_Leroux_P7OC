@@ -1,6 +1,7 @@
 # About the project
 
-## The backend made with **Nodejs/express** using **Mysql** as a database and **sequelize** for the ORM
+## The backend was made with **Nodejs/express** using **Mysql** as a database and **sequelize** for the ORM.
+## The frontend is yet to be done and will use Vuejs
 
 # Instructions
 
