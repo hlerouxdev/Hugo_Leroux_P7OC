@@ -9,7 +9,7 @@
 
 Start by going in the backend folder with **'cd backend'** and install all the dependencies with **'npm install'**
 
-You will need to add a .env file in the root folder with these key:
+You will need to add a .env file in the root folder with these keys:
 - [ ] sequelizeDb='name of your schema'
 - [ ] sequelizeUser='your Mysql user name'
 - [ ] sequelizePassword='your Mysql password'
