@@ -4,7 +4,7 @@
 
 # Instructions
 
-Start by going in the backend folder with 'cd backend' and install all the dependencies with 'npm instal'
+Start by going in the backend folder with __'cd backend'__ and install all the dependencies with __'npm install'__
 
 
 You will need to add a .env file in the root folder with these key:
