@@ -1,81 +1,37 @@
-const { Model } = require('sequelize');
-const Sequelize = require('sequelize');
-
-module.exports = function(sequelize, DataTypes) {
-     var User = sequelize.define('User', {
-          _id:{
-               type: Sequelize.DataTypes.INTEGER,
-               allowNull: false,
-               autoIncrement: true,
-               primaryKey: true
-          },
-          
-          firstName:{
-               type: Sequelize.DataTypes.STRING(50),
-               allowNull: false
-          },
-          
-          lastName:{
-               type: Sequelize.DataTypes.STRING(50),
-               allowNull: false
-          },
-          
-          email:{
-               type: Sequelize.DataTypes.STRING(50),
-               allowNull: false,
-               unique:true
-          },
-          
-          password:{
-               type: Sequelize.DataTypes.STRING,
-               allowNull: false
-          },
-     
-          profilePicture:{
-               type: Sequelize.DataTypes.STRING
-          },
-          
-          birthDay:{
-               type: Sequelize.DataTypes.DATE
-          },
-          
-          department:{
-               type: Sequelize.DataTypes.STRING(30),
-          },
-          
-          adress:{
-               type: Sequelize.DataTypes.STRING(30),
-          },
-          
-          isAdmin:{
-               type: Sequelize.DataTypes.BOOLEAN,
-               defaultValue: false,
-               allowNull: false
-          }
-     });
-
-     User.associate = models => {
-          User.hasMany(models.Publication, {
-               onDelete: 'cascade'
-          });
-     };
-
-     User.associate = models => {
-          User.hasMany(models.Comment, {
-               onDelete: 'cascade'
-          });
-     };
-
-     User.associate = models => {
-          User.hasMany(models.Like, {
-               onDelete: 'cascade'
-          });
-     };
-
-     User.sync( {alter: true} ).then((data) =>{
-          console.log('tableau users synchronisé')
-     }).catch((error) =>{
-          console.log(`erreur de synchronisation du tableau users: ${error}`)
-     });
-     return User;
-   };
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class User extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      models.User.hasMany(models.Publication),
+      models.User.hasMany(models.Comment),
+      models.User.hasMany(models.Like),
+      {
+        onDelete: 'cascade',
+          hooks: true
+      }
+    }
+  }
+  User.init({
+    email: DataTypes.STRING,
+    password: DataTypes.STRING,
+    firstName: DataTypes.STRING,
+    lastName: DataTypes.STRING,
+    profilePicture: DataTypes.STRING,
+    birthDay: DataTypes.DATE,
+    department: DataTypes.STRING,
+    adress: DataTypes.STRING,
+    isAdmin: DataTypes.BOOLEAN
+  }, {
+    sequelize,
+    modelName: 'User',
+  });
+  return User;
+};

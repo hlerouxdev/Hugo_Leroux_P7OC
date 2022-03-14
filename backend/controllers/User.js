@@ -55,10 +55,11 @@ exports.login =
                if (!valid) {
                     return res.status(401).json( { message: `Mot de passe incorrect !` } )
                } else {
+                    console.log(user.id);
                     res.status(200).json({
-                    userId: user._id,
+                    userId: user.id,
                     token: jwt.sign( //créé le token
-                         { userId: user._id, isAdmin: user.isAdmin },
+                         { userId: user.id, isAdmin: user.isAdmin },
                          process.env.secretToken,
                          { expiresIn: '12h' }
                     )
@@ -75,9 +76,9 @@ exports.modifyUser =
      if(req.body.isAdmin){
           return res.status(401).json( { message: 'vous ne pouvez pas vous donner le rôle admin' } )
      };
-     db.User.findOne({where: { _id: req.params.id }})
+     db.user.findOne({where: { id: req.params.id }})
      .then(user =>{
-          if(req.auth.userId === user._id || req.auth.isAdmin === true){
+          if(req.auth.userId === user.id || req.auth.isAdmin === true){
                modUser = Object.assign(user, req.body)
                modUser.save()
                .then(() =>{
@@ -93,12 +94,12 @@ exports.modifyUser =
 
 exports.deleteUser =
 (req, res, next) => {
-     db.User.findOne({where: { _id: req.params.id }})
+     db.User.findOne({where: { id: req.params.id }})
      .then(user => {
           if(!user) {
-               return res.status(404).json ( {message: 'cette requête n\'est pas autorisé'} )
+               return res.status(404).json ( {message: 'cet utilisateur n\'existe pas'} )
           }
-          if (req.auth.id === user.id || req.auth.isAdmin === true) { //vérifie l'identité de l'utilisateur
+          if (req.auth.userId === user.id || req.auth.isAdmin === true) { //vérifie l'identité de l'utilisateur
                user.destroy()
                .then(() => res.status(200).json({ message: 'utilisateur supprimé'}))
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
@@ -111,7 +112,7 @@ exports.deleteUser =
 
 exports.getUserGroup =
 (req, res, next) => {
-     db.User.findAll({attributes:['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture']})
+     db.user.findAll({attributes:['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture']})
      .then(users =>{
           res.status(200)
           res.send(JSON.stringify(users));
@@ -121,14 +122,14 @@ exports.getUserGroup =
 
 exports.getUser =
 (req, res, next) => {
-     db.User.findOne({where: { _id: req.params._id }, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture']})
+     db.user.findOne({where: { _id: req.params._id }, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture']})
      .then(user => { res.status(200).json({user}) })
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };
 
 exports.getMe =
 (req, res, next) => {
-     db.User.findOne({where: { _id: req.auth.userId }})
+     db.user.findOne({where: { _id: req.auth.userId }})
      .then(user => { res.status(200).json({user}) })
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };

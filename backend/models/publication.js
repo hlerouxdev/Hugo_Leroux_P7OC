@@ -1,59 +1,36 @@
-const { Model } = require('sequelize');
-const Sequelize = require('sequelize');
-
-module.exports = function(sequelize, DataTypes) {
-     var Publication = sequelize.define('Publication', {
-          _id:{
-               type: Sequelize.DataTypes.INTEGER,
-               allowNull: false,
-               autoIncrement: true,
-               primaryKey: true
-          },
-
-          userId:{
-               type: Sequelize.DataTypes.INTEGER,
-               allowNull: false
-          },
-     
-          content:{
-               type: Sequelize.DataTypes.STRING,
-               allowNull: false
-          },
-
-          filePath:{
-               type: Sequelize.DataTypes.STRING
-          },
-     
-          likes:{
-               type: Sequelize.DataTypes.INTEGER,
-          }
-     });
-
-     Publication.associate = models => {
-          Publication.belongsTo(models.User, {
-               foreignKey: 'userId',
-               targetKey: '_id',
-               onDelete: 'cascade',
-               onUpdate: 'cascade'
-          })
-     }
-
-     Publication.associate = models => {
-          Publication.hasMany(models.Comment, {
-               onDelete: 'cascade'
-          });
-     };
-
-     Publication.associate = models => {
-          Publication.hasMany(models.Like, {
-               onDelete: 'cascade'
-          });
-     };
-
-     Publication.sync( {alter: true} ).then((data) =>{
-          console.log('tableau publications synchronisé')
-     }).catch((error) =>{
-          console.log(`erreur de synchronisation du tableau publications: ${error}`);
-     });
-     return Publication;
-   };
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Publication extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      models.Publication.belongsTo(models.User, {
+        foreignKey: {
+          allowNull: false
+        }
+      }),
+      models.Publication.hasMany(models.Comment),
+      models.Publication.hasMany(models.Like),
+      {
+        onDelete: 'cascade',
+          hooks: true
+      }
+    }
+  }
+  Publication.init({
+    userId: DataTypes.INTEGER,
+    content: DataTypes.STRING,
+    filePath: DataTypes.STRING,
+    likes: DataTypes.INTEGER
+  }, {
+    sequelize,
+    modelName: 'Publication',
+  });
+  return Publication;
+};

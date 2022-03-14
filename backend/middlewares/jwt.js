@@ -15,7 +15,7 @@ try {
      }
      } catch {
           res.status(401).json({
-               error: new Error(`requête incorrecte! ${Error}`)
+               error: new Error( {message: `requête incorrecte! ${Error}`} )
           });
      };
 };

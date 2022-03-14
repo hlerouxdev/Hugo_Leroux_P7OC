@@ -31,21 +31,6 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
-//associations
-db.User.hasMany(db.Publication);
-db.User.hasMany(db.Like);
-db.User.hasMany(db.Comment);
-
-db.Publication.hasMany(db.Comment);
-db.Publication.hasMany(db.Like);
-db.Publication.belongsTo(db.User);
-
-db.Comment.belongsTo(db.Publication);
-db.Comment.belongsTo(db.User);
-
-db.Like.belongsTo(db.Publication);
-db.Like.belongsTo(db.User);
-  
 sequelize.authenticate()
 .then( ()=> {
     console.log('connexion réussie :)');

@@ -1,61 +1,38 @@
-const { Model } = require('sequelize');
-const Sequelize = require('sequelize');
-
-module.exports = function(sequelize, DataTypes) {
-     var Comment = sequelize.define('Comment', {
-          _id:{
-               type: Sequelize.DataTypes.INTEGER,
-               allowNull: false,
-               autoIncrement: true,
-               primaryKey: true
-          },
-
-          contentCommented:{
-               type: Sequelize.DataTypes.INTEGER,
-               allowNull: false,
-          },
-     
-          userId:{
-               type: Sequelize.DataTypes.INTEGER,
-               allowNull: false
-          },
-     
-          content:{
-               type: Sequelize.DataTypes.STRING,
-               allowNull: false
-          },
-
-          likes:{
-               type: Sequelize.DataTypes.INTEGER,
-          }
-     });
-
-     Comment.associate = models => {
-          Comment.hasMany(models.Like, {
-               onDelete: 'cascade'
-          });
-     };
-
-     Comment.associate = models => {
-          Comment.belongsTo(models.User, {
-               foreignKey: 'userId',
-               targetKey: '_id',
-               onDelete: 'cascade'
-          })
-     }
-
-     Comment.associate = models => {
-          Comment.belongsTo(models.Publication, {
-               foreignKey: 'contentCommented',
-               targetKey: '_id',
-               onDelete: 'cascade'
-          })
-     }
-
-     Comment.sync( {alter: true} ).then((data) =>{
-          console.log('tableau comments synchronisé')
-     }).catch((error) =>{
-          console.log(`erreur de synchronisation du tableau comments: ${error}`);
-     });
-     return Comment;
- };
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Comment extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      models.Comment.belongsTo(models.User, {
+        foreignKey: {
+          allowNull: false
+        }
+      }),
+      models.Comment.belongsTo(models.Publication, {
+        foreignKey: {
+          allowNull: false
+        }
+      }),
+      {
+        onDelete: 'cascade',
+          hooks: true
+      }
+    }
+  }
+  Comment.init({
+    userId: DataTypes.INTEGER,
+    publicationId: DataTypes.STRING,
+    content: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'Comment',
+  });
+  return Comment;
+};
