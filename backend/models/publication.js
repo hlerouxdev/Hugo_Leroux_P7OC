@@ -15,16 +15,18 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: false
         }
       }),
-      models.Publication.hasMany(models.Comment),
-      models.Publication.hasMany(models.Like),
-      {
-        onDelete: 'cascade',
-          hooks: true
-      }
+      models.Publication.hasMany(models.Like, {
+        onDelete: "cascade",
+        hooks: true
+      }),
+      models.Publication.hasMany(models.Comment, {
+        onDelete: "cascade",
+        hooks: true
+      })
     }
   }
   Publication.init({
-    userId: DataTypes.INTEGER,
+    UserId: DataTypes.INTEGER,
     content: DataTypes.STRING,
     filePath: DataTypes.STRING,
     likes: DataTypes.INTEGER

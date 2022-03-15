@@ -19,16 +19,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: {
           allowNull: false
         }
-      }),
-      {
-        onDelete: 'cascade',
-          hooks: true
-      }
+      })
     }
   }
   Comment.init({
-    userId: DataTypes.INTEGER,
-    publicationId: DataTypes.STRING,
+    UserId: DataTypes.INTEGER,
+    PublicationId: DataTypes.STRING,
     content: DataTypes.STRING
   }, {
     sequelize,

@@ -2,7 +2,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Likes', {
-      userId: {
+      UserId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -10,7 +10,7 @@ module.exports = {
           key: 'id'
         }
       },
-      publicationId: {
+      PublicationId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {

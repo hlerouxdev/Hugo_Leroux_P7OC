@@ -7,10 +7,9 @@ exports.createPost =
      if ((!req.body.content || validator.isEmpty(req.body.content))) {
           return res.status(400).json( { message: 'votre post ne peut pas être vide' } )
      } else {
-          console.log(req.auth.userId)
           let pub = new db.Publication({
                UserId: req.auth.userId,
-               likes: 1,
+               likes: 0,
                ...req.body
           });
           if(req.file){
@@ -18,15 +17,6 @@ exports.createPost =
           }
           //enregistre le nouveau post
           pub.save()
-          //ajoute automatiquement le like du créateur du post
-          .then(() =>{
-               newLike = new db.Like({
-                    UserId: req.auth.userId,
-                    publicationId: pub.id
-               });
-               newLike.save();
-          })
-          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }))
           .then(() => res.status(201).json({ message: 'post enregistré !'}))
           .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      }
@@ -37,9 +27,9 @@ exports.modifyPost =
      if(req.body.likes){ //empêche l'ajout de likes via la route modifyPost
           return res.status(403).json ( {message: 'cette requête n\'est pas autorisé'} );
      };
-     db.publication.findOne({where: { _id: req.params.id}})
+     db.Publication.findOne({where: { id: req.params.id}})
      .then(pub => {
-          if(req.auth.userId === pub.userId || req.auth.isAdmin === true){
+          if(req.auth.userId === pub.UserId || req.auth.isAdmin === true){
                if(req.file){
                     if(pub.filePath){
                          fs.unlink(`images/${pub.filePath.split('/images/')[1]}`, () =>{});
@@ -59,12 +49,12 @@ exports.modifyPost =
 
 exports.deletePost =
 (req, res, next) => {
-     db.publication.findOne({ where: { id: req.params.id } })
+     db.Publication.findOne({ where: { id: req.params.id } })
      .then(pub => {
           if(!pub) {
                return res.status(403).json ( {message: 'ce post n\'existe pas'} )
           }
-          if (req.auth.userId === pub.userId || req.auth.isAdmin === true) { //vérifie l'identité de l'utilisateur
+          if (req.auth.userId === pub.UserId || req.auth.isAdmin === true) { //vérifie l'identité de l'utilisateur
                if(pub.filePath){
                     fs.unlink(`images/${pub.filePath.split('/images/')[1]}`, () =>{});
                }
@@ -84,11 +74,11 @@ exports.commentPost =
      if (!commentBody.content || validator.isEmpty(commentBody.content)) {
           return res.status(400).json( { message: 'votre post ne peut pas être vide' } )
      } else {
-          db.publication.findOne({where: {_id: req.params.id}})
+          db.Publication.findOne({where: {_id: req.params.id}})
           .then(pub => {
                const comment = new db.comment({
-                    contentCommented: pub._id,
-                    userId: req.auth.userId,
+                    PublicationId: pub._id,
+                    UserId: req.auth.userId,
                     ...commentBody
                })
                comment.save()
@@ -101,19 +91,19 @@ exports.commentPost =
 
 exports.getAllPost =
 (req, res, next) => {
-     db.publication.findAll()
+     db.Publication.findAll()
      .then(publications=> res.status(200).json(publications))
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
    };
 
 exports.getOnePost =
 (req, res, next) => {
-     db.publication.findOne({ where: { _id: req.params.id } })
-     .then(publication => {
-          if(!publication){
+     db.Publication.findOne({ where: { id: req.params.id } })
+     .then(pub => {
+          if(!pub){
                return res.status(404).json( { message: 'Ce post n\'existe pas' } );
           } else {
-               res.status(200).json(publication);
+               res.status(200).json(pub);
           };
      })
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
@@ -121,9 +111,9 @@ exports.getOnePost =
 
 exports.getPostComments =
 (req, res, next) => {
-     db.publication.findOne({where: {_id: req.params.id}})
+     db.Publication.findOne({where: {id: req.params.id}})
      .then(() =>{
-          db.findAll({where: {contentCommented: req.params.id}})
+          db.findAll({where: {PublicationId: req.params.id}})
           .then(comments=> res.status(200).json(comments))
           .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      })
@@ -132,7 +122,7 @@ exports.getPostComments =
 
 exports.likePost =
 (req, res, next) => {
-     const postLiked = req.params.id;
+     const PublicationLiked = req.params.id;
      const like = req.body.like;
      const userId = req.auth.userId;
 
@@ -140,17 +130,17 @@ exports.likePost =
           return res.status(401).json( { message: 'cette requête n\'est pas autorisé' } );
      };
 
-     db.user.findOne({ where: { _id: userId } })
+     db.User.findOne({ where: { _id: userId } })
      .then(user =>{
           if(!user){
                return res.status(401).json( { message: 'cette requête n\'est pas autorisé' } );
           }
-          db.like.find({where: {userLiked: userId, contentLiked: postLiked}})
+          db.Like.find({where: {userLiked: userId, contentLiked: PublicationLiked}})
           .then( oldLike =>{
                if(oldLike){
                     if(like = 0) {
                          oldLike.destroy()
-                         db.publication.find({where: {_id: postLiked}})
+                         db.Publication.find({where: {id: PublicationLiked}})
                          .then(pub =>{pub.likes -= 1})
                          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }))
                          .then(() =>{res.status(200).json({message: 'like enlevé'})})
@@ -160,12 +150,12 @@ exports.likePost =
                     };
                } else {
                     if(like = 1){
-                         const newLike = new db.like({
-                              userLiked: userId,
-                              contentLiked: postLiked
+                         const newLike = new db.Like({
+                              UserLiked: userId,
+                              PublicationLiked: PublicationLiked
                          });
                          newLike.save()
-                         db.publication.find({where: {_id: postLiked}})
+                         db.Publication.find({where: {id: PublicationLiked}})
                          .then(pub =>{pub.likes += 1})
                          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }))
                          .then(() =>{res.status(200).jeons({message: 'like ajouté'})})

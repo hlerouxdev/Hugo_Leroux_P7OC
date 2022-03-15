@@ -76,7 +76,7 @@ exports.modifyUser =
      if(req.body.isAdmin){
           return res.status(401).json( { message: 'vous ne pouvez pas vous donner le rôle admin' } )
      };
-     db.user.findOne({where: { id: req.params.id }})
+     db.User.findOne({where: { id: req.params.id }})
      .then(user =>{
           if(req.auth.userId === user.id || req.auth.isAdmin === true){
                modUser = Object.assign(user, req.body)
@@ -94,12 +94,16 @@ exports.modifyUser =
 
 exports.deleteUser =
 (req, res, next) => {
+     console.log('test')
      db.User.findOne({where: { id: req.params.id }})
      .then(user => {
+          console.log('test 2')
           if(!user) {
                return res.status(404).json ( {message: 'cet utilisateur n\'existe pas'} )
           }
+          console.log('test 3')
           if (req.auth.userId === user.id || req.auth.isAdmin === true) { //vérifie l'identité de l'utilisateur
+               console.log('test 4')
                user.destroy()
                .then(() => res.status(200).json({ message: 'utilisateur supprimé'}))
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
@@ -112,24 +116,21 @@ exports.deleteUser =
 
 exports.getUserGroup =
 (req, res, next) => {
-     db.user.findAll({attributes:['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture']})
-     .then(users =>{
-          res.status(200)
-          res.send(JSON.stringify(users));
-     })
+     db.User.findAll({attributes:['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture']})
+     .then(users => res.status(200).json(users) )
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };
 
 exports.getUser =
 (req, res, next) => {
-     db.user.findOne({where: { _id: req.params._id }, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture']})
-     .then(user => { res.status(200).json({user}) })
+     db.User.findOne({where: { id: req.params.id }, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture']})
+     .then(user => res.status(200).json(user) )
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };
 
 exports.getMe =
 (req, res, next) => {
-     db.user.findOne({where: { _id: req.auth.userId }})
-     .then(user => { res.status(200).json({user}) })
+     db.User.findOne({where: { id: req.auth.userId }})
+     .then(me => res.status(200).json(me) )
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };
