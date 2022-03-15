@@ -32,11 +32,14 @@ Object.keys(db).forEach(modelName => {
 });
 
 sequelize.authenticate()
-.then( ()=> {
+.then( async ()=> {
     console.log('connexion réussie :)');
+    await sequelize.sync({alter: true})
+    console.log('synchronisation réussie :)');
 }) .catch((error) => {
     console.log(`connexion échouée :'( ${error}`);
 });
+
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

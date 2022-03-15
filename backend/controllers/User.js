@@ -79,6 +79,13 @@ exports.modifyUser =
      db.User.findOne({where: { id: req.params.id }})
      .then(user =>{
           if(req.auth.userId === user.id || req.auth.isAdmin === true){
+               if(req.file){
+                    if(user.filePath){
+                         fs.unlink(`images/${pub.filePath.split('/images/')[1]}`, () =>{});
+                    } else {
+                         user.filePath = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+                    };
+               };
                modUser = Object.assign(user, req.body)
                modUser.save()
                .then(() =>{

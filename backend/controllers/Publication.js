@@ -50,9 +50,11 @@ exports.modifyPost =
 exports.deletePost =
 (req, res, next) => {
      db.Publication.findOne({ where: { id: req.params.id } })
+     
      .then(pub => {
+          console.log(pub)
           if(!pub) {
-               return res.status(403).json ( {message: 'ce post n\'existe pas'} )
+               return res.status(404).json ( {message: 'ce post n\'existe pas'} )
           }
           if (req.auth.userId === pub.UserId || req.auth.isAdmin === true) { //vérifie l'identité de l'utilisateur
                if(pub.filePath){
@@ -74,10 +76,10 @@ exports.commentPost =
      if (!commentBody.content || validator.isEmpty(commentBody.content)) {
           return res.status(400).json( { message: 'votre post ne peut pas être vide' } )
      } else {
-          db.Publication.findOne({where: {_id: req.params.id}})
+          db.Publication.findOne({where: {id: req.params.id}})
           .then(pub => {
-               const comment = new db.comment({
-                    PublicationId: pub._id,
+               const comment = new db.Comment({
+                    PublicationId: pub.id,
                     UserId: req.auth.userId,
                     ...commentBody
                })
@@ -129,19 +131,17 @@ exports.likePost =
      if(like > 1 || like < 0){
           return res.status(401).json( { message: 'cette requête n\'est pas autorisé' } );
      };
-
-     db.User.findOne({ where: { _id: userId } })
+     db.User.findOne({ where: { id: userId } })
      .then(user =>{
           if(!user){
                return res.status(401).json( { message: 'cette requête n\'est pas autorisé' } );
           }
-          db.Like.find({where: {userLiked: userId, contentLiked: PublicationLiked}})
+          db.Like.findOne({where: {UserId: userId, PublicationId: PublicationLiked}})
           .then( oldLike =>{
                if(oldLike){
-                    if(like = 0) {
-                         oldLike.destroy()
-                         db.Publication.find({where: {id: PublicationLiked}})
-                         .then(pub =>{pub.likes -= 1})
+                    if(like === 0) {
+                         db.Publication.findOne({where: {id: PublicationLiked}})
+                         .then(pub =>{pub.likes -= 1; oldLike.destroy(); pub.save()})
                          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }))
                          .then(() =>{res.status(200).json({message: 'like enlevé'})})
                          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
@@ -149,16 +149,15 @@ exports.likePost =
                          return res.status(401).json( { message: 'cette requête n\'est pas autorisé' } );
                     };
                } else {
-                    if(like = 1){
+                    if(like === 1){
                          const newLike = new db.Like({
-                              UserLiked: userId,
-                              PublicationLiked: PublicationLiked
+                              UserId: userId,
+                              PublicationId: PublicationLiked
                          });
-                         newLike.save()
-                         db.Publication.find({where: {id: PublicationLiked}})
-                         .then(pub =>{pub.likes += 1})
+                         db.Publication.findOne({where: {id: PublicationLiked}})
+                         .then(pub =>{pub.likes += 1; newLike.save(); pub.save()})
                          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }))
-                         .then(() =>{res.status(200).jeons({message: 'like ajouté'})})
+                         .then(() =>{res.status(200).json({message: 'like ajouté'})})
                          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
                     } else {
                          return res.status(401).json( { message: 'cette requête n\'est pas autorisé' } );

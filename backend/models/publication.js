@@ -10,11 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      models.Publication.belongsTo(models.User, {
-        foreignKey: {
-          allowNull: false
-        }
-      }),
+      models.Publication.belongsTo(models.User),
       models.Publication.hasMany(models.Like, {
         onDelete: "cascade",
         hooks: true
@@ -26,6 +22,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Publication.init({
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      autoIncrement: true,
+      primaryKey: true
+    },
     UserId: DataTypes.INTEGER,
     content: DataTypes.STRING,
     filePath: DataTypes.STRING,
