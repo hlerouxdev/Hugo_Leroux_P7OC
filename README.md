@@ -9,11 +9,13 @@
 
 - [ ] Start by going in the backend folder with **'cd backend'** and install all the dependencies with **'npm install'**
 
-- [ ] You will need to add a .env file in the root folder with these keys:
+- [ ] Add a .env file in the root folder with these keys:
   - sequelizeDb='name of your schema'
   - sequelizeUser='your Mysql user name'
   - sequelizePassword='your Mysql password'
   - secretToken='your secret token'
+ 
+- [ ] Add an **"image"** folder in the "backend" folder to store the images.
 
 - [ ] You can then run the server with **'npm run start'**. 
 
