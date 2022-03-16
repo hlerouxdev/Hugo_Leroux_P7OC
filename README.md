@@ -1,7 +1,7 @@
 # About the project
 
 ### The backend was made with **Nodejs/express** using **Mysql** as a database and **sequelize** for the ORM.
-### The frontend is yet to be done and will use Vuejs
+### The frontend isstill a work in progress and uses Vue3
 
 # Instructions
 
@@ -20,3 +20,7 @@
 - [ ] You can then run the server with **'npm run start'**. 
 
 - [ ] If you intend to make some changes I suggest installing [nodemon](https://www.npmjs.com/package/nodemon).
+
+## Backend
+
+- [ ] you will need @vue/cli. if you don't already have it on your system you can install with **"npm i -g @vue/cli"**
