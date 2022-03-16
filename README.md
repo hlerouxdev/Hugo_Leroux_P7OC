@@ -23,4 +23,8 @@
 
 ## Frontend
 
-- [ ] you will need @vue/cli. if you don't already have it on your system you can install with **"npm i -g @vue/cli"**
+- [ ] You will need @vue/cli. if you don't already have it on your system you can install with **"npm i -g @vue/cli"**
+
+- [ ] Install the dependencies with **"npm i"** in the **"frontend"** folder
+
+- [ ] run the app with the command **"npm start"**
