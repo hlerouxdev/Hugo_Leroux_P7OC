@@ -21,6 +21,6 @@
 
 - [ ] If you intend to make some changes I suggest installing [nodemon](https://www.npmjs.com/package/nodemon).
 
-## Backend
+## Frontend
 
 - [ ] you will need @vue/cli. if you don't already have it on your system you can install with **"npm i -g @vue/cli"**
