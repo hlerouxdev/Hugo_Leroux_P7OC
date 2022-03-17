@@ -70,27 +70,6 @@ exports.deletePost =
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };
 
-exports.commentPost =
-(req, res, next) => {
-     const commentBody = req.body;
-     if (!commentBody.content || validator.isEmpty(commentBody.content)) {
-          return res.status(400).json( { message: 'votre post ne peut pas être vide' } )
-     } else {
-          db.Publication.findOne({where: {id: req.params.id}})
-          .then(pub => {
-               const comment = new db.Comment({
-                    PublicationId: pub.id,
-                    UserId: req.auth.userId,
-                    ...commentBody
-               })
-               comment.save()
-               .then( res.status(201).json( { message: 'commentaire créé' } ))
-               .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
-          })
-          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
-     }
-};
-
 exports.getAllPost =
 (req, res, next) => {
      db.Publication.findAll()
@@ -107,17 +86,6 @@ exports.getOnePost =
           } else {
                res.status(200).json(pub);
           };
-     })
-     .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
-};
-
-exports.getPostComments =
-(req, res, next) => {
-     db.Publication.findOne({where: {id: req.params.id}})
-     .then(() =>{
-          db.findAll({where: {PublicationId: req.params.id}})
-          .then(comments=> res.status(200).json(comments))
-          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      })
      .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
 };

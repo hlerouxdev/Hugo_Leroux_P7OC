@@ -8,14 +8,14 @@ try {
      const userId = decodedToken.userId;
      const isAdmin = decodedToken.isAdmin;;
      req.auth = { userId: userId, isAdmin: isAdmin };
-     if (req.body.userId && req.body.userId !== userId) { //vérifie l'identité de l'utilisateur
+     if (req.body.userId && req.body.userId !== userId || userId === null) { //vérifie l'identité de l'utilisateur
      throw 'ID utilisateur non valide';
      } else {
           next();
      }
      } catch {
           res.status(401).json({
-               error: new Error( {message: `requête incorrecte! ${Error}`} )
+               error: new Error( Error )
           });
      };
 };
