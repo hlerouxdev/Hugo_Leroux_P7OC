@@ -4,8 +4,9 @@ const commentControl = require('../controllers/Comment');
 const jwt = require('../middlewares/jwt');
 const limiter = require('../middlewares/ratelimiter');
 
-router.post('/:id/comments', limiter.mod,  jwt, commentControl.createComment);
+router.post('/:id/comments', limiter.mod, jwt, commentControl.createComment);
 router.get('/:id/comments', limiter.gen, jwt, commentControl.getComments);
+router.purge('/comments/:id', limiter.mod, jwt, commentControl.modifyComment)
 router.delete('/comments/:id', limiter.mod, jwt, commentControl.deleteComment);
 
 module.exports = router
