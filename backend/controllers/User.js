@@ -15,10 +15,10 @@ exports.signup =
 
           if (!mailValid || !passwordValid) {
                if (!mailValid) { //vérifie l'adresse mail
-                    return res.status(400).json({ message: 'l\'adresse mail que vous avez entrée n\'est pas une addresse mail valide' })
+                    return res.status(400).json({ message: 'l\'adresse mail que vous avez entrée n\'est pas une addresse mail valide' });
                };
                if (!passwordValid) { //vérifie que le mdp fasse plus de 8 charactères et contienne bien plusieurs charactères différents
-                    return res.status(400).json({ message: 'votre mot de passe doit contenir au moins 8 charactères, dont une lettre minuscule, une majuscule, un chiffre et un charctère spécial' })
+                    return res.status(400).json({ message: 'votre mot de passe doit contenir au moins 8 charactères, dont une lettre minuscule, une majuscule, un chiffre et un charctère spécial' });
                };
           } else {
                db.User.findOne({ where: { email: req.body.email } })
@@ -36,6 +36,7 @@ exports.signup =
                                         });
                                         user.save()
                                              .then(() => { res.status(201).json({ message: 'utilisateur créé' }) })
+                                             .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
                                    })
                                    .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
                          };
@@ -74,7 +75,7 @@ exports.login =
 
 exports.modifyUser =
      (req, res, next) => {
-          if (req.body.isAdmin) {
+          if (req.body.isAdmin || req.auth.isAdmin === false) {
                return res.status(401).json({ message: 'vous ne pouvez pas vous donner le rôle admin' })
           };
           db.User.findOne({ where: { id: req.params.id } })
