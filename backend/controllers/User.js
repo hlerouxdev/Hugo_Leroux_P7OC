@@ -139,7 +139,7 @@ exports.getUser =
 
 exports.getMe =
      (req, res, next) => {
-          db.User.findOne({ where: { id: req.auth.userId } })
-               .then(me => res.status(200).json(me))
+          db.User.findOne({ where: { id: req.auth.userId }, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture'] })
+               .then(me => res.status(200).json(user))
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      };

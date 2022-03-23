@@ -1,16 +1,6 @@
 <template>
   <v-footer color="blue" padless>
     <v-row justify="center" no-gutters>
-      <v-btn
-        v-for="link in links"
-        :key="link"
-        color="white"
-        text
-        rounded
-        class="my-2"
-      >
-        {{ link }}
-      </v-btn>
       <v-col class="primary lighten-2 py-4 text-center white--text" cols="12">
         {{ new Date().getFullYear() }} — <strong>Groupomania</strong>
       </v-col>
@@ -25,10 +15,4 @@ export default {
 </script>
 
 <style scoped>
-.v-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-}
 </style>
