@@ -6,25 +6,57 @@
       class="home-picture"
     >
       <v-card class="mx-auto mt-9 card" width="500px">
-        <v-card-title
-          >Bienvenue sur notre Workplace<br />Veuillez vous
-          connecter</v-card-title
+        <v-card-title>Bienvenue sur notre Workplace</v-card-title>
+        <v-card-title v-if="mode == 'login'"
+          >Veuillez vous connecter</v-card-title
         >
-        <p>Vous avez déjà un compte? cliquez <span>ici</span></p>
-        <p id="error-message">{{errorMessage}}</p>
-        <v-text-field label="Prénom" v-model="formData.firstName" />
-        <v-text-field label="Nom" v-model="formData.lastName" />
+        <v-card-title v-if="mode == 'signup'"
+          >Créez votre compte</v-card-title
+        >
+        <p v-if="mode === 'login'">
+          Vous n'avez pas de compte?
+          <span @click="switchToSignup" class="change-mode">Créez votre compte</span>
+        </p>
+        <p v-if="mode === 'signup'">
+          Vous avez déjà un compte?
+          <span @click="switchToLogin" class="change-mode">Connectez vous ici</span>
+        </p>
+        <p id="error-message">{{ errorMessage }}</p>
+        <div class="name" v-if="mode === 'signup'">
+          <v-text-field label="Prénom" v-model="formData.firstName" />
+          <v-text-field label="Nom" v-model="formData.lastName" />
+        </div>
         <v-text-field label="email" type="email" v-model="formData.email" />
         <v-text-field
           label="mot de passe"
           type="password"
           v-model="formData.password1"
         />
-        <v-text-field label="confirmer" type="password" v-model="formData.password2" />
+        <v-text-field
+        v-if="mode === 'signup'"
+          label="confirmer"
+          type="password"
+          v-model="formData.password2"
+        />
         <p id="confirmation"></p>
         <v-card-actions>
-          <v-btn color="white" block plain elevation="2" @click="submit"
+          <v-btn
+            v-if="mode === 'signup'"
+            color="white"
+            block
+            plain
+            elevation="2"
+            @click="submit"
             >S'enregistrer</v-btn
+          >
+          <v-btn
+            v-if="mode === 'login'"
+            color="white"
+            block
+            plain
+            elevation="2"
+            @click="connect"
+            >Connexion</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -38,6 +70,7 @@ export default {
   name: 'HomePage',
   data () {
     return {
+      mode: 'login',
       formData: {
         firstName: '',
         lastName: '',
@@ -49,6 +82,14 @@ export default {
     }
   },
   methods: {
+    switchToLogin () {
+      this.mode = 'login'
+      this.errorMessage = ''
+    },
+    switchToSignup () {
+      this.mode = 'signup'
+      this.errorMessage = ''
+    },
     checkFields () {
       const form = this.formData
       let valid = false
@@ -104,8 +145,15 @@ p {
 .v-text-field {
   padding-inline: 16px;
 }
+.name {
+  display: flex;
+}
 .v-btn {
   background-color: rgb(36, 155, 36);
+}
+.change-mode {
+  text-decoration: underline;
+  color: rgb(57, 57, 255);
 }
 #error-message {
   color: red;
