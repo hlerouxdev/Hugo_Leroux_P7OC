@@ -103,16 +103,12 @@ exports.modifyUser =
 
 exports.deleteUser =
      (req, res, next) => {
-          console.log('test')
           db.User.findOne({ where: { id: req.params.id } })
                .then(user => {
-                    console.log('test 2')
                     if (!user) {
                          return res.status(404).json({ message: 'cet utilisateur n\'existe pas' })
                     }
-                    console.log('test 3')
                     if (req.auth.userId === user.id || req.auth.isAdmin === true) { //vérifie l'identité de l'utilisateur
-                         console.log('test 4')
                          user.destroy()
                               .then(() => res.status(200).json({ message: 'utilisateur supprimé' }))
                               .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));

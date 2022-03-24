@@ -10,16 +10,18 @@
         <v-card-title v-if="mode == 'login'"
           >Veuillez vous connecter</v-card-title
         >
-        <v-card-title v-if="mode == 'signup'"
-          >Créez votre compte</v-card-title
-        >
+        <v-card-title v-if="mode == 'signup'">Créez votre compte</v-card-title>
         <p v-if="mode === 'login'">
           Vous n'avez pas de compte?
-          <span @click="switchToSignup" class="change-mode">Créez votre compte</span>
+          <span @click="switchToSignup" class="change-mode"
+            >Créez votre compte</span
+          >
         </p>
         <p v-if="mode === 'signup'">
           Vous avez déjà un compte?
-          <span @click="switchToLogin" class="change-mode">Connectez vous ici</span>
+          <span @click="switchToLogin" class="change-mode"
+            >Connectez vous ici</span
+          >
         </p>
         <p id="error-message">{{ errorMessage }}</p>
         <div class="name" v-if="mode === 'signup'">
@@ -33,7 +35,7 @@
           v-model="formData.password1"
         />
         <v-text-field
-        v-if="mode === 'signup'"
+          v-if="mode === 'signup'"
           label="confirmer"
           type="password"
           v-model="formData.password2"
@@ -123,8 +125,33 @@ export default {
         if (this.checkFields()) {
           console.log('ok')
           this.errorMessage = ''
-          document.getElementById('confirmation').innerText =
+          const response = fetch(
+            'http://localhost:3000/api/auth/signup',
+            {
+              // fetch vers l'api
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                firstName: form.firstName,
+                lastName: form.lastName,
+                email: form.email,
+                password: form.password1
+              }) // envoie du body
+            }
+          )
+            .then(() => {
+              const res = response.json() // attend la récupération de la réponse
+              return res.orderId
+                .catch(error => { this.errorMessage = error })
+                .then(() => {
+                  document.getElementById('confirmation').innerText =
             'Votre compte est enregistré!'
+                })
+                .catch(error => { this.errorMessage = error })
+            })
         }
       }
     }
