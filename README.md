@@ -1,3 +1,5 @@
+![Logo Groupomania](https://i.imgur.com/tfpHT0Z.png)
+
 # About the project
 
 ### The backend was made with **Nodejs/express** using **Mysql** as a database and **sequelize** for the ORM.
