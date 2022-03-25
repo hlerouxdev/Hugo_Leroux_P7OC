@@ -14,8 +14,8 @@ const limiter = {
           legacyHeaders: false,
      }),
      auth: rateLimit({
-          windowMs: 10 * 60 * 1000, // 10 minutes
-          max: 5, // Limit each IP to 5 requests per `window` (here, per 10 minutes)
+          windowMs: 1 * 60 * 1000, // 10 minutes
+          max: 3, // Limit each IP to 5 requests per `window` (here, per 10 minutes)
           standardHeaders: true,
           legacyHeaders: false,
      })
