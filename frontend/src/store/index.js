@@ -1,34 +1,88 @@
 import { createStore } from 'vuex'
+import 'es6-promise/auto'
+// import { reject, resolve } from 'core-js/fn/promise'
 const axios = require('axios')
 const instance = axios.create({ baseURL: 'http://localhost:3000/api/' })
 
+// let token = localStorage.getItem('token')
+// if(!token){
+//   user = {
+//     userId: -1,
+//     token: ''
+//   }
+// } else {
+
+// }
+
 export default createStore({
   state: {
+    status: '',
+    user: {
+      userId: -1,
+      token: ''
+    },
+    userInfos: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      adress: '',
+      department: '',
+      profilePicture: ''
+    }
   },
   getters: {
   },
   mutations: {
+    setStatus: function (state, status) {
+      state.status = status
+    },
+    logUser: function (state, user) {
+      instance.defaults.headers.common.Authorization = `Bearer ${user.token}`
+      localStorage.setItem('token', `Bearer ${user.token}`)
+      state.user = user
+    },
+    getUserInfos: function (state, userInfos) {
+      state.userInfos = userInfos
+    }
   },
   actions: {
     submitSignup: ({ commit }, newUser) => {
-      console.log(newUser)
-      instance.post('/auth/signup', newUser)
-        .then(function (response) {
-          console.log(response)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      return new Promise((resolve, reject) => {
+        instance.post('/auth/signup', newUser)
+          .then(function (res) {
+            resolve(res)
+          })
+          .catch(function (error) {
+            commit('setStatus', 'error_signup')
+            reject(error)
+          })
+      })
     },
     submitLogin: ({ commit }, user) => {
-      console.log(user)
-      instance.post('/auth/login', user)
-        .then(function (response) {
-          console.log(response + 'connected')
-          const res = JSON.parse(response)
-          localStorage.setItem('token', res.token)
+      commit('setStatus', 'loading')
+      return new Promise((resolve, reject) => {
+        instance.post('/auth/login', user)
+          .then(function (res) {
+            console.log(res)
+            commit('setStatus', '')
+            commit('logUser', res.data)
+            console.log('connected :)')
+            resolve(res)
+          })
+          .catch(function (error) {
+            commit('setStatus', 'error_login')
+            reject(error)
+          })
+      })
+    },
+    getUser: ({ commit }) => {
+      instance.get('/auth/me')
+        .then(res => {
+          console.log(res)
+          commit('getUserInfos', res.data)
         })
-        .catch(function (error) {
+        .catch(error => {
+          commit('setStatus', 'error_login')
           console.log(error)
         })
     }

@@ -2,7 +2,6 @@ const db = require('../models/index');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
-const user = require('../models/user');
 require('dotenv').config({ path: '../.env' });
 
 exports.signup =
@@ -24,7 +23,7 @@ exports.signup =
                db.User.findOne({ where: { email: req.body.email } })
                     .then(user => {
                          if (user) {
-                              return res.status(401).json({ message: 'cette adresse mail est déjà prise' })
+                              return res.status(401).json( {message: 'cette adresse mail est déjà prise'} )
                          } else {
                               bcrypt.hash(req.body.password, 10)
                                    .then(hash => {
@@ -129,13 +128,20 @@ exports.getUserGroup =
 exports.getUser =
      (req, res, next) => {
           db.User.findOne({ where: { id: req.params.id }, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture'] })
-               .then(user => res.status(200).json(user))
+             
+          .then(user => {
+               console.log("rr")  
+               res.status(200).json(user)})
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      };
 
 exports.getMe =
      (req, res, next) => {
-          db.User.findOne({ where: { id: req.auth.userId }, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture'] })
-               .then(me => res.status(200).json(user))
+          db.User.findOne({ where: { id: req.auth.userId}, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture'] })
+          
+               .then(user => {
+                    console.log('tt')
+               console.log(req.auth)
+                    res.status(200).json(user)})
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      };

@@ -1,10 +1,10 @@
 <template>
   <v-app>
     <Nav></Nav>
-    <v-main>
+    <v-main id="main">
       <router-view/>
     </v-main>
-    <Footer></Footer>
+    <Footer class="footer"></Footer>
   </v-app>
 </template>
 
@@ -24,3 +24,20 @@ export default {
   })
 }
 </script>
+
+<style scoped>
+  #main {
+    height: calc( 100vh - 64px - 72px);
+    width: 100%;
+    top: 64px;
+    background-color: #ececfe;
+    display: flex;
+    justify-content: center;
+  }
+  .footer {
+    position: absolute;
+    left: 0;
+    bottom: -137px;
+    width: 100%;
+  }
+</style>

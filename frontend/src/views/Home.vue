@@ -25,7 +25,24 @@
             >Connectez vous ici</span
           >
         </p>
-        <p id="error-message">{{ errorMessage }}</p>
+        <v-alert
+          dense
+          outlined
+          type="error"
+          class="alert-message"
+          v-if="this.errorMessage != ''"
+        >
+          {{ errorMessage }}
+        </v-alert>
+        <v-alert
+      dense
+      text
+      type="success"
+      class="alert-message"
+      v-if="mode == 'login' && this.confirmationMessage != ''"
+    >
+      {{ confirmationMessage }}
+    </v-alert>
         <div class="name" v-if="this.mode === 'signup'">
           <v-text-field label="Prénom" v-model="formData.firstName" />
           <v-text-field label="Nom" v-model="formData.lastName" />
@@ -35,14 +52,17 @@
           label="mot de passe"
           type="password"
           v-model="formData.password"
+          v-on:keyup.enter="() => {
+            if (mode == 'login') { submitLogin } else { return false }
+            }"
         />
         <v-text-field
           v-if="this.mode === 'signup'"
           label="confirmer"
           type="password"
           v-model="formData.password2"
+          @keyup.enter="submitSignup"
         />
-        <p id="confirmation"></p>
         <v-card-actions>
           <v-btn
             v-if="this.mode === 'signup' && checkEmpty"
@@ -52,6 +72,7 @@
             plain
             elevation="2"
             @click="submitSignup"
+            @keyup.enter="submitSignup"
             >S'enregistrer</v-btn
           >
           <v-btn
@@ -62,7 +83,6 @@
             disabled
             plain
             elevation="2"
-            @click="submitSignup"
             >S'enregistrer</v-btn
           >
           <v-btn
@@ -73,8 +93,10 @@
             plain
             elevation="2"
             @click="submitLogin"
-            >Connexion</v-btn
           >
+            <span v-if="status == 'loading'">Connexion en cours ...</span>
+            <span v-else>Connexion</span>
+          </v-btn>
           <v-btn
             class="btn-disabled"
             v-if="this.mode === 'login' && !checkEmpty"
@@ -84,7 +106,6 @@
             block
             plain
             elevation="2"
-            @click="submitLogin"
             >Connexion</v-btn
           >
         </v-card-actions>
@@ -95,6 +116,7 @@
 
 <script>
 import validator from 'validator'
+import { mapState } from 'vuex'
 export default {
   name: 'HomePage',
   data () {
@@ -107,7 +129,13 @@ export default {
         password: '',
         password2: ''
       },
-      errorMessage: ''
+      errorMessage: '',
+      confirmationMessage: ''
+    }
+  },
+  mounted: function () {
+    if (this.$store.state.user.userId >= 1) {
+      this.$router.push('/feed')
     }
   },
   computed: {
@@ -128,8 +156,10 @@ export default {
         }
       } else {
         if (this.mode === 'login') {
-          if (!validator.isEmpty(form.email) &&
-          !validator.isEmpty(form.password)) {
+          if (
+            !validator.isEmpty(form.email) &&
+            !validator.isEmpty(form.password)
+          ) {
             verify = true
           } else {
             return false
@@ -137,46 +167,78 @@ export default {
         }
       }
       return verify
-    }
+    },
+    ...mapState(['status'])
   },
   methods: {
     switchToLogin () {
       this.mode = 'login'
+      this.cleaFields()
       this.errorMessage = ''
     },
     switchToSignup () {
       this.mode = 'signup'
+      this.cleaFields()
       this.errorMessage = ''
     },
     checkFields () {
       const form = this.formData
       let valid = false
       if (!validator.isEmail(form.email)) {
-        this.errorMessage = "l'adresse mail n'est pas valide!"
+        this.errorMessage = "l'adresse mail n'est pas valide."
         valid = true
       }
-      if (!validator.isStrongPassword(form.password) && !validator.isStrongPassword(form.password2)) {
+      if (
+        !validator.isStrongPassword(form.password) &&
+        !validator.isStrongPassword(form.password2)
+      ) {
         this.errorMessage =
-          'Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule, un chiffre et un caractère spécial!'
+          'Le mot de passe doit contenir au moins 8 caractères dont une minuscule, une majuscule, un chiffre et un caractère spécial.'
         valid = true
       }
       if (form.password !== form.password2) {
-        this.errorMessage = 'Les mots de passes ne sont pas identiques'
+        this.errorMessage = 'Les mots de passes ne sont pas identiques.'
         valid = true
       }
       return !valid
+    },
+    cleaFields () {
+      const form = this.formData
+      Object.keys(form).forEach(key => {
+        form[key] = ''
+      })
     },
     submitSignup () {
       // const form = this.formData
       if (this.checkFields()) {
         console.log('ok')
-        this.errorMessage = ''
-        this.$store.dispatch('submitSignup', { ...this.formData })
+        this.$store
+          .dispatch('submitSignup', { ...this.formData })
+          .then(() => {
+            this.cleaFields()
+            this.errorMessage = ''
+            this.confirmationMessage = 'Votre compte a été créé. Vous pouvez maintenant vous connecter.'
+            this.mode = 'login'
+          })
+          .catch((error) => {
+            this.errorMessage = `cette erreur est survenue: ${error}`
+          })
       }
     },
     submitLogin () {
-      this.errorMessage = ''
-      this.$store.dispatch('submitLogin', { email: this.formData.email, password: this.formData.password })
+      console.log('test login')
+      this.$store
+        .dispatch('submitLogin', {
+          email: this.formData.email,
+          password: this.formData.password
+        })
+        .then(() => {
+          this.errorMessage = ''
+          this.$router.push('/feed')
+        })
+        .catch((error) => {
+          this.errorMessage = `L'identifiant donné n'est pas valide ${error}`
+        })
     }
   }
 }
@@ -202,19 +264,16 @@ p {
   text-decoration: underline;
   color: rgb(57, 57, 255);
 }
-#error-message {
-  color: red;
+.alert-message {
+  margin: 0 16px 16px 16px;
 }
-.btn-activ{
+.btn-activ {
   background-color: rgb(36, 155, 36);
 }
-.btn-disabled{
+.btn-disabled {
   background-color: lightgray;
 }
-#confirmation {
-  color: rgb(36, 155, 36);
-}
-span{
+span {
   cursor: pointer;
 }
 </style>
