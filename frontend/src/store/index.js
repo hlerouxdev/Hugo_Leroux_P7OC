@@ -1,18 +1,9 @@
 import { createStore } from 'vuex'
 import 'es6-promise/auto'
+// import userActions from './actions/user.js'
 // import { reject, resolve } from 'core-js/fn/promise'
 const axios = require('axios')
 const instance = axios.create({ baseURL: 'http://localhost:3000/api/' })
-
-// let token = localStorage.getItem('token')
-// if(!token){
-//   user = {
-//     userId: -1,
-//     token: ''
-//   }
-// } else {
-
-// }
 
 export default createStore({
   state: {
@@ -46,6 +37,7 @@ export default createStore({
     }
   },
   actions: {
+    // ...userActions
     submitSignup: ({ commit }, newUser) => {
       return new Promise((resolve, reject) => {
         instance.post('/auth/signup', newUser)

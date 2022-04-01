@@ -3,7 +3,7 @@
     <div class="profile-infos">
       <div class="profile-infos_left">
         <v-avatar rounded size="150" class="profile-infos_left_avatar">
-          <v-img v-if="this.$store.state.userInfos.profilePicture != ''"></v-img>
+          <v-img v-if="this.$store.state.userInfos.profilePicture != ''" :src="this.$store.state.userInfos.profilePicture"></v-img>
           <v-img v-else  src="../assets/user.jpg"></v-img>
         </v-avatar>
         <div class ="base-infos">

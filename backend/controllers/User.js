@@ -23,7 +23,7 @@ exports.signup =
                db.User.findOne({ where: { email: req.body.email } })
                     .then(user => {
                          if (user) {
-                              return res.status(401).json( {message: 'cette adresse mail est déjà prise'} )
+                              return res.status(401).json({ message: 'cette adresse mail est déjà prise' })
                          } else {
                               bcrypt.hash(req.body.password, 10)
                                    .then(hash => {
@@ -80,13 +80,6 @@ exports.modifyUser =
           db.User.findOne({ where: { id: req.params.id } })
                .then(user => {
                     if (req.auth.userId === user.id || req.auth.isAdmin === true) {
-                         if (req.file) {
-                              if (user.filePath) {
-                                   fs.unlink(`images/${pub.filePath.split('/images/')[1]}`, () => { });
-                              } else {
-                                   user.filePath = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
-                              };
-                         };
                          modUser = Object.assign(user, req.body)
                          modUser.save()
                               .then(() => {
@@ -96,6 +89,31 @@ exports.modifyUser =
                     } else {
                          res.status(403).json({ message: 'utilisateur non autiorisé' });
                     };
+               })
+               .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+     };
+
+exports.changePicture =
+     (req, res, next) => {
+          db.User.findOne({ where: { id: req.auth.userId } })
+               .then(user => {
+                    if (!user) {
+                         return res.status(404).json({ message: 'utilisateur non trouvé' })
+                    }
+                    if (user.id = req.auth || req.aauth.isAdmin == true) {
+                         if (user.profilePicture != '') {
+                              fs.unlink(`images/${pub.profilePicture.split('/images/')[1]}`, () => { });
+                         }
+                         user.profilePicture = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+                         user.save()
+                              .then(() => {
+                                   res.status(202).json({ message: 'utilisateur modifié' });
+                              })
+                              .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }))
+                    }
+                    else {
+                         return res.status(401).json({ message: 'utilisateur non autorisé' })
+                    }
                })
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      };
@@ -128,20 +146,22 @@ exports.getUserGroup =
 exports.getUser =
      (req, res, next) => {
           db.User.findOne({ where: { id: req.params.id }, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture'] })
-             
-          .then(user => {
-               console.log("rr")  
-               res.status(200).json(user)})
+
+               .then(user => {
+                    console.log("rr")
+                    res.status(200).json(user)
+               })
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      };
 
 exports.getMe =
      (req, res, next) => {
-          db.User.findOne({ where: { id: req.auth.userId}, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture'] })
-          
+          db.User.findOne({ where: { id: req.auth.userId }, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture'] })
+
                .then(user => {
                     console.log('tt')
-               console.log(req.auth)
-                    res.status(200).json(user)})
+                    console.log(req.auth)
+                    res.status(200).json(user)
+               })
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      };

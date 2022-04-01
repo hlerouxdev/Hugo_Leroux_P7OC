@@ -8,6 +8,7 @@
         @click="redirectHome"
       ></v-img>
       <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
       <v-text-field
       v-if="this.$store.state.user.userId >= 1"
         hide-details
@@ -15,6 +16,7 @@
         single-line
         class="search-field"
       ></v-text-field>
+      <div class="search-field" v-else></div>
       <v-spacer></v-spacer>
       <!-- <v-menu
       transition="slide-y-transition"
@@ -46,6 +48,7 @@
       <v-btn text @click="redirectProfile" v-if="this.$store.state.user.userId >= 1">
         Mon Profile
       </v-btn>
+      <div v-else></div>
       <v-btn text  @click="logout" v-if="this.$store.state.user.userId >= 1">Déconnexion</v-btn>
       <v-btn text @click="redirectContact">Contact</v-btn>
     </v-app-bar>

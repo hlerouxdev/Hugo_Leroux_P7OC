@@ -50,7 +50,7 @@ exports.getComments =
 
 exports.deleteComment =
      (req, res, next) => {
-          db.Comment.findOne({ where: { rid: req.params.id } })
+          db.Comment.findOne({ where: { id: req.params.id } })
                .then(comment => {
                     if (comment.UserId !== req.auth.userId || ReadableStream.auth.isAdmin === false) {
                          return res.status(403).json({ message: 'vous ne pouvez pas supprimer ce commentaire' })

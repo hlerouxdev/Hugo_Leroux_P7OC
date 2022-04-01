@@ -50,18 +50,19 @@
         <v-text-field label="email" type="email" v-model="formData.email" />
         <v-text-field
           label="mot de passe"
-          type="password"
           v-model="formData.password"
-          v-on:keyup.enter="() => {
-            if (mode == 'login') { submitLogin } else { return false }
-            }"
+          :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="show ? 'text' : 'password'"
+          @click:append="show = !show"
         />
         <v-text-field
           v-if="this.mode === 'signup'"
           label="confirmer"
-          type="password"
           v-model="formData.password2"
           @keyup.enter="submitSignup"
+          :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="show ? 'text' : 'password'"
+          @click:append="show = !show"
         />
         <v-card-actions>
           <v-btn
@@ -121,6 +122,8 @@ export default {
   name: 'HomePage',
   data () {
     return {
+      show: false,
+      oassword: 'Password',
       mode: 'login',
       formData: {
         firstName: '',
