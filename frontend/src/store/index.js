@@ -55,7 +55,6 @@ export default createStore({
       return new Promise((resolve, reject) => {
         instance.post('/auth/login', user)
           .then(function (res) {
-            console.log(res)
             commit('setStatus', '')
             commit('logUser', res.data)
             console.log('connected :)')

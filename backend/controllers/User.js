@@ -48,7 +48,7 @@ exports.login =
           db.User.findOne({ where: { email: req.body.email } })
                .then(user => {
                     if (!user) {
-                         return res.status(401).json({ message: 'Utilisateur non trouvé !' });
+                         return res.status(404).json({ message: 'Utilisateur non trouvé !' });
                     } else {
                          bcrypt.compare(req.body.password, user.password) //vérifie le hash du mdp
                               .then(valid => {
@@ -102,7 +102,7 @@ exports.changePicture =
                     }
                     if (user.id = req.auth || req.aauth.isAdmin == true) {
                          if (user.profilePicture != '') {
-                              fs.unlink(`images/${pub.profilePicture.split('/images/')[1]}`, () => { });
+                              fs.unlink(`images/${user.profilePicture.split('/images/')[1]}`, () => { });
                          }
                          user.profilePicture = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
                          user.save()
@@ -112,11 +112,19 @@ exports.changePicture =
                               .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }))
                     }
                     else {
-                         return res.status(401).json({ message: 'utilisateur non autorisé' })
+                         return res.status(403).json({ message: 'utilisateur non autorisé' })
                     }
                })
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      };
+
+exports.changePassword =
+     (req, res, next) => {
+          db.User.findOne( {where: {id: req.auth.userId}})
+               .then( user => {
+                    user.save()
+               })
+     }
 
 exports.deleteUser =
      (req, res, next) => {
@@ -138,14 +146,14 @@ exports.deleteUser =
 
 exports.getUserGroup =
      (req, res, next) => {
-          db.User.findAll({ attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture'] })
+          db.User.findAll({ attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'profilePicture'] })
                .then(users => res.status(200).json(users))
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      };
 
 exports.getUser =
      (req, res, next) => {
-          db.User.findOne({ where: { id: req.params.id }, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture'] })
+          db.User.findOne({ where: { id: req.params.id }, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'profilePicture'] })
 
                .then(user => {
                     console.log("rr")
@@ -156,7 +164,7 @@ exports.getUser =
 
 exports.getMe =
      (req, res, next) => {
-          db.User.findOne({ where: { id: req.auth.userId }, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'birthDay', 'profilePicture'] })
+          db.User.findOne({ where: { id: req.auth.userId }, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'profilePicture'] })
 
                .then(user => {
                     console.log('tt')

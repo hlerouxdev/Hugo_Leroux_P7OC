@@ -33,11 +33,10 @@ Object.keys(db).forEach(modelName => {
 
 sequelize.authenticate()
 .then( async ()=> {
-    console.log('connexion réussie :)');
     await sequelize.sync({alter: true})
     console.log('synchronisation réussie :)');
 }) .catch((error) => {
-    console.log(`connexion échouée :'( ${error}`);
+    console.log(`synchronisation échouée :'( ${error}`);
 });
 
 

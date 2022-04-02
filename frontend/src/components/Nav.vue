@@ -105,13 +105,11 @@ export default {
     width: 25%;
     background-color: white;
   }
+  .logo {
+    width: 238px;
+  }
   .logo:hover {
     cursor: pointer;
-  }
-  :deep(.logo) img {
-        height: 200px;
-      position: absolute;
-      top: -85px;
   }
   :deep(.user-pp){
         margin-right: 10px;
