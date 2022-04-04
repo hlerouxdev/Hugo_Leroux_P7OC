@@ -2,6 +2,7 @@ const db = require('../models/index');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
+const fs = require('fs');
 require('dotenv').config({ path: '../.env' });
 
 exports.signup =
@@ -74,7 +75,7 @@ exports.login =
 
 exports.modifyUser =
      (req, res, next) => {
-          if (req.body.isAdmin || req.auth.isAdmin === false) {
+          if (req.body.isAdmin) {
                return res.status(401).json({ message: 'vous ne pouvez pas vous donner le rôle admin' })
           };
           db.User.findOne({ where: { id: req.params.id } })
@@ -102,12 +103,12 @@ exports.changePicture =
                     }
                     if (user.id = req.auth || req.aauth.isAdmin == true) {
                          if (user.profilePicture != '') {
-                              fs.unlink(`images/${user.profilePicture.split('/images/')[1]}`, () => { });
+                              fs.unlink(`public/images/${user.profilePicture.split('/images/')[1]}`, () => { });
                          }
                          user.profilePicture = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
                          user.save()
                               .then(() => {
-                                   res.status(202).json({ message: 'utilisateur modifié' });
+                                   res.status(202).json({ message: 'Photo de profile changée' });
                               })
                               .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }))
                     }
@@ -120,10 +121,42 @@ exports.changePicture =
 
 exports.changePassword =
      (req, res, next) => {
+          if(!validator.isStrongPassword(req.body.password)) {
+               return res.status(400).json( { message: 'Votre mot de passe doit contenir au moins 8 charactères, dont une lettre minuscule, une majuscule, un chiffre et un charctère spécial' } )
+          }
           db.User.findOne( {where: {id: req.auth.userId}})
-               .then( user => {
-                    user.save()
-               })
+          .then(user => {
+               if (!user) {
+                    return res.status(404).json({ message: 'Utilisateur non trouvé !' });
+               } else {
+                    if (user.id = req.auth.id) {
+                         bcrypt.compare(req.body.password, user.password) //vérifie le hash du mdp
+                         .then(valid => {
+                              if (!valid) {
+                                   return res.status(403).json({ message: `Mot de passe incorrect !` })
+                              } else {
+                                   user.password = req.body.password
+                                   user.save()
+                                   .then(() => {
+                                        res.status(202).json({ message: 'Mot de passe modifié' });
+                                   })
+                                   .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+                              };
+                         })
+                         .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+                    } else if (user.isAdmin === true) {
+                         user.password = req.body.password
+                         user.save()
+                                   .then(() => {
+                                        res.status(202).json({ message: 'Mot de passe modifié' });
+                                   })
+                                   .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+                    } else {
+                         return res.status(403).json( { message: 'requête non autorisée' } )
+                    }
+               }
+          })
+          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      }
 
 exports.deleteUser =

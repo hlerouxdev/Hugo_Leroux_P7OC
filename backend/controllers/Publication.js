@@ -111,8 +111,8 @@ exports.likePost =
                                         db.Publication.findOne({ where: { id: PublicationLiked } })
                                              .then(pub => { pub.likes -= 1; oldLike.destroy(); pub.save() })
                                              .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }))
-                                             .then(() => { res.status(200).json({ message: 'like enlevé' }) })
-                                             .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+                                                  .then(() => { res.status(200).json({ message: 'like enlevé' }) })
+                                                  .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
                                    } else {
                                         return res.status(401).json({ message: 'cette requête n\'est pas autorisé' });
                                    };
@@ -125,8 +125,8 @@ exports.likePost =
                                         db.Publication.findOne({ where: { id: PublicationLiked } })
                                              .then(pub => { pub.likes += 1; newLike.save(); pub.save() })
                                              .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }))
-                                             .then(() => { res.status(200).json({ message: 'like ajouté' }) })
-                                             .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+                                                  .then(() => { res.status(200).json({ message: 'like ajouté' }) })
+                                                  .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
                                    } else {
                                         return res.status(401).json({ message: 'cette requête n\'est pas autorisé' });
                                    };

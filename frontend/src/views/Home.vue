@@ -107,8 +107,9 @@
             block
             plain
             elevation="2"
-            >Connexion</v-btn
-          >
+            >
+              Connexion
+            </v-btn>
         </v-card-actions>
       </v-card>
     </v-parallax>

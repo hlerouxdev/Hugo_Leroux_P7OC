@@ -54,13 +54,14 @@ export default createStore({
       commit('setStatus', 'loading')
       return new Promise((resolve, reject) => {
         instance.post('/auth/login', user)
-          .then(function (res) {
+          .then(res => {
             commit('setStatus', '')
+            console.log(res.data)
             commit('logUser', res.data)
             console.log('connected :)')
             resolve(res)
           })
-          .catch(function (error) {
+          .catch(error => {
             commit('setStatus', 'error_login')
             reject(error)
           })
@@ -69,11 +70,20 @@ export default createStore({
     getUser: ({ commit }) => {
       instance.get('/auth/me')
         .then(res => {
-          console.log(res)
           commit('getUserInfos', res.data)
         })
         .catch(error => {
           commit('setStatus', 'error_login')
+          console.log(error)
+        })
+    },
+    changeUserInfos: ({ commit }, data) => {
+      instance.put(`/auth/user/${data.user}`, data.form)
+        .then(() => {
+          console.log('test ok')
+          commit('getUserInfos', data.form)
+        })
+        .catch(error => {
           console.log(error)
         })
     }
