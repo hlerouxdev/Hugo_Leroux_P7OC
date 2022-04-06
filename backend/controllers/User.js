@@ -130,7 +130,7 @@ exports.changePassword =
                     return res.status(404).json({ message: 'Utilisateur non trouvé !' });
                } else {
                     if (user.id = req.auth.id) {
-                         bcrypt.compare(req.body.password, user.password) //vérifie le hash du mdp
+                         bcrypt.compare(req.body.oldPassword, user.password) //vérifie le hash du mdp
                          .then(valid => {
                               if (!valid) {
                                    return res.status(403).json({ message: `Mot de passe incorrect !` })

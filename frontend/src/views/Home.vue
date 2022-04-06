@@ -241,7 +241,7 @@ export default {
           this.$router.push('/feed')
         })
         .catch((error) => {
-          this.errorMessage = `L'identifiant donné n'est pas valide ${error}`
+          this.errorMessage = `L'identifiant donné n'est pas valide ${error.message}`
         })
     }
   }

@@ -7,18 +7,22 @@ import Contact from '../views/Contact.vue'
 const routes = [
   {
     path: '/',
+    name: 'home',
     component: Home
   },
   {
     path: '/feed',
+    name: 'feed',
     component: Feed
   },
   {
     path: '/my-profile',
+    name: 'my-profile',
     component: Profile
   },
   {
     path: '/contact',
+    name: 'contact',
     component: Contact
   }
 ]

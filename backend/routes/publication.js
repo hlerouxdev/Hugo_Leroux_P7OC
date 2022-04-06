@@ -10,6 +10,8 @@ router.put('/:id', limiter.mod, jwt, multer, publicationControl.modifyPost);
 router.delete('/:id', limiter.mod, jwt, publicationControl.deletePost);
 router.get('/:id', limiter.gen, publicationControl.getOnePost);
 router.get('/', limiter.gen, publicationControl.getAllPost);
+router.get('/user/:id/posts', limiter.gen, publicationControl.getUserPosts);
+router.get('/user/me/posts', limiter.gen, publicationControl.getMyPosts);
 router.post('/:id/like', limiter.mod, jwt, publicationControl.likePost);
 
 module.exports = router

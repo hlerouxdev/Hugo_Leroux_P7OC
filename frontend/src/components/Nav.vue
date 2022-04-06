@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app dark color="blue">
+    <v-app-bar app dark class="header">
       <v-img
       class="logo"
         src="../assets/logos/icon-left-font-monochrome-white.png"
@@ -46,6 +46,10 @@
       </v-list>
     </v-menu> -->
       <v-btn text @click="redirectProfile" v-if="this.$store.state.user.userId >= 1">
+        <v-avatar class="user-pp">
+          <v-img v-if="this.$store.state.userInfos.profilePicture != ''" :src="this.$store.state.userInfos.profilePicture"></v-img>
+          <v-img v-else  src="../assets/user.jpg"></v-img>
+        </v-avatar>
         Mon Profile
       </v-btn>
       <div v-else></div>
@@ -97,13 +101,18 @@ export default {
 </script>
 
 <style scoped>
+.header {
+  background: #091f43;
+  border-bottom: #d1515a solid 5px;
+  height: 70px !important;
+}
   .v-btn {
     color: white;
   }
   .search-field {
-    color: #2196f3 !important;
+    color: white!important;
     width: 25%;
-    background-color: white;
+    background-color: #091f43;
   }
   .logo {
     width: 238px;

@@ -19,7 +19,8 @@ export default createStore({
       adress: '',
       department: '',
       profilePicture: ''
-    }
+    },
+    message: ''
   },
   getters: {
   },
@@ -34,6 +35,12 @@ export default createStore({
     },
     getUserInfos: function (state, userInfos) {
       state.userInfos = userInfos
+    },
+    setMessage: function (state, message) {
+      state.message = message
+    },
+    setUser: (state, user) => {
+      state.user = user
     }
   },
   actions: {
@@ -63,6 +70,7 @@ export default createStore({
           })
           .catch(error => {
             commit('setStatus', 'error_login')
+            commit('setMessage', error.message)
             reject(error)
           })
       })
@@ -74,17 +82,47 @@ export default createStore({
         })
         .catch(error => {
           commit('setStatus', 'error_login')
-          console.log(error)
+          commit('setMessage', error.message)
         })
     },
     changeUserInfos: ({ commit }, data) => {
       instance.put(`/auth/user/${data.user}`, data.form)
-        .then(() => {
-          console.log('test ok')
+        .then(res => {
           commit('getUserInfos', data.form)
+          commit('setMessage', res.message)
         })
         .catch(error => {
-          console.log(error)
+          commit('setMessage', error.message)
+        })
+    },
+    changeUserPassword: ({ commit }, data) => {
+      instance.put(`/auth/user/${data.user}/password`, data.form)
+        .then(res => {
+          commit('setMessage', res.message)
+        })
+        .catch(error => {
+          commit('setMessage', error.message)
+        })
+    },
+    deleteUser: ({ commit }, userId) => {
+      return instance.delete(`/auth/user/${userId}`)
+        .then(res => {
+          commit('setUser', {
+            userId: -1,
+            token: ''
+          })
+          commit('getUserInfos', {
+            firstName: '',
+            lastName: '',
+            email: '',
+            adress: '',
+            department: '',
+            profilePicture: ''
+          })
+          localStorage.clear()
+        })
+        .catch(error => {
+          commit('setMessage', error.message)
         })
     }
   },

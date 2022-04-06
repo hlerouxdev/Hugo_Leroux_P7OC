@@ -1,0 +1,111 @@
+.main {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+.profile-infos{
+  width: 100%;
+  max-width: 1300px;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  background-color: #d8d8d8;
+  color: #091f43;
+  box-shadow: #3e3e3e 0 0 5px 2px;
+  }
+  .profile-infos_left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 33%;
+    background-color: white;
+    box-shadow: #3e3e3e 0 0 5px 2px;
+  }
+  .profile-infos_left h1{
+    margin: 20px 0 20px 0px;
+  }
+  .profile-infos_ .v-img {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .profile-infos_left_avatar {
+    margin-top: 20px;
+    box-shadow: #3e3e3e 0 0 5px 2px;
+  }
+  .base-infos {
+    margin-bottom: 30px;
+  }
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 150px;
+    margin-top: 20px;
+  }
+ .mod-button {
+    margin-top: 26px;
+    color: white;
+    width: 100%;
+    overflow: hidden;
+  }
+  .mod {
+    background-color: #091f43;
+    color: white !important;
+  }
+  .del {
+    background-color: #d1515a;
+    color: white !important;
+  }
+  .profile-infos_right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 66%;
+    overflow-y: scroll;
+  }
+  .profile-form {
+    position:absolute;
+  }
+  .profile-form-bg {
+    background-color: black;
+    opacity: 50%;
+    height: 100%;
+    width: 100%;
+    z-index: 5;
+  }
+  .profile-form-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    color: #091f43;
+    z-index: 6;
+    width: 50%;
+    border-radius: 10px;
+  }
+  .profile-form-container .v-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .profile-form-container .v-container .v-input {
+    width: 90%;
+  }
+  .form-row {
+    display: flex;
+    justify-content: center;
+  }
+  .form-button {
+    margin: 20px;
+    width: fit-content;
+  }
+  .close-btn {
+    margin-left: calc(100% - 64px);
+    margin-top: -66px;
+  }

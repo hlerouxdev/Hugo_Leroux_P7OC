@@ -90,6 +90,20 @@ exports.getOnePost =
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      };
 
+exports.getUserPosts =
+     (req, res, next) => {
+          db.Publication.findAll({ where: {UserId: req.params.id} })
+          .then(publications => res.status(200).json(publications))
+          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+     }
+
+exports.getMyPosts =
+(req, res, next) => {
+     db.Publication.findAll({ where: {UserId: req.auth.userId} })
+     .then(publications => res.status(200).json(publications))
+     .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+}
+
 exports.likePost =
      (req, res, next) => {
           const PublicationLiked = req.params.id;
