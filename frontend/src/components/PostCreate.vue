@@ -4,7 +4,8 @@
             <div class="post-header">
               <div class="post-header-section">
                 <v-avatar rounded size="45" class="post-avatar">
-                  <v-img v-if="this.$store.state.userInfos.profilePicture != ''" :src="this.$store.state.userInfos.profilePicture"></v-img>
+                  <v-img v-if="this.$store.state.userInfos.profilePicture != '' ||
+                    this.$store.state.userInfos.profilePicture == null" :src="this.$store.state.userInfos.profilePicture"></v-img>
                   <v-img v-else  src="../assets/user.jpg"></v-img>
                 </v-avatar>
                 <h3>{{this.$store.state.userInfos.firstName + " " + this.$store.state.userInfos.lastName}}</h3>
@@ -16,14 +17,16 @@
             label=""
             >
             </v-text-field>
-            <div post-create-buttons>
+            <div class="post-create-buttons">
+              <v-file-input
+                accept="image/png, image/jpeg, image/jpg"
+                prepend-icon="mdi-camera"
+                label="Choisissez un image"
+                class="mod create-btn picture-btn"
+              ></v-file-input>
               <v-btn
                 small
-              >
-                Ajouter une Image
-              </v-btn>
-              <v-btn
-                small
+                class="mod create-btn"
                 @click="createPost"
               >
                 Créer un Poste
@@ -44,13 +47,19 @@ export default {
       }
     }
   },
-  createPost () {
-    this.$store
-      .dispatch('createPost', this.form)
+  methods: {
+    createPost () {
+      this.$store
+        .dispatch('createPost', this.form)
+    }
   }
 }
 </script>
 
 <style scoped>
   @import '../styles/post.css';
+  @import '../styles/buttons.css';
+  .post-create-buttons{
+    display: flex;
+  }
 </style>

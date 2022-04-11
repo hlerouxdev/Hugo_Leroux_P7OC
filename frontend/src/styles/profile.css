@@ -34,6 +34,9 @@
     margin-top: 20px;
     box-shadow: #3e3e3e 0 0 5px 2px;
   }
+  .profile-bio {
+    margin-bottom: 20px;
+  }
   .base-infos {
     margin-bottom: 30px;
   }
@@ -44,20 +47,6 @@
     justify-content: space-evenly;
     height: 150px;
     margin-top: 20px;
-  }
- .mod-button {
-    margin-top: 26px;
-    color: white;
-    width: 100%;
-    overflow: hidden;
-  }
-  .mod {
-    background-color: #091f43;
-    color: white !important;
-  }
-  .del {
-    background-color: #d1515a;
-    color: white !important;
   }
   .profile-infos_right {
     display: flex;
@@ -96,6 +85,9 @@
   }
   .profile-form-container .v-container .v-input {
     width: 90%;
+  }
+  .form-avatar {
+    margin-bottom: 20px;
   }
   .form-row {
     display: flex;

@@ -1,0 +1,32 @@
+.v-btn:hover {
+  box-shadow: #3e3e3e 0 0 5px 2px;
+}
+
+.mod-button {
+  margin-top: 26px;
+  color: white;
+  width: 100%;
+  overflow: hidden;
+}
+.mod {
+  background-color: #091f43;
+  color: white !important;
+}
+.del {
+  background-color: #d1515a;
+  color: white !important;
+}
+.post-likes-btn {
+  margin: 10px 20px 10px 0;
+}
+.post-btn {
+  margin: 10px;
+}
+.create-btn {
+  margin-right: 20px;
+}
+.picture-btn {
+  height: 36px;
+  width: 150px;
+  padding: 0;
+}

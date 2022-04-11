@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       defaultValue: ''
     },
+    bio: {
+      type: DataTypes.STRING,
+      defaultValue: ''
+    },
     department: {
       type: DataTypes.STRING,
       defaultValue: ''

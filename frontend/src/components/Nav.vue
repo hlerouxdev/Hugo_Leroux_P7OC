@@ -18,39 +18,12 @@
       ></v-text-field>
       <div class="search-field" v-else></div>
       <v-spacer></v-spacer>
-      <!-- <v-menu
-      transition="slide-y-transition"
-      bottom
-    >
-      <template v-slot:activator="{ on }">
-        <v-btn
-          color="white"
-          v-on="on"
-        >
-        <v-avatar class="user-pp">
-      <v-img
-        src="../assets/user.jpg"
-        alt="user profile picture"
-      ></v-img>
-    </v-avatar>
-          {{this.$store.state.userInfos.firstName + " " + this.$store.state.userInfos.lastName}} Mon Compte
-        </v-btn>
-      </template>
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-        >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu> -->
       <v-btn text @click="redirectProfile" v-if="this.$store.state.user.userId >= 1">
         <v-avatar class="user-pp">
           <v-img v-if="this.$store.state.userInfos.profilePicture != ''" :src="this.$store.state.userInfos.profilePicture"></v-img>
           <v-img v-else  src="../assets/user.jpg"></v-img>
         </v-avatar>
-        Mon Profile
+        Mon Profil
       </v-btn>
       <div v-else></div>
       <v-btn text  @click="logout" v-if="this.$store.state.user.userId >= 1">Déconnexion</v-btn>

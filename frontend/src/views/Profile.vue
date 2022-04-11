@@ -7,8 +7,13 @@
             X
           </v-btn>
         <v-container>
+          <v-avatar rounded size="250" class="profile-infos_left_avatar form-avatar">
+            <v-img v-if="this.$store.state.userInfos.profilePicture != ''" :src="this.$store.state.userInfos.profilePicture"></v-img>
+            <v-img v-else  src="../assets/user.jpg"></v-img>
+          </v-avatar>
           <v-file-input
-          accept="image/png, image/jpeg, image/bmp"
+          accept="image/png, image/jpeg, image/jpg"
+          v-model="profilePicture"
           placeholder="Pick an avatar"
           prepend-icon="mdi-camera"
           label="Sélectionner une nouvelle photo de profile"
@@ -46,6 +51,10 @@
           <v-text-field
             v-model="form.department"
             label="Département"
+          ></v-text-field>
+          <v-text-field
+            v-model="form.bio"
+            label="à propos"
           ></v-text-field>
           <v-btn @click="changeProfile" class="form-button mod">
           Changer les informations
@@ -99,14 +108,16 @@
           <v-img v-else  src="../assets/user.jpg"></v-img>
         </v-avatar>
         <h1>{{this.$store.state.userInfos.firstName + " " + this.$store.state.userInfos.lastName}}</h1>
+        <h2 v-if="this.$store.state.userInfos.bio != ''">à propos</h2>
+        <p v-if="this.$store.state.userInfos.bio != ''" class="profile-bio">{{this.$store.state.userInfos.bio}}</p>
         <div class ="base-infos">
           <p>E-mail: {{this.$store.state.userInfos.email}}</p>
           <p>Adresse: {{this.$store.state.userInfos.adress}}</p>
           <p>Fonction: {{this.$store.state.userInfos.department}}</p>
         </div>
         <div class="button-group">
-          <v-btn prepend-icon="mdi-camera" class="mod mod-button" @click="change = true; mode ='picture'">Modifier la photo de profile</v-btn>
-          <v-btn class="mod mod-button" @click="change = true; mode ='profile'">Modifier le Profile</v-btn>
+          <v-btn prepend-icon="mdi-camera" class="mod mod-button" @click="change = true; mode ='picture'">Modifier la photo de profil</v-btn>
+          <v-btn class="mod mod-button" @click="change = true; mode ='profile'">Modifier le Profil</v-btn>
           <v-btn class="mod mod-button" @click="change = true; mode ='password'">Changer le mot de passe</v-btn>
           <v-btn class="del mod-button" @click="change = true; mode ='delete'">Supprimer le compte</v-btn>
         </div>
@@ -132,13 +143,14 @@ export default ({
     return {
       mode: '',
       change: false,
-      profilePicture: '',
+      profilePicture: [],
       form: {
         firstName: this.$store.state.userInfos.firstName,
         lastName: this.$store.state.userInfos.lastName,
         email: this.$store.state.userInfos.email,
         adress: this.$store.state.userInfos.adress,
-        department: this.$store.state.userInfos.department
+        department: this.$store.state.userInfos.department,
+        bio: this.$store.state.userInfos.bio
       },
       formPass: {
         newPass1: '',
@@ -156,18 +168,19 @@ export default ({
     }
   },
   mounted: function () {
-    if (this.$store.state.user.userId < 1) {
-      this.$router.push('/')
-    } else {
-      this.$store.dispatch('getUser')
-    }
+    this.$store.dispatch('getUser')
   },
   methods: {
-    deleteProfile () {
-      console.log('bye bye account')
-    },
     changeProfilePicture () {
-      console.log(document.getElementsByClassName('form-profile-picture')[0])
+      console.log(this.profilePicture[0])
+      const formData = new FormData()
+      formData.append('file', this.profilePicture[0])
+      console.log(formData)
+      // this.$store
+      //   .dispatch('changeProfilePicture', {
+      //     user: this.$store.state.user.userId,
+      //     image: this.profilePicture[0]
+      //   })
     },
     changeProfile () {
       this.$store
@@ -215,4 +228,5 @@ export default ({
 <style scoped>
   @import '../styles/profile.css';
   @import '../styles/post.css';
+  @import '../styles/buttons.css';
 </style>

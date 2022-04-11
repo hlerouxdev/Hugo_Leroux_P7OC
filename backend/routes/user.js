@@ -11,8 +11,8 @@ router.put('/user/:id', limiter.mod, jwt, userControl.modifyUser);
 router.put('/user/:id/profile-picture',jwt, multer, userControl.changePicture);
 router.put('/user/:id/password', limiter.mod, jwt, userControl.changePassword);
 router.delete('/user/:id', limiter.auth, jwt, userControl.deleteUser);
-router.get('/', limiter.gen, userControl.getUserGroup);
-router.get('/user/:id', limiter.gen, userControl.getUser);
-router.get('/me', /* limiter.gen, */ jwt, userControl.getMe);
+router.get('/', userControl.getUserGroup);
+router.get('/user/:id', userControl.getUser);
+router.get('/me', jwt, userControl.getMe);
 
 module.exports = router;

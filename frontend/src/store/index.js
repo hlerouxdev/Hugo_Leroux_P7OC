@@ -15,12 +15,14 @@ export default createStore({
     userInfos: {
       firstName: '',
       lastName: '',
+      bio: '',
       email: '',
       adress: '',
       department: '',
       profilePicture: ''
     },
-    message: ''
+    message: '',
+    allPosts: []
   },
   getters: {
   },
@@ -41,6 +43,9 @@ export default createStore({
     },
     setUser: (state, user) => {
       state.user = user
+    },
+    setAllPosts: (state, posts) => {
+      state.allPosts = posts
     }
   },
   actions: {
@@ -63,9 +68,7 @@ export default createStore({
         instance.post('/auth/login', user)
           .then(res => {
             commit('setStatus', '')
-            console.log(res.data)
             commit('logUser', res.data)
-            console.log('connected :)')
             resolve(res)
           })
           .catch(error => {
@@ -82,6 +85,17 @@ export default createStore({
         })
         .catch(error => {
           commit('setStatus', 'error_login')
+          commit('setMessage', error.message)
+        })
+    },
+    changeProfilePicture: ({ commit }, data) => {
+      const formData = new FormData()
+      formData.append('file', data.image)
+      instance.put(`/auth/user/${data.user}/profile-picture`, formData)
+        .then(res => {
+          commit('setMessage', res.message)
+        })
+        .catch(error => {
           commit('setMessage', error.message)
         })
     },
@@ -123,6 +137,38 @@ export default createStore({
         })
         .catch(error => {
           commit('setMessage', error.message)
+        })
+    },
+    createPost: (data) => {
+      instance.post('/post/', data)
+    },
+    getAllPosts: ({ commit }) => {
+      const posts = instance.get('/post/') // va chercher tous les posts dans le back
+        .then(res => {
+          res.data.forEach(post => { // boucle dans le tableau des posts
+            instance.get(`/auth/user/${post.UserId}`)
+              .then(user => { // cherche le nom et la photo de profil de l'utilisateur pour l'ajouter au poste
+                post.userName = user.data.firstName + ' ' + user.data.lastName
+                if (user.data.profilePicture !== undefined) {
+                  post.userPicture = user.data.profilePicture
+                } else {
+                  post.userPicture = ''
+                }
+              })
+              .catch(error => {
+                console.log(error)
+              })
+          })
+        })
+        .catch(error => {
+          console.log(error)
+        })
+        .then(() => {
+          console.log(posts)
+          commit('setAllPosts', posts)
+        })
+        .catch(error => {
+          console.log(error)
         })
     }
   },

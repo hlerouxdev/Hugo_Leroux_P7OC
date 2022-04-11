@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="main-view">
-      <CreatePost />
+      <CreatePost v-if="this.$store.state.user.userId >= 1"/>
       <Post />
     </div>
   </div>
@@ -17,11 +17,11 @@ export default ({
   },
   name: 'FeedPage',
   mounted: function () {
-    if (this.$store.state.user.userId < 1) {
-      this.$router.push('/')
-    } else {
-      this.$store.dispatch('getUser')
-    }
+    this.$store.dispatch('getUser')
+    this.$store.dispatch('getAllPosts')
+      .then(() => {
+        console.log(this.$store.state.allPosts)
+      })
   }
 })
 </script>
@@ -32,13 +32,16 @@ export default ({
   height: 100%;
   display: flex;
   justify-content: center;
+  overflow-y: scroll;
 }
   .main-view{
   width: 100%;
   max-width: 1300px;
   height: 100%;
   display: flex;
+  overflow-y: scroll;
   flex-direction: column;
+  align-items: center;
   justify-content: space-between;
   background-color: #d8d8d8;
   box-shadow: #3e3e3e 0 0 5px 2px;

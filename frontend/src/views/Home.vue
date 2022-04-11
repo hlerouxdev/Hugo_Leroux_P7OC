@@ -29,7 +29,7 @@
           dense
           outlined
           type="error"
-          class="alert-message"
+          class="alert-message error"
           v-if="this.errorMessage != ''"
         >
           {{ errorMessage }}
@@ -38,7 +38,7 @@
       dense
       text
       type="success"
-      class="alert-message"
+      class="alert-message success"
       v-if="mode == 'login' && this.confirmationMessage != ''"
     >
       {{ confirmationMessage }}
@@ -137,11 +137,6 @@ export default {
       confirmationMessage: ''
     }
   },
-  mounted: function () {
-    if (this.$store.state.user.userId >= 1) {
-      this.$router.push('/feed')
-    }
-  },
   computed: {
     checkEmpty: function () {
       const form = this.formData
@@ -215,7 +210,6 @@ export default {
     submitSignup () {
       // const form = this.formData
       if (this.checkFields()) {
-        console.log('ok')
         this.$store
           .dispatch('submitSignup', { ...this.formData })
           .then(() => {
@@ -230,7 +224,6 @@ export default {
       }
     },
     submitLogin () {
-      console.log('test login')
       this.$store
         .dispatch('submitLogin', {
           email: this.formData.email,
@@ -254,6 +247,7 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  color: #091f43;
 }
 p {
   padding: 16px;
@@ -271,11 +265,17 @@ p {
 .alert-message {
   margin: 0 16px 16px 16px;
 }
+.error {
+  background-color: #d1515a;
+}
+.success {
+  background-color: #091f43;
+}
 .btn-activ {
-  background-color: rgb(36, 155, 36);
+  background-color: #091f43;
 }
 .btn-disabled {
-  background-color: lightgray;
+  background-color: #d7d7d7;
 }
 span {
   cursor: pointer;

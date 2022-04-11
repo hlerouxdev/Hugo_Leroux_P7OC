@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import store from '../store/index'
 import Home from '../views/Home.vue'
 import Feed from '../views/Feed.vue'
 import Profile from '../views/Profile.vue'
@@ -8,22 +9,55 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: Home,
+    meta: {
+      auth: false
+    },
+    beforeEnter: (to, from, next) => {
+      if (store.state.user.userId >= 1) {
+        next({ name: 'feed' })
+      } else {
+        next()
+      }
+    }
   },
   {
     path: '/feed',
     name: 'feed',
-    component: Feed
+    component: Feed,
+    meta: {
+      auth: true
+    },
+    beforeEnter: (to, from, next) => {
+      if (store.state.user.userId < 1) {
+        next({ name: 'home' })
+      } else {
+        next()
+      }
+    }
   },
   {
     path: '/my-profile',
     name: 'my-profile',
-    component: Profile
+    component: Profile,
+    meta: {
+      auth: true
+    },
+    beforeEnter: (to, from, next) => {
+      if (store.state.user.userId < 1) {
+        next({ name: 'home' })
+      } else {
+        next()
+      }
+    }
   },
   {
     path: '/contact',
     name: 'contact',
-    component: Contact
+    component: Contact,
+    meta: {
+      auth: true
+    }
   }
 ]
 

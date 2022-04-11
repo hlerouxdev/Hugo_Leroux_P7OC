@@ -16,6 +16,7 @@ exports.createPost =
                     pub.filePath = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
                }
                //enregistre le nouveau post
+               console.log(pub)
                pub.save()
                     .then(() => res.status(201).json({ message: 'post enregistré !' }))
                     .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
@@ -32,7 +33,7 @@ exports.modifyPost =
                     if (req.auth.userId === pub.UserId || req.auth.isAdmin === true) {
                          if (req.file) {
                               if (pub.filePath) {
-                                   fs.unlink(`images/${pub.filePath.split('/images/')[1]}`, () => { });
+                                   fs.unlink(`/public/images/${pub.filePath.split('/images/')[1]}`, () => { });
                               };
                               pub.filePath = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
                          };
@@ -58,7 +59,7 @@ exports.deletePost =
                     }
                     if (req.auth.userId === pub.UserId || req.auth.isAdmin === true) { //vérifie l'identité de l'utilisateur
                          if (pub.filePath) {
-                              fs.unlink(`images/${pub.filePath.split('/images/')[1]}`, () => { });
+                              fs.unlink(`/public/images/${pub.filePath.split('/images/')[1]}`, () => { });
                          }
                          pub.destroy()
                               .then(() => res.status(200).json({ message: 'post supprimé !' }))

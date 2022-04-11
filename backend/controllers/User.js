@@ -56,7 +56,6 @@ exports.login =
                                    if (!valid) {
                                         return res.status(401).json({ message: `Mot de passe incorrect !` })
                                    } else {
-                                        console.log(user.id);
                                         res.status(200).json({
                                              userId: user.id,
                                              token: jwt.sign( //créé le token
@@ -167,6 +166,9 @@ exports.deleteUser =
                          return res.status(404).json({ message: 'cet utilisateur n\'existe pas' })
                     }
                     if (req.auth.userId === user.id || req.auth.isAdmin === true) { //vérifie l'identité de l'utilisateur
+                         if(user.profilePicture != '' || user.profilePicture != null) {
+                              fs.unlink(`public/images/${user.profilePicture.split('/images/')[1]}`, () => { });
+                         }
                          user.destroy()
                               .then(() => res.status(200).json({ message: 'utilisateur supprimé' }))
                               .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
@@ -179,14 +181,14 @@ exports.deleteUser =
 
 exports.getUserGroup =
      (req, res, next) => {
-          db.User.findAll({ attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'profilePicture'] })
+          db.User.findAll({ attributes: ['id', 'firstName', 'lastName', 'email', 'adress', 'department', 'profilePicture', 'bio'] })
                .then(users => res.status(200).json(users))
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      };
 
 exports.getUser =
      (req, res, next) => {
-          db.User.findOne({ where: { id: req.params.id }, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'profilePicture'] })
+          db.User.findOne({ where: { id: req.params.id }, attributes: ['id', 'firstName', 'lastName', 'email', 'adress', 'department', 'profilePicture', 'bio'] })
 
                .then(user => {
                     console.log("rr")
@@ -197,7 +199,7 @@ exports.getUser =
 
 exports.getMe =
      (req, res, next) => {
-          db.User.findOne({ where: { id: req.auth.userId }, attributes: ['firstName', 'lastName', 'email', 'adress', 'department', 'profilePicture'] })
+          db.User.findOne({ where: { id: req.auth.userId }, attributes: ['id', 'firstName', 'lastName', 'email', 'adress', 'department', 'profilePicture', 'bio'] })
 
                .then(user => {
                     console.log('tt')
