@@ -1,10 +1,11 @@
 <template>
-  <div>
-    <v-parallax
-      src="../assets/office.jpg"
-      alt="image d'un bureau"
-      class="home-picture"
-    >
+  <div class="main">
+    <!-- <div class="home-picture">
+      <v-img
+      src="../assets/logos/icon-transparent.png"
+      alt="logo groupomania"
+    />
+    </div> -->
       <v-card class="mx-auto mt-9 card" width="500px">
         <v-card-title>Bienvenue sur notre Workplace</v-card-title>
         <v-card-title v-if="this.mode == 'login'"
@@ -112,7 +113,6 @@
             </v-btn>
         </v-card-actions>
       </v-card>
-    </v-parallax>
   </div>
 </template>
 
@@ -168,6 +168,13 @@ export default {
       return verify
     },
     ...mapState(['status'])
+  },
+  mounted: () => {
+    const token = localStorage.getItem('token')
+    console.log(token)
+    // if (token) {
+    //   this.$store.dispatch('getUser')
+    // }
   },
   methods: {
     switchToLogin () {
@@ -242,12 +249,32 @@ export default {
 </script>
 
 <style scoped>
+.main {
+  background-image: url('../assets/office.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+}
+.home-picture {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.home-picture .v-img {
+  width: 250px;
+  object-fit: cover;
+  object-position: center;
+}
 .card {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   color: #091f43;
+  box-shadow: #3e3e3ed8 0 0 5px 2px;
 }
 p {
   padding: 16px;

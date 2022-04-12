@@ -2,20 +2,21 @@
 <div>
   <div
   class="post"
-  v-for="post in this.$store.state.allPosts"
+  v-for="post of this.$store.state.allPosts"
   :key="post.id">
-    <div class="post-main">
+    <div class="post-main" v-if="post.content">
       <div class="post-header">
         <div class="post-header-section">
           <v-avatar  class="post-avatar" size="45" >
-            <v-img src="../assets/user.jpg"></v-img>
+            <v-img v-if="post.User.profilePicture === ''" src="../assets/user.jpg"></v-img>
+            <v-img v-else :src="post.User.profilePicture" cover class="post-avatar-img"></v-img>
           </v-avatar>
           <div>
-            <h3>{{this.$store.state.userInfos.firstName + " " + this.$store.state.userInfos.lastName}}</h3>
+            <h3>{{post.User.firstName + ' ' + post.User.lastName}}</h3>
             <p>{{post.createdAt}}</p>
           </div>
         </div>
-        <div class="post-header-section">
+        <div class="post-header-section" v-if="post.UserId === this.$store.state.user.userId">
           <v-btn
             class="post-header-btn mod"
             depressed
@@ -54,22 +55,34 @@
           plain
           raised
           small
+          @click="showAddComment"
         >Ajouter un Commentaire</v-btn>
-        <p>1 commentaire</p>
+        <p>{{post.Comments.length}} commentaire</p>
       </div>
-      <!-- <div class="post-comments">
+      <div class="post-comments" v-if="addComment == true">
+        <v-text-field
+          class="post-content"
+          v-model="comment.content"
+          label="">
+        </v-text-field>
+        <v-btn class="post-btn mod">Poster le Commentaire</v-btn>
+      </div>
+      <div class="post-comments"
+        v-for="comment of post.Comments"
+        :key="comment.id">
         <div class="post-comment">
           <v-avatar  class="post-comment-avatar" size="40" >
-            <v-img src="../assets/user.jpg"></v-img>
+            <v-img v-if="comment.User.profilePicture === ''" src="../assets/user.jpg"></v-img>
+            <v-img v-else :src="comment.User.profilePicture" cover class="post-avatar-img"></v-img>
           </v-avatar>
           <div class="post-comment-main">
             <div class="post-comment-content">
-              <h4>utilisateur commentaire</h4>
-              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem dignissimos laboriosam necessitatibus? Quaerat voluptate fugit iste harum nostrum perferendis impedit illum magni, veritatis earum. Amet in fugiat aut magnam ab, assumenda ducimus dolore est maxime explicabo illum, inventore quis error repellat tempora sed sint laboriosam? Vel, explicabo repellat corporis libero officiis iste rerum sequi enim at nobis aliquam molestias? Ipsum cupiditate possimus minima quas iure asperiores error, laboriosam nemo, et enim totam vitae soluta mollitia exercitationem molestiae perferendis quae iusto!</p>
+              <h4>{{comment.User.firstName + ' ' + comment.User.lastName}}</h4>
+              <p>{{comment.content}}</p>
             </div>
           </div>
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
 </div>
@@ -77,7 +90,20 @@
 
 <script>
 export default {
-  name: 'PostElement'
+  name: 'PostElement',
+  data () {
+    return {
+      addComment: false,
+      comment: {
+        content: ''
+      }
+    }
+  },
+  methods: {
+    showAddComment () {
+      this.addComment = !this.addComment
+    }
+  }
 }
 </script>
 

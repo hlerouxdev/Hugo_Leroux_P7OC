@@ -20,14 +20,14 @@
       <v-spacer></v-spacer>
       <v-btn text @click="redirectProfile" v-if="this.$store.state.user.userId >= 1">
         <v-avatar class="user-pp">
-          <v-img v-if="this.$store.state.userInfos.profilePicture != ''" :src="this.$store.state.userInfos.profilePicture"></v-img>
+          <v-img v-if="this.$store.state.userInfos.profilePicture != ''" :src="this.$store.state.userInfos.profilePicture" cover class="user-pp-img"></v-img>
           <v-img v-else  src="../assets/user.jpg"></v-img>
         </v-avatar>
         Mon Profil
       </v-btn>
       <div v-else></div>
+      <v-btn text v-if="this.$store.state.user.userId >= 1" prepend-icon="mdi-message-text">Messages</v-btn>
       <v-btn text  @click="logout" v-if="this.$store.state.user.userId >= 1">Déconnexion</v-btn>
-      <v-btn text @click="redirectContact">Contact</v-btn>
     </v-app-bar>
   </v-app>
 </template>
@@ -48,9 +48,6 @@ export default {
     },
     redirectProfile () {
       this.$router.push('/my-profile')
-    },
-    redirectContact () {
-      this.$router.push('/contact')
     },
     logout () {
       console.log('bye bye')
@@ -95,6 +92,10 @@ export default {
   }
   :deep(.user-pp){
         margin-right: 10px;
+  }
+  .user-pp-img {
+    min-height: 40px;
+    min-width: 40px;
   }
   .account-dropdown {
       width: 150px;

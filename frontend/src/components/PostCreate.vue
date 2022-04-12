@@ -5,7 +5,7 @@
               <div class="post-header-section">
                 <v-avatar rounded size="45" class="post-avatar">
                   <v-img v-if="this.$store.state.userInfos.profilePicture != '' ||
-                    this.$store.state.userInfos.profilePicture == null" :src="this.$store.state.userInfos.profilePicture"></v-img>
+                    this.$store.state.userInfos.profilePicture == null" :src="this.$store.state.userInfos.profilePicture" cover class="post-avatar-img"></v-img>
                   <v-img v-else  src="../assets/user.jpg"></v-img>
                 </v-avatar>
                 <h3>{{this.$store.state.userInfos.firstName + " " + this.$store.state.userInfos.lastName}}</h3>
@@ -18,12 +18,10 @@
             >
             </v-text-field>
             <div class="post-create-buttons">
-              <v-file-input
-                accept="image/png, image/jpeg, image/jpg"
+              <v-btn
                 prepend-icon="mdi-camera"
-                label="Choisissez un image"
                 class="mod create-btn picture-btn"
-              ></v-file-input>
+              >Ajoutez une image</v-btn>
               <v-btn
                 small
                 class="mod create-btn"

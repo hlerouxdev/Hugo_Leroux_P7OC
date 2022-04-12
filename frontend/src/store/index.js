@@ -1,9 +1,17 @@
 import { createStore } from 'vuex'
 import 'es6-promise/auto'
+import moment from 'moment'
 // import userActions from './actions/user.js'
 // import { reject, resolve } from 'core-js/fn/promise'
 const axios = require('axios')
 const instance = axios.create({ baseURL: 'http://localhost:3000/api/' })
+const config = {
+  header: {
+    'Content-Type': 'multipart/form-data'
+  }
+}
+
+moment.locale('fr')
 
 export default createStore({
   state: {
@@ -90,10 +98,11 @@ export default createStore({
     },
     changeProfilePicture: ({ commit }, data) => {
       const formData = new FormData()
-      formData.append('file', data.image)
-      instance.put(`/auth/user/${data.user}/profile-picture`, formData)
+      formData.append('image', data.image)
+      console.log(data.image, formData)
+      instance.put(`/auth/user/${data.user}/profile-picture`, formData, config)
         .then(res => {
-          commit('setMessage', res.message)
+          return commit('setMessage', res.message)
         })
         .catch(error => {
           commit('setMessage', error.message)
@@ -140,32 +149,38 @@ export default createStore({
         })
     },
     createPost: (data) => {
-      instance.post('/post/', data)
+      instance.post('/posts/', data)
     },
     getAllPosts: ({ commit }) => {
-      const posts = instance.get('/post/') // va chercher tous les posts dans le back
+      instance.get('/posts/') // va chercher tous les posts dans le back
         .then(res => {
+          const posts = res.data
           res.data.forEach(post => { // boucle dans le tableau des posts
-            instance.get(`/auth/user/${post.UserId}`)
-              .then(user => { // cherche le nom et la photo de profil de l'utilisateur pour l'ajouter au poste
-                post.userName = user.data.firstName + ' ' + user.data.lastName
-                if (user.data.profilePicture !== undefined) {
-                  post.userPicture = user.data.profilePicture
-                } else {
-                  post.userPicture = ''
-                }
-              })
-              .catch(error => {
-                console.log(error)
-              })
+            if (post.createdAt !== post.updatedAt) {
+              post.createdAt = moment(post.updatedAt).format('[posté le] Do MMMM YYYY [à] HH:mm')
+            } else {
+              post.createdAt = moment(post.createdAt).format('[posté le] Do MMMM YYYY [à] HH:mm')
+            }
           })
+          console.log(posts)
+          commit('setAllPosts', posts.reverse())
         })
         .catch(error => {
           console.log(error)
         })
-        .then(() => {
-          console.log(posts)
-          commit('setAllPosts', posts)
+    },
+    getMyPosts: ({ commit }, id) => {
+      instance.get(`/posts/user/${id}`)
+        .then(res => {
+          const posts = res.data
+          posts.forEach(post => {
+            if (post.createdAt !== post.updatedAt) {
+              post.createdAt = moment(post.updatedAt).format('[posté le] Do MMMM YYYY [à] HH:mm')
+            } else {
+              post.createdAt = moment(post.createdAt).format('[posté le] Do MMMM YYYY [à] HH:mm')
+            }
+          })
+          commit('setAllPosts', posts.reverse())
         })
         .catch(error => {
           console.log(error)

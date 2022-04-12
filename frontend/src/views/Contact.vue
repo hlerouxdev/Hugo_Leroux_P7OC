@@ -63,7 +63,7 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: white;
-  box-shadow: #ccccd8 0 0 20px 5px;
+  color: #091f43;
   width: 600px;
   height: 700px;
 }
@@ -78,7 +78,8 @@ export default {
   height: 350px;
 }
 .v-btn {
-  background-color: rgb(36, 155, 36);
+  background-color: #091f43;
+  color: white;
   margin-inline: 16px;
   margin-bottom: 16px;
 }

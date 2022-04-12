@@ -17,7 +17,11 @@ module.exports = (sequelize, DataTypes) => {
     senderId: DataTypes.INTEGER,
     receiverId: DataTypes.INTEGER,
     content: DataTypes.STRING,
-    filePath: DataTypes.STRING
+    filePath: DataTypes.STRING,
+    read: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    }
   }, {
     sequelize,
     modelName: 'Message',

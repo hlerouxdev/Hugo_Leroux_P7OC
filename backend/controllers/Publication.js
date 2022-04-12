@@ -71,16 +71,46 @@ exports.deletePost =
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      };
 
+//------------------------------------------------------ Controlleurs Get ------------------------------------------------------
+
+const includePostUser = { include:[
+     {//recuperation du model user inclu avec des atttributs specifier (ex:evite de donné le Mdp)
+          model: db.User,
+          attributes:[
+               "id",
+               "lastName",
+               "firstName",
+               "profilePicture"
+          ]
+     },
+     {
+          model: db.Comment,
+          include:[
+               {
+                    model: db.User,
+                    attributes:[
+                         "id",
+                         "lastName",
+                         "firstName",
+                         "profilePicture"
+                    ]
+               }
+          ]
+          
+     }
+     ]    
+}
+
 exports.getAllPost =
      (req, res, next) => {
-          db.Publication.findAll()
+          db.Publication.findAll(includePostUser)
                .then(publications => res.status(200).json(publications))
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      };
 
 exports.getOnePost =
      (req, res, next) => {
-          db.Publication.findOne({ where: { id: req.params.id } })
+          db.Publication.findOne({ where: { id: req.params.id }, ...includePostUser })
                .then(pub => {
                     if (!pub) {
                          return res.status(404).json({ message: 'Ce post n\'existe pas' });
@@ -93,17 +123,19 @@ exports.getOnePost =
 
 exports.getUserPosts =
      (req, res, next) => {
-          db.Publication.findAll({ where: {UserId: req.params.id} })
+          db.Publication.findAll({ where: {UserId: req.params.id}, ...includePostUser })
           .then(publications => res.status(200).json(publications))
           .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
      }
 
 exports.getMyPosts =
-(req, res, next) => {
-     db.Publication.findAll({ where: {UserId: req.auth.userId} })
-     .then(publications => res.status(200).json(publications))
-     .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
-}
+     (req, res, next) => {
+          db.Publication.findAll({ where: {UserId: req.auth.userId}, ...includePostUser })
+          .then(publications => res.status(200).json(publications))
+          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+     }
+
+//------------------------------------------------------ Controlleur Likes ------------------------------------------------------
 
 exports.likePost =
      (req, res, next) => {

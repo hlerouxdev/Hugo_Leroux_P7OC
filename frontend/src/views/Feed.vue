@@ -2,7 +2,7 @@
   <div class="main">
     <div class="main-view">
       <CreatePost v-if="this.$store.state.user.userId >= 1"/>
-      <Post />
+      <Post/>
     </div>
   </div>
 </template>
@@ -19,9 +19,6 @@ export default ({
   mounted: function () {
     this.$store.dispatch('getUser')
     this.$store.dispatch('getAllPosts')
-      .then(() => {
-        console.log(this.$store.state.allPosts)
-      })
   }
 })
 </script>

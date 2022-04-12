@@ -8,7 +8,11 @@
           </v-btn>
         <v-container>
           <v-avatar rounded size="250" class="profile-infos_left_avatar form-avatar">
-            <v-img v-if="this.$store.state.userInfos.profilePicture != ''" :src="this.$store.state.userInfos.profilePicture"></v-img>
+            <v-img v-if="this.$store.state.userInfos.profilePicture != ''"
+              :src="this.$store.state.userInfos.profilePicture"
+              :href="this.$store.state.userInfos.profilePicture"
+              target="_blank"
+              ></v-img>
             <v-img v-else  src="../assets/user.jpg"></v-img>
           </v-avatar>
           <v-file-input
@@ -16,11 +20,11 @@
           v-model="profilePicture"
           placeholder="Pick an avatar"
           prepend-icon="mdi-camera"
-          label="Sélectionner une nouvelle photo de profile"
+          label="Sélectionner une nouvelle photo de profil"
           class="form-profile-picture"
         ></v-file-input>
         <v-btn @click="changeProfilePicture" class="form-button mod">
-          Changer la photo de profile
+          Changer la photo de profil
           </v-btn>
         </v-container>
       </v-form>
@@ -104,7 +108,10 @@
     <div class="profile-infos">
       <div class="profile-infos_left">
         <v-avatar rounded size="150" class="profile-infos_left_avatar">
-          <v-img v-if="this.$store.state.userInfos.profilePicture != ''" :src="this.$store.state.userInfos.profilePicture"></v-img>
+          <v-img v-if="this.$store.state.userInfos.profilePicture != ''"
+            :src="this.$store.state.userInfos.profilePicture"
+            cover
+            class="profile-infos_left_avatar_image"></v-img>
           <v-img v-else  src="../assets/user.jpg"></v-img>
         </v-avatar>
         <h1>{{this.$store.state.userInfos.firstName + " " + this.$store.state.userInfos.lastName}}</h1>
@@ -169,18 +176,19 @@ export default ({
   },
   mounted: function () {
     this.$store.dispatch('getUser')
+    this.$store.dispatch('getMyPosts', this.$store.state.user.userId)
   },
   methods: {
     changeProfilePicture () {
-      console.log(this.profilePicture[0])
-      const formData = new FormData()
-      formData.append('file', this.profilePicture[0])
-      console.log(formData)
-      // this.$store
-      //   .dispatch('changeProfilePicture', {
-      //     user: this.$store.state.user.userId,
-      //     image: this.profilePicture[0]
-      //   })
+      this.$store
+        .dispatch('changeProfilePicture', {
+          user: this.$store.state.user.userId,
+          image: this.profilePicture[0]
+        })
+        .then(() => {
+          this.change = false
+          this.mode = ''
+        })
     },
     changeProfile () {
       this.$store

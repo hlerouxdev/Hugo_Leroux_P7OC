@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/auth", userRoutes);
-app.use("/api/post", publicationRoutes, commentRoutes);
+app.use("/api/posts", publicationRoutes, commentRoutes);
 app.use("/api/messages/", messageRoutes);
 
 module.exports = app;
