@@ -4,7 +4,7 @@
   class="post"
   v-for="post of this.$store.state.allPosts"
   :key="post.id">
-    <div class="post-main" v-if="post.content">
+    <div class="post-main" v-if="post.content" :id="`post_${post.id}`">
       <div class="post-header">
         <div class="post-header-section">
           <v-avatar  class="post-avatar" size="45" >
@@ -26,6 +26,7 @@
           <v-btn
             class="post-header-btn del"
             depressed
+            @click="deletePost(post.id)"
           >
             Supprimer
           </v-btn>
@@ -55,11 +56,11 @@
           plain
           raised
           small
-          @click="showAddComment"
+          @click="showAddComment(post.id)"
         >Ajouter un Commentaire</v-btn>
         <p>{{post.Comments.length}} commentaire</p>
       </div>
-      <div class="post-comments" v-if="addComment == true">
+      <div class="post-comments" v-if="addCommentId != null && addCommentId == post.id">
         <v-text-field
           class="post-content"
           v-model="comment.content"
@@ -70,7 +71,7 @@
       <div class="post-comments"
         v-for="comment of post.Comments"
         :key="comment.id">
-        <div class="post-comment">
+        <div class="post-comment" :id="`comment_${comment.id}`">
           <v-avatar  class="post-comment-avatar" size="40" >
             <v-img v-if="comment.User.profilePicture === ''" src="../assets/user.jpg"></v-img>
             <v-img v-else :src="comment.User.profilePicture" cover class="post-avatar-img"></v-img>
@@ -93,15 +94,23 @@ export default {
   name: 'PostElement',
   data () {
     return {
-      addComment: false,
+      addCommentId: null,
       comment: {
         content: ''
       }
     }
   },
   methods: {
-    showAddComment () {
-      this.addComment = !this.addComment
+    showAddComment (postId) {
+      if (this.addCommentId != null) {
+        this.addCommentId = null
+      } else {
+        this.addCommentId = postId
+        console.log(postId)
+      }
+    },
+    deletePost (postId) {
+      this.$store.dispatch('deletePost', postId)
     }
   }
 }

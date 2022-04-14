@@ -131,7 +131,7 @@
       </div>
       <div class="profile-infos_right">
         <PostCreate />
-        <Post></Post>
+        <Post />
       </div>
     </div>
   </div>

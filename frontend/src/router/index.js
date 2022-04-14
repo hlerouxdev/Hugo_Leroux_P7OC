@@ -61,6 +61,18 @@ const routes = [
   }
 ]
 
+//   const token = localStorage.getItem('token')
+//   if (token && store.state.user.userId < 1) {
+//     console.log('test')
+//     store.dispatch('checkToken', token)
+//       .then(() => {
+//         next({ name: 'feed' })
+//       })
+//       .catch(error => {
+//         console.log(error)
+//       })
+//   }
+
 const router = createRouter({
   history: createWebHashHistory(),
   mode: 'history',

@@ -29,7 +29,17 @@ export default createStore({
       department: '',
       profilePicture: ''
     },
-    message: '',
+    userToDisplay: {
+      firstName: '',
+      lastName: '',
+      bio: '',
+      email: '',
+      adress: '',
+      department: '',
+      profilePicture: ''
+    },
+    successMessage: '',
+    errorMessage: '',
     allPosts: []
   },
   getters: {
@@ -46,8 +56,11 @@ export default createStore({
     getUserInfos: function (state, userInfos) {
       state.userInfos = userInfos
     },
-    setMessage: function (state, message) {
-      state.message = message
+    setSuccessMessage: function (state, message) {
+      state.successMessage = message
+    },
+    setErrorMessage: function (state, message) {
+      state.errorMessage = message
     },
     setUser: (state, user) => {
       state.user = user
@@ -81,7 +94,6 @@ export default createStore({
           })
           .catch(error => {
             commit('setStatus', 'error_login')
-            commit('setMessage', error.message)
             reject(error)
           })
       })
@@ -93,7 +105,21 @@ export default createStore({
         })
         .catch(error => {
           commit('setStatus', 'error_login')
-          commit('setMessage', error.message)
+          commit('setErrorMessage', error.message)
+        })
+    },
+    checkToken: ({ commit }, token) => {
+      instance.get('/auth/me', {
+        headers: {
+          Authorization: token
+        }
+      })
+        .then(res => {
+          commit('getUserInfos', res.data)
+        })
+        .catch(error => {
+          commit('setStatus', 'error_login')
+          commit('setErrorMessage', error.message)
         })
     },
     changeProfilePicture: ({ commit }, data) => {
@@ -102,29 +128,29 @@ export default createStore({
       console.log(data.image, formData)
       instance.put(`/auth/user/${data.user}/profile-picture`, formData, config)
         .then(res => {
-          return commit('setMessage', res.message)
+          return commit('setSuccessMessage', res.data.message)
         })
         .catch(error => {
-          commit('setMessage', error.message)
+          commit('setErrorMessage', error.message)
         })
     },
     changeUserInfos: ({ commit }, data) => {
       instance.put(`/auth/user/${data.user}`, data.form)
         .then(res => {
           commit('getUserInfos', data.form)
-          commit('setMessage', res.message)
+          commit('setSuccessMessage', res.data.message)
         })
         .catch(error => {
-          commit('setMessage', error.message)
+          commit('setErrorMessage', error.message)
         })
     },
     changeUserPassword: ({ commit }, data) => {
       instance.put(`/auth/user/${data.user}/password`, data.form)
         .then(res => {
-          commit('setMessage', res.message)
+          commit('setSuccessMessage', res.data.message)
         })
         .catch(error => {
-          commit('setMessage', error.message)
+          commit('setErrorMessage', error.message)
         })
     },
     deleteUser: ({ commit }, userId) => {
@@ -145,11 +171,19 @@ export default createStore({
           localStorage.clear()
         })
         .catch(error => {
-          commit('setMessage', error.message)
+          commit('setErrorMessage', error.message)
         })
     },
-    createPost: (data) => {
+    createPost: ({ commit }, data) => {
       instance.post('/posts/', data)
+        .then(res => {
+          console.log(res.data.message)
+          commit('setSuccessMessage', res.data.message)
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setErrorMessage', error.message)
+        })
     },
     getAllPosts: ({ commit }) => {
       instance.get('/posts/') // va chercher tous les posts dans le back
@@ -184,6 +218,15 @@ export default createStore({
         })
         .catch(error => {
           console.log(error)
+        })
+    },
+    deletePost: ({ commit }, id) => {
+      instance.delete(`/posts/${id}`)
+        .then(res => {
+          commit('setSuccessMessage', res.data.message)
+        })
+        .catch(error => {
+          commit('setErrorMessage', error.message)
         })
     }
   },
