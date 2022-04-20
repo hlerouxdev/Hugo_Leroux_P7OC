@@ -9,74 +9,49 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home,
-    meta: {
-      auth: false
-    },
-    beforeEnter: (to, from, next) => {
-      if (store.state.user.userId >= 1) {
-        next({ name: 'feed' })
-      } else {
-        next()
-      }
-    }
+    component: Home
   },
   {
     path: '/feed',
     name: 'feed',
-    component: Feed,
-    meta: {
-      auth: true
-    },
-    beforeEnter: (to, from, next) => {
-      if (store.state.user.userId < 1) {
-        next({ name: 'home' })
-      } else {
-        next()
-      }
-    }
+    component: Feed
   },
   {
     path: '/my-profile',
     name: 'my-profile',
-    component: Profile,
-    meta: {
-      auth: true
-    },
-    beforeEnter: (to, from, next) => {
-      if (store.state.user.userId < 1) {
-        next({ name: 'home' })
-      } else {
-        next()
-      }
-    }
+    component: Profile
+  },
+  {
+    path: '/user/:id',
+    name: 'userProfile'
   },
   {
     path: '/contact',
     name: 'contact',
-    component: Contact,
-    meta: {
-      auth: true
-    }
+    component: Contact
   }
 ]
-
-//   const token = localStorage.getItem('token')
-//   if (token && store.state.user.userId < 1) {
-//     console.log('test')
-//     store.dispatch('checkToken', token)
-//       .then(() => {
-//         next({ name: 'feed' })
-//       })
-//       .catch(error => {
-//         console.log(error)
-//       })
-//   }
 
 const router = createRouter({
   history: createWebHashHistory(),
   mode: 'history',
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (store.state.user.userId >= 1) {
+    if (to.name === 'home') {
+      next({ name: 'feed' })
+    } else {
+      next()
+    }
+  } else {
+    if (to.name === 'feed' || to.name === 'my-profile') {
+      next({ name: 'home' })
+    } else {
+      next()
+    }
+  }
 })
 
 export default router

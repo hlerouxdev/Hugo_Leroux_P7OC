@@ -50,6 +50,13 @@ export default {
     createPost () {
       this.$store
         .dispatch('createPost', this.form)
+        .then(() => {
+          this.$store.dispatch('getAllPosts')
+          this.form = {
+            content: '',
+            filePath: ''
+          }
+        })
     }
   }
 }

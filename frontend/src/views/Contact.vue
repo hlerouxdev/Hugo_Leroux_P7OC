@@ -30,6 +30,16 @@
 
 export default {
   name: 'ContactPage',
+  mounted () {
+    if (this.$store.state.user.userId >= 1) {
+      this.formData = {
+        firstname: this.$store.state.userInfos.firstName,
+        lastName: this.$store.state.userInfos.lastname,
+        email: this.$store.state.userInfos.email,
+        text: ''
+      }
+    }
+  },
   data: () => ({
     valid: false,
     formData: {

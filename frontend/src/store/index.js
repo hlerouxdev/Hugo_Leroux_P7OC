@@ -1,8 +1,7 @@
 import { createStore } from 'vuex'
 import 'es6-promise/auto'
 import moment from 'moment'
-// import userActions from './actions/user.js'
-// import { reject, resolve } from 'core-js/fn/promise'
+import router from '@/router'
 const axios = require('axios')
 const instance = axios.create({ baseURL: 'http://localhost:3000/api/' })
 const config = {
@@ -18,7 +17,8 @@ export default createStore({
     status: '',
     user: {
       userId: -1,
-      token: ''
+      isAdmin: false,
+      token: localStorage.getItem('token') ? localStorage.getItem('token').split(' ')[1] : ''
     },
     userInfos: {
       firstName: '',
@@ -52,6 +52,7 @@ export default createStore({
       instance.defaults.headers.common.Authorization = `Bearer ${user.token}`
       localStorage.setItem('token', `Bearer ${user.token}`)
       state.user = user
+      router.push({ path: '/feed' })
     },
     getUserInfos: function (state, userInfos) {
       state.userInfos = userInfos
@@ -109,26 +110,31 @@ export default createStore({
         })
     },
     checkToken: ({ commit }, token) => {
+      console.log('begin action')
       instance.get('/auth/me', {
         headers: {
           Authorization: token
         }
       })
         .then(res => {
-          commit('getUserInfos', res.data)
+          const tokenString = token.replace('Bearer ', '')
+          commit('logUser', {
+            userId: res.data.id,
+            token: tokenString,
+            isAdmin: res.data.isAdmin
+          })
         })
         .catch(error => {
-          commit('setStatus', 'error_login')
           commit('setErrorMessage', error.message)
         })
     },
     changeProfilePicture: ({ commit }, data) => {
       const formData = new FormData()
       formData.append('image', data.image)
-      console.log(data.image, formData)
       instance.put(`/auth/user/${data.user}/profile-picture`, formData, config)
         .then(res => {
-          return commit('setSuccessMessage', res.data.message)
+          commit('getUserInfos', data.form)
+          commit('setSuccessMessage', res.data.message)
         })
         .catch(error => {
           commit('setErrorMessage', error.message)
@@ -177,11 +183,9 @@ export default createStore({
     createPost: ({ commit }, data) => {
       instance.post('/posts/', data)
         .then(res => {
-          console.log(res.data.message)
           commit('setSuccessMessage', res.data.message)
         })
         .catch(error => {
-          console.log(error)
           commit('setErrorMessage', error.message)
         })
     },
@@ -196,11 +200,10 @@ export default createStore({
               post.createdAt = moment(post.createdAt).format('[posté le] Do MMMM YYYY [à] HH:mm')
             }
           })
-          console.log(posts)
           commit('setAllPosts', posts.reverse())
         })
         .catch(error => {
-          console.log(error)
+          commit('setErrorMessage', error.message)
         })
     },
     getMyPosts: ({ commit }, id) => {
@@ -217,7 +220,7 @@ export default createStore({
           commit('setAllPosts', posts.reverse())
         })
         .catch(error => {
-          console.log(error)
+          commit('setErrorMessage', error.message)
         })
     },
     deletePost: ({ commit }, id) => {

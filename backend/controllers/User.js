@@ -58,6 +58,7 @@ exports.login =
                                    } else {
                                         res.status(200).json({
                                              userId: user.id,
+                                             isAdmin: user.isAdmin,
                                              token: jwt.sign( //créé le token
                                                   { userId: user.id, isAdmin: user.isAdmin },
                                                   process.env.secretToken,
@@ -199,11 +200,9 @@ exports.getUser =
 
 exports.getMe =
      (req, res, next) => {
-          db.User.findOne({ where: { id: req.auth.userId }, attributes: ['id', 'firstName', 'lastName', 'email', 'adress', 'department', 'profilePicture', 'bio'] })
+          db.User.findOne({ where: { id: req.auth.userId }, attributes: ['id', 'isAdmin', 'firstName', 'lastName', 'email', 'adress', 'department', 'profilePicture', 'bio'] })
 
                .then(user => {
-                    console.log('tt')
-                    console.log(req.auth)
                     res.status(200).json(user)
                })
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));

@@ -53,7 +53,8 @@ export default {
       console.log('bye bye')
       this.$store.state.user = {
         userId: -1,
-        token: ''
+        token: '',
+        isAdmin: false
       }
       this.$store.state.userInfos = {
         firstName: '',

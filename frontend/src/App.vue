@@ -17,11 +17,7 @@ export default {
   name: 'App',
   components: {
     Nav, Footer
-  },
-
-  data: () => ({
-    //
-  })
+  }
 }
 </script>
 

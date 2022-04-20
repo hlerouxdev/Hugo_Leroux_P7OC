@@ -119,6 +119,8 @@
 <script>
 import validator from 'validator'
 import { mapState } from 'vuex'
+import store from '../store/index'
+
 export default {
   name: 'HomePage',
   data () {
@@ -135,6 +137,12 @@ export default {
       },
       errorMessage: '',
       confirmationMessage: ''
+    }
+  },
+  mounted: () => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      store.dispatch('checkToken', token)
     }
   },
   computed: {
@@ -168,13 +176,6 @@ export default {
       return verify
     },
     ...mapState(['status'])
-  },
-  mounted: () => {
-    const token = localStorage.getItem('token')
-    console.log(token)
-    // if (token) {
-    //   this.$store.dispatch('getUser')
-    // }
   },
   methods: {
     switchToLogin () {
@@ -215,7 +216,6 @@ export default {
       })
     },
     submitSignup () {
-      // const form = this.formData
       if (this.checkFields()) {
         this.$store
           .dispatch('submitSignup', { ...this.formData })
@@ -238,7 +238,6 @@ export default {
         })
         .then(() => {
           this.errorMessage = ''
-          this.$router.push('/feed')
         })
         .catch((error) => {
           this.errorMessage = `L'identifiant donné n'est pas valide ${error.message}`

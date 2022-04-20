@@ -24,6 +24,9 @@
   box-shadow: #3e3e3ed8 0 0 5px 2px;
   margin-right: 20px;
 }
+.post-avatar:hover, .post-comment-avatar:hover {
+  cursor: pointer;
+}
 .post-avatar-img {
   min-width: 45px;
   min-height: 45px;
@@ -75,4 +78,12 @@
 .post-comment-content {
   margin: 10px;
   text-align: justify;
+}
+.post-comment-add {
+  margin-top: 20px;
+  display: flex;
+  width: 100%;
+}
+.post-comment-add-text {
+  margin-left: 20px;
 }

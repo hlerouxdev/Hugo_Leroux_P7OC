@@ -1,8 +1,11 @@
 <template>
   <div class="main">
     <div class="main-view">
-      <CreatePost v-if="this.$store.state.user.userId >= 1"/>
-      <Post/>
+      <CreatePost v-if="mode !== 'search'"/>
+      <Post
+      v-for="post of this.$store.state.allPosts"
+      :key="post.id"
+      />
     </div>
   </div>
 </template>
@@ -16,6 +19,11 @@ export default ({
     CreatePost, Post
   },
   name: 'FeedPage',
+  data () {
+    return {
+      mode: ''
+    }
+  },
   mounted: function () {
     this.$store.dispatch('getUser')
     this.$store.dispatch('getAllPosts')
