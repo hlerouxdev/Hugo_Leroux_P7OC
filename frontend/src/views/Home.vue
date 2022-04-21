@@ -54,6 +54,7 @@
           v-model="formData.password"
           :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
           :type="show ? 'text' : 'password'"
+          @keyup.enter="() => {if (mode === 'login') {submitLogin()}}"
           @click:append="show = !show"
         />
         <v-text-field
@@ -95,6 +96,7 @@
             plain
             elevation="2"
             @click="submitLogin"
+            @keyup.enter="submitLogin"
           >
             <span v-if="status == 'loading'">Connexion en cours ...</span>
             <span v-else>Connexion</span>

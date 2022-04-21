@@ -231,6 +231,16 @@ export default createStore({
         .catch(error => {
           commit('setErrorMessage', error.message)
         })
+    },
+    commentPost: ({ commit }, { postId, content }) => {
+      console.log(postId)
+      instance.post(`/posts/${postId}`, { content })
+        .then(res => {
+          commit('setSuccessMessage', res.data.message)
+        })
+        .catch(error => {
+          commit('setErrorMessage', error.message)
+        })
     }
   },
   modules: {
