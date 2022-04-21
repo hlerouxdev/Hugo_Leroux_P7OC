@@ -3,7 +3,7 @@
 # About the project
 
 ### The backend was made with **Nodejs/express** using **Mysql** as a database and **sequelize** for the ORM.
-### The frontend isstill a work in progress and uses Vue3
+### The frontend is still a work in progress and uses Vue3 and Vuetify
 
 # Instructions
 
