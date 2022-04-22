@@ -180,10 +180,15 @@ export default createStore({
           commit('setErrorMessage', error.message)
         })
     },
-    createPost: ({ commit }, data) => {
-      instance.post('/posts/', data)
+    createPost: ({ commit }, { content, image }) => {
+      const formData = new FormData()
+      if (image) {
+        formData.append('image', image)
+      }
+      formData.append('content', content)
+      instance.post('/posts/', formData, config)
         .then(res => {
-          commit('setSuccessMessage', res.data.message)
+          commit('setSuccessMessage', res.data.message, config)
         })
         .catch(error => {
           commit('setErrorMessage', error.message)
@@ -218,6 +223,20 @@ export default createStore({
             }
           })
           commit('setAllPosts', posts.reverse())
+        })
+        .catch(error => {
+          commit('setErrorMessage', error.message)
+        })
+    },
+    modifyPost: ({ commit }, { postId, content, image }) => {
+      const formData = new FormData()
+      if (image) {
+        formData.append('image', image)
+      }
+      formData.append('content', content)
+      instance.put('/posts/' + postId, formData, config)
+        .then(res => {
+          commit('setSuccessMessage', res.data.message)
         })
         .catch(error => {
           commit('setErrorMessage', error.message)
