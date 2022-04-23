@@ -9,14 +9,14 @@
       ></v-img>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
-      <v-text-field
+      <!-- <v-text-field
       v-if="this.$store.state.user.userId >= 1"
         hide-details
         prepend-icon="mdi-magnify"
         single-line
         class="search-field"
       ></v-text-field>
-      <div class="search-field" v-else></div>
+      <div class="search-field" v-else></div> -->
       <v-spacer></v-spacer>
       <v-btn text @click="redirectProfile" v-if="this.$store.state.user.userId >= 1">
         <v-avatar class="user-pp">

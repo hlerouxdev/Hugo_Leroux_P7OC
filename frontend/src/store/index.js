@@ -59,6 +59,7 @@ export default createStore({
     },
     setSuccessMessage: function (state, message) {
       state.successMessage = message
+      setTimeout(() => { state.successMessage = '' }, 3000)
     },
     setErrorMessage: function (state, message) {
       state.errorMessage = message
@@ -72,6 +73,16 @@ export default createStore({
   },
   actions: {
     // ...userActions
+    refresh: ({ state, dispatch }) => {
+      console.log(router.currentRoute)
+      const route = router.currentRoute._value.name
+      if (route === 'my-profile') {
+        dispatch('getUserPosts', state.user.userId)
+      }
+      if (route === 'feed') {
+        dispatch('getAllPosts')
+      }
+    },
     submitSignup: ({ commit }, newUser) => {
       return new Promise((resolve, reject) => {
         instance.post('/auth/signup', newUser)
@@ -110,7 +121,6 @@ export default createStore({
         })
     },
     checkToken: ({ commit }, token) => {
-      console.log('begin action')
       instance.get('/auth/me', {
         headers: {
           Authorization: token
@@ -128,30 +138,30 @@ export default createStore({
           commit('setErrorMessage', error.message)
         })
     },
-    changeProfilePicture: ({ commit }, data) => {
+    changeProfilePicture: ({ commit, dispatch }, { user, image }) => {
       const formData = new FormData()
-      formData.append('image', data.image)
-      instance.put(`/auth/user/${data.user}/profile-picture`, formData, config)
+      formData.append('image', image)
+      instance.put(`/auth/user/${user}/profile-picture`, formData, config)
         .then(res => {
-          commit('getUserInfos', data.form)
+          dispatch('getUser')
           commit('setSuccessMessage', res.data.message)
         })
         .catch(error => {
           commit('setErrorMessage', error.message)
         })
     },
-    changeUserInfos: ({ commit }, data) => {
-      instance.put(`/auth/user/${data.user}`, data.form)
+    changeUserInfos: ({ commit }, { user, form }) => {
+      instance.put(`/auth/user/${user}`, form)
         .then(res => {
-          commit('getUserInfos', data.form)
+          commit('getUserInfos', user)
           commit('setSuccessMessage', res.data.message)
         })
         .catch(error => {
           commit('setErrorMessage', error.message)
         })
     },
-    changeUserPassword: ({ commit }, data) => {
-      instance.put(`/auth/user/${data.user}/password`, data.form)
+    changeUserPassword: ({ commit }, { user, form }) => {
+      instance.put(`/auth/user/${user}/password`, form)
         .then(res => {
           commit('setSuccessMessage', res.data.message)
         })
@@ -180,7 +190,7 @@ export default createStore({
           commit('setErrorMessage', error.message)
         })
     },
-    createPost: ({ commit }, { content, image }) => {
+    createPost: ({ commit, dispatch }, { content, image }) => {
       const formData = new FormData()
       if (image) {
         formData.append('image', image)
@@ -189,16 +199,23 @@ export default createStore({
       instance.post('/posts/', formData, config)
         .then(res => {
           commit('setSuccessMessage', res.data.message, config)
+          dispatch('refresh')
         })
         .catch(error => {
           commit('setErrorMessage', error.message)
         })
     },
-    getAllPosts: ({ commit }) => {
-      instance.get('/posts/') // va chercher tous les posts dans le back
+    getAllPosts: ({ commit, state }) => {
+      return instance.get('/posts/') // va chercher tous les posts dans le back
         .then(res => {
           const posts = res.data
           res.data.forEach(post => { // boucle dans le tableau des posts
+            post.liked = false
+            post.Likes.forEach(like => {
+              if (like.UserId === state.user.userId) {
+                post.liked = true
+              }
+            })
             if (post.createdAt !== post.updatedAt) {
               post.createdAt = moment(post.updatedAt).format('[posté le] Do MMMM YYYY [à] HH:mm')
             } else {
@@ -211,11 +228,17 @@ export default createStore({
           commit('setErrorMessage', error.message)
         })
     },
-    getMyPosts: ({ commit }, id) => {
-      instance.get(`/posts/user/${id}`)
+    getUserPosts: ({ commit, state }, id) => {
+      return instance.get(`/posts/user/${id}`)
         .then(res => {
           const posts = res.data
           posts.forEach(post => {
+            post.liked = false
+            post.Likes.forEach(like => {
+              if (like.UserId === state.user.userId) {
+                post.liked = true
+              }
+            })
             if (post.createdAt !== post.updatedAt) {
               post.createdAt = moment(post.updatedAt).format('[posté le] Do MMMM YYYY [à] HH:mm')
             } else {
@@ -228,7 +251,7 @@ export default createStore({
           commit('setErrorMessage', error.message)
         })
     },
-    modifyPost: ({ commit }, { postId, content, image }) => {
+    modifyPost: ({ commit, dispatch }, { postId, content, image }) => {
       const formData = new FormData()
       if (image) {
         formData.append('image', image)
@@ -237,25 +260,28 @@ export default createStore({
       instance.put('/posts/' + postId, formData, config)
         .then(res => {
           commit('setSuccessMessage', res.data.message)
+          dispatch('refresh')
         })
         .catch(error => {
           commit('setErrorMessage', error.message)
         })
     },
-    deletePost: ({ commit }, id) => {
+    deletePost: ({ commit, dispatch }, id) => {
       instance.delete(`/posts/${id}`)
         .then(res => {
           commit('setSuccessMessage', res.data.message)
+          dispatch('refresh')
         })
         .catch(error => {
           commit('setErrorMessage', error.message)
         })
     },
-    commentPost: ({ commit }, { postId, content }) => {
+    commentPost: ({ commit, dispatch }, { postId, content }) => {
       console.log(postId)
-      instance.post(`/posts/${postId}`, { content })
+      instance.post(`/posts/${postId}/comment`, { content })
         .then(res => {
           commit('setSuccessMessage', res.data.message)
+          dispatch('refresh')
         })
         .catch(error => {
           commit('setErrorMessage', error.message)

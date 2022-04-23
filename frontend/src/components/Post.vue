@@ -1,7 +1,10 @@
 <template>
   <div>
-    <div
-    class="post">
+    <div class="post">
+      <div class="picture-modal" v-if="imageZoom === true" @click="imageZoom = false">
+        <div class="picture-modal-bg"></div>
+        <v-img class="picture-modal-img" v-if="postImage !== ''" :src="postImage"></v-img>
+      </div>
       <div class="post-main" :id="`post_${postId}`">
         <div class="post-header">
           <div class="post-header-section">
@@ -10,30 +13,60 @@
               <v-img v-else :src="userPicture" cover class="post-avatar-img"></v-img>
             </v-avatar>
             <div>
-              <h3>{{userName}}</h3>
-              <p>{{postDate}}</p>
+              <h3>{{ userName }}</h3>
+              <p>{{ postDate }}</p>
             </div>
           </div>
           <div class="post-header-section" v-if="userId === this.$store.state.user.userId || this.$store.state.user.isAdmin">
             <v-btn
               class="post-header-btn mod"
               depressed
+              @click="() => { if (mode === 'change') {
+                mode = ''
+                } else {
+                  postChanges = postContent
+                  mode = 'change' }
+                }"
             >
               Modifier
             </v-btn>
             <v-btn
               class="post-header-btn del"
               depressed
-              @click="deletePost(PostId)"
+              @click="mode = 'delete'"
             >
               Supprimer
             </v-btn>
           </div>
         </div>
-        <div class="post-content">
-          {{postContent}}
+        <div v-if="mode === 'delete'" class="post-delete">
+          <v-icon color="red">mdi-alert</v-icon>
+          <h3>
+            Êtes-vous sûr(e) de vouloir suprimer ce post?
+          </h3>
+          <v-btn class="post-header-btn mod" @click="deletePost(postId)">Oui</v-btn>
+          <v-btn class="post-header-btn del" @click="mode = ''">Non</v-btn>
         </div>
-        <a v-if="postImage != ''" class="post-img" :href="postImage" target="_blank">
+        <v-text-field
+        v-if="mode === 'change'"
+        class="post-content"
+        v-model="postChanges"
+        label="Modifiez le post et appuyez sur 'Entrée'"
+        v-on:keyup.enter="submitModifyPost(postId)"
+        >
+        </v-text-field>
+        <v-file-input
+          v-if="mode === 'change'"
+          class="mod btn-img"
+          label="Image"
+          v-model="picture"
+          prepend-icon="mdi-camera"
+          density="compact"
+        ></v-file-input>
+        <div v-else class="post-content">
+          {{ postContent }}
+        </div>
+        <a v-if="postImage != ''" class="post-img" @click="imageZoom = true">
           <img :src="postImage" alt="">
         </a>
         <div class="post-footer">
@@ -42,16 +75,25 @@
               icon
               small
               color="white"
-              class="post-likes-btn"
+              class="post-likes-notliked"
+              v-if="liked === false"
             >
               <v-icon>mdi-thumb-up</v-icon>
             </v-btn>
-            <p>{{likesNumber}}</p>
+            <v-btn
+              icon
+              small
+              color="white"
+              class="post-likes-liked"
+              v-else
+            >
+              <v-icon>mdi-thumb-up</v-icon>
+            </v-btn>
+            <p>{{ likesNumber }}</p>
           </div>
-          <p>{{comments.length}} commentaire</p>
+          <p v-if="comments.length > 1">{{ comments.length }} commentaires</p>
+          <p v-else>{{ comments.length }} commentaire</p>
         </div>
-        <!-- <div class="post-comments" v-if="addCommentId != null && addCommentId == postId">
-        </div> -->
         <div class="post-comment-add">
           <v-avatar  class="post-comment-avatar" size="40" >
             <v-img v-if="this.$store.state.userInfos.profilePicture === ''" src="../assets/user.jpg" cover class="post-avatar-img"></v-img>
@@ -64,60 +106,53 @@
             v-on:keyup.enter="submitComment(postId)">
           </v-text-field>
         </div>
-        <div class="post-comments"
+        <Comment class="post-comments"
           v-for="comment of comments"
-          :key="comment.id">
-          <div class="post-comment" :id="`comment_${comment.id}`">
-            <v-avatar  class="post-comment-avatar" size="40" @click="commentMenu = !commentMenu">
-              <v-img v-if="comment.User.profilePicture === ''" src="../assets/user.jpg"></v-img>
-              <v-img v-else :src="comment.User.profilePicture" cover class="post-avatar-img"></v-img>
-            </v-avatar>
-            <div class="comment-user-menu user-menu" v-if="commentMenu === true">
-              <h4>{{comment.User.firstName + ' ' + comment.User.lastName}}</h4>
-              <v-btn block class="mod user-menu-btn">Voir le profil</v-btn>
-              <v-btn block class="mod user-menu-btn">Envoyer un message</v-btn>
-            </div>
-            <div class="post-comment-main">
-              <div class="post-comment-content">
-                <h4>{{comment.User.firstName + ' ' + comment.User.lastName}}</h4>
-                <p>{{comment.content}}</p>
-              </div>
-            </div>
-          </div>
-        </div>
+          :key="comment.id"
+          :commentId="comment.id" :commentUserName="comment.User.firstName + ' ' + comment.User.lastName"
+          :commentUserPicture="comment.User.profilePicture" :commentContent="comment.content" :commentUserId="comment.User.id"
+          />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Comment from './Comment.vue'
+
 export default {
   name: 'PostElement',
   props: [
-    'postId', 'userPicture', 'userName', 'userId', 'postDate', 'postImage', 'postContent', 'likesNumber', 'comments'
+    'postId', 'userPicture', 'userName', 'userId', 'postDate', 'postImage', 'postContent', 'likesNumber', 'comments', 'liked'
   ],
+  components: {
+    Comment
+  },
   data () {
     return {
-      commentMenu: false,
-      offset: true,
-      addComment: '',
-      items: [
-        { title: 'Voir le profil' },
-        { title: 'Envoyer un message' }
-      ]
+      imageZoom: false,
+      mode: '',
+      postChanges: '',
+      picture: [],
+      addComment: ''
     }
   },
   methods: {
     deletePost (postId) {
       this.$store.dispatch('deletePost', postId)
-        .then(() => {
-          this.$store.dispatch('getAllPosts')
-        })
     },
     submitComment (postId) {
       this.$store.dispatch('commentPost', {
         postId: postId,
         content: this.addComment
+      })
+    },
+    submitModifyPost (postId) {
+      console.log(this.picture[0], this.postChanges)
+      this.$store.dispatch('modifyPost', {
+        postId: postId,
+        content: this.postChanges,
+        image: this.picture[0]
       })
     }
   }

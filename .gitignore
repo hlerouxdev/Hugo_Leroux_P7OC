@@ -1,6 +1,6 @@
 backend/node_modules
 frontend/node_modules
-backend/images
+backend/public/images
 .env
 imagebank
 testmodel

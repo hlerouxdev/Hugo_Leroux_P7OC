@@ -59,7 +59,7 @@
         />
         <v-text-field
           v-if="this.mode === 'signup'"
-          label="confirmer"
+          label="confirmez le mot de passe"
           v-model="formData.password2"
           @keyup.enter="submitSignup"
           :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"

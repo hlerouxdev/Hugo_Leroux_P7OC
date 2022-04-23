@@ -17,6 +17,17 @@
   padding-top: 20px;
   padding-bottom: 20px;
 }
+.post-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: #d1515a solid 2px;
+}
+.post-delete h3 {
+  margin-left: 10px;
+}
 .post-header {
   display: flex;
   justify-content: space-between;
@@ -49,6 +60,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 20px;
 }
 .post-img:hover {
   cursor: pointer;
@@ -67,6 +79,20 @@
 .post-likes {
   display: flex;
   align-items: center;
+  margin: 10px 0 10px 0;
+}
+.post-likes p{
+  margin-left: 10px;
+}
+.post-likes-notliked i{
+  color: grey;
+}
+.post-likes-liked i{
+  color: white;
+  background-color: #091f43;
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
 }
 .post-comment {
   display: flex;
@@ -76,10 +102,30 @@
   box-shadow: #3e3e3ed8 0 0 5px 2px;
 }
 .post-comment-main {
+  display: flex;
   max-width: calc(100% - 50px);
   margin-left: 10px;
   border-radius: 20px;
   background-color: #d7d7d7;
+}
+.comment-icon {
+  margin: 10px 10px 0 10px;
+  height: 30px;
+  width: 30px;
+}
+.comment-icon:hover {
+  cursor: pointer;
+  box-shadow: #3e3e3ed8 0 0 5px 2px;
+}
+.comment-icon-delete {
+  background-color: #d1515a;
+  color: white;
+  border-radius: 5px;
+}
+.comment-icon-edit {
+  background-color: #091f43;
+  color: white;
+  border-radius: 5px;
 }
 .post-comment-content {
   margin: 10px;
@@ -106,4 +152,25 @@
 }
 .user-menu-btn{
   border-radius: 0;
+}
+.picture-modal {
+  position: fixed;
+  z-index: 10;
+  height: 100vw;
+  width: 100vw;
+}
+.picture-modal:hover {
+  cursor: pointer;
+}
+.picture-modal-bg {
+  background-color: black;
+  width: 100%;
+  height: 100%;
+  opacity: 50%;
+  position: fixed;
+  z-index: 10;
+}
+.picture-modal-img {
+  z-index: 11;
+  max-width: 1300px;
 }

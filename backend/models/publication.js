@@ -30,8 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     UserId: DataTypes.INTEGER,
     content: DataTypes.STRING,
-    filePath: DataTypes.STRING,
-    likes: DataTypes.INTEGER
+    filePath: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Publication',

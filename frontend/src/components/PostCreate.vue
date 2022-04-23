@@ -18,11 +18,14 @@
       >
       </v-text-field>
       <div class="post-create-buttons">
-        <v-btn
-          type="file"
+        <v-file-input
+          accept="image/png, image/jpeg, image/jpg"
+          v-model="form.image"
+          class="mod btn-img"
+          label="Image"
           prepend-icon="mdi-camera"
-          class="mod create-btn picture-btn"
-        >Ajoutez une image</v-btn>
+          density="compact"
+        ></v-file-input>
         <v-btn
           small
           class="mod create-btn"
@@ -36,25 +39,28 @@
 </template>
 
 <script>
+
 export default {
   name: 'PostCreate',
   data () {
     return {
       form: {
         content: '',
-        filePath: ''
+        image: []
       }
     }
   },
   methods: {
     createPost () {
-      this.$store
-        .dispatch('createPost', this.form)
+      const data = {
+        content: this.form.content,
+        image: this.form.image[0]
+      }
+      this.$store.dispatch('createPost', data)
         .then(() => {
-          this.$store.dispatch('getAllPosts')
           this.form = {
             content: '',
-            filePath: ''
+            image: []
           }
         })
     }

@@ -9,7 +9,6 @@ exports.createPost =
           } else {
                let pub = new db.Publication({
                     UserId: req.auth.userId,
-                    likes: 0,
                     ...req.body
                });
                if (req.file) {
@@ -97,6 +96,9 @@ const includePostUser = { include:[
                }
           ]
           
+     },
+     {
+          model: db.Like
      }
      ]    
 }
@@ -155,11 +157,9 @@ exports.likePost =
                          .then(oldLike => {
                               if (oldLike) {
                                    if (like === 0) {
-                                        db.Publication.findOne({ where: { id: PublicationLiked } })
-                                             .then(pub => { pub.likes -= 1; oldLike.destroy(); pub.save() })
-                                             .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }))
-                                                  .then(() => { res.status(200).json({ message: 'like enlevé' }) })
-                                                  .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+                                        oldLike.destroy()
+                                             .then(() => { res.status(200).json({ message: 'like enlevé' }) })
+                                             .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
                                    } else {
                                         return res.status(401).json({ message: 'cette requête n\'est pas autorisé' });
                                    };
@@ -168,12 +168,10 @@ exports.likePost =
                                         const newLike = new db.Like({
                                              UserId: userId,
                                              PublicationId: PublicationLiked
-                                        });
-                                        db.Publication.findOne({ where: { id: PublicationLiked } })
-                                             .then(pub => { pub.likes += 1; newLike.save(); pub.save() })
-                                             .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }))
-                                                  .then(() => { res.status(200).json({ message: 'like ajouté' }) })
-                                                  .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+                                        })
+                                        newLike.save()
+                                             .then(() => { res.status(200).json({ message: 'like ajouté' }) })
+                                             .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
                                    } else {
                                         return res.status(401).json({ message: 'cette requête n\'est pas autorisé' });
                                    };

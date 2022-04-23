@@ -62,7 +62,7 @@ exports.login =
                                              token: jwt.sign( //créé le token
                                                   { userId: user.id, isAdmin: user.isAdmin },
                                                   process.env.secretToken,
-                                                  { expiresIn: '12h' }
+                                                  { expiresIn: '24h' }
                                              )
                                         });
                                    };
@@ -135,12 +135,15 @@ exports.changePassword =
                               if (!valid) {
                                    return res.status(403).json({ message: `Mot de passe incorrect !` })
                               } else {
-                                   user.password = req.body.password
-                                   user.save()
-                                   .then(() => {
-                                        res.status(202).json({ message: 'Mot de passe modifié' });
+                                   bcrypt.hash(req.body.password, 10)
+                                   .then( hash => {
+                                        user.password = hash
+                                        user.save()
+                                        .then(() => {
+                                             res.status(202).json({ message: 'Mot de passe modifié' });
+                                        })
+                                        .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
                                    })
-                                   .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
                               };
                          })
                          .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));

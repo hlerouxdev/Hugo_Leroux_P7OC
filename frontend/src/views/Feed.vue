@@ -6,8 +6,8 @@
       class="posts-container"
       v-for="post of this.$store.state.allPosts"
       :key="post.id"
-      :postId="post.id" :userName="post.User.firstName + ' ' + post.User.lastName" :userPicture="post.User.profilePicture" :userId="post.UserId"
-      :postDate="post.createdAt" :postImage="post.filePath" :postContent="post.content" :likesNumber="post.likes" :comments="post.Comments"
+      :postId="post.id" :userName="post.User.firstName + ' ' + post.User.lastName" :userPicture="post.User.profilePicture" :userId="post.UserId" :liked="post.liked"
+      :postDate="post.createdAt" :postImage="post.filePath" :postContent="post.content" :likesNumber="post.Likes.length" :comments="post.Comments"
       />
     </div>
   </div>
