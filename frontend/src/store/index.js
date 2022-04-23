@@ -2,6 +2,8 @@ import { createStore } from 'vuex'
 import 'es6-promise/auto'
 import moment from 'moment'
 import router from '@/router'
+// import { commentPost } from './actions/comments'
+
 const axios = require('axios')
 const instance = axios.create({ baseURL: 'http://localhost:3000/api/' })
 const config = {
@@ -278,7 +280,28 @@ export default createStore({
     },
     commentPost: ({ commit, dispatch }, { postId, content }) => {
       console.log(postId)
-      instance.post(`/posts/${postId}/comment`, { content })
+      instance.post(`/posts/comment/${postId}`, { content })
+        .then(res => {
+          commit('setSuccessMessage', res.data.message)
+          dispatch('refresh')
+        })
+        .catch(error => {
+          commit('setErrorMessage', error.message)
+        })
+    },
+    modifyComment: ({ commit, dispatch }, { commentId, content }) => {
+      console.log(commentId, content)
+      instance.put('/posts/comment/' + commentId, { content })
+        .then(res => {
+          commit('setSuccessMessage', res.data.message)
+          dispatch('refresh')
+        })
+        .catch(error => {
+          commit('setErrorMessage', error.message)
+        })
+    },
+    deleteComment: ({ commit, dispatch }, commentId) => {
+      instance.delete('/posts/comment/' + commentId)
         .then(res => {
           commit('setSuccessMessage', res.data.message)
           dispatch('refresh')

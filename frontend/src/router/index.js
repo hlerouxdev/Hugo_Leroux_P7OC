@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Feed from '../views/Feed.vue'
 import Profile from '../views/Profile.vue'
 import Contact from '../views/Contact.vue'
+import UserProfile from '../views/UserProfile.vue'
 
 const routes = [
   {
@@ -29,6 +30,11 @@ const routes = [
     path: '/contact',
     name: 'contact',
     component: Contact
+  },
+  {
+    path: '/user/:id',
+    name: 'userProfile',
+    component: UserProfile
   }
 ]
 
@@ -46,7 +52,7 @@ router.beforeEach((to, from, next) => {
       next()
     }
   } else {
-    if (to.name === 'feed' || to.name === 'my-profile') {
+    if (to.name === 'feed' || to.name === 'my-profile' || to.name === 'userProfile' || to.name === 'messages') {
       next({ name: 'home' })
     } else {
       next()

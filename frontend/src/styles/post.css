@@ -33,6 +33,10 @@
   justify-content: space-between;
   margin-bottom: 20px;
 }
+.post-header p {
+  font-size: 0.9rem;
+  color: #3e3e3e;
+}
 .post-header-section {
   display: flex;
   align-items: center;
@@ -107,6 +111,7 @@
   margin-left: 10px;
   border-radius: 20px;
   background-color: #d7d7d7;
+  padding: 5px;
 }
 .comment-icon {
   margin: 10px 10px 0 10px;
@@ -131,6 +136,10 @@
   margin: 10px;
   text-align: justify;
 }
+.comment-text-field {
+  min-width: 500px;
+  margin-bottom: -35px;
+}
 .post-comment-add {
   margin-top: 20px;
   display: flex;
@@ -154,10 +163,16 @@
   border-radius: 0;
 }
 .picture-modal {
-  position: fixed;
   z-index: 10;
-  height: 100vw;
+  height: 100vh;
   width: 100vw;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .picture-modal:hover {
   cursor: pointer;
@@ -168,9 +183,14 @@
   height: 100%;
   opacity: 50%;
   position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 10;
 }
 .picture-modal-img {
+  scale: 1;
   z-index: 11;
+  max-height: calc(100% - 200px);
   max-width: 1300px;
 }

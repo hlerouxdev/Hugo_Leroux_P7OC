@@ -29,35 +29,28 @@ exports.modifyComment =
           };
           db.Comment.findOne({ where: { id: req.params.id } })
                .then(comment => {
-                    if (comment.UserId !== req.auth.userId) {
-                         return res.status(400).json({ message: 'cous ne pouvez pas modifier ce comentaire' });
-                    } else {
+                    if (comment.UserId === req.auth.userId || req.auth.isAdmin === true) {
                          comment.content = req.body.content;
                          comment.save()
                               .then(res.status(201).json({ message: 'commentaire modifié' }))
                               .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+                    } else {
+                         return res.status(400).json({ message: 'vous ne pouvez pas modifier ce comentaire' });
                     };
                })
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
-     };
-
-exports.getComments =
-     (req, res, next) => {
-          db.Comment.findAll({ where: { PublicationId: req.params.id } })
-               .then(comments => res.status(200).json(comments))
-               .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }))
      };
 
 exports.deleteComment =
      (req, res, next) => {
           db.Comment.findOne({ where: { id: req.params.id } })
                .then(comment => {
-                    if (comment.UserId !== req.auth.userId || ReadableStream.auth.isAdmin === false) {
-                         return res.status(403).json({ message: 'vous ne pouvez pas supprimer ce commentaire' })
-                    } else {
+                    if (comment.UserId == req.auth.userId || req.auth.isAdmin === true) {
                          comment.destroy({ where: { id: req.params.id } })
                               .then(res.status(201).json({ message: 'commentaire supprimé' }))
                               .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
+                    } else {
+                         return res.status(403).json({ message: 'vous ne pouvez pas supprimer ce commentaire' })
                     }
                })
                .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));

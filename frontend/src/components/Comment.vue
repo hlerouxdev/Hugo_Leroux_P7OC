@@ -13,9 +13,11 @@
       <div class="post-comment-content">
         <h4>{{ commentUserName }}</h4>
         <v-text-field
+        class="comment-text-field"
         v-if="edit === true"
         v-model="commentChanges"
         label="Modifiez le commentaire et appuyez sur 'Entrée'"
+        v-on:keyup.enter="submitModifyComment(commentId)"
         >
         </v-text-field>
         <p v-else>{{ commentContent }}</p>
@@ -25,7 +27,7 @@
           edit = !edit
           commentChanges = commentContent
         }">mdi-grease-pencil</v-icon>
-        <v-icon class="comment-icon comment-icon-delete">mdi-delete</v-icon>
+        <v-icon class="comment-icon comment-icon-delete" @click="submitDeleteComment(commentId)">mdi-delete</v-icon>
       </div>
     </div>
   </div>
@@ -47,6 +49,23 @@ export default {
         { title: 'Voir le profil' },
         { title: 'Envoyer un message' }
       ]
+    }
+  },
+  methods: {
+    submitDeleteComment (commentId) {
+      this.$store.dispatch('deleteComment', commentId)
+    },
+    submitModifyComment (commentId) {
+      console.log(commentId, this.commentChanges)
+      this.$store.dispatch('modifyComment', {
+        commentId: commentId,
+        content: this.commentChanges
+      })
+        .then(() => {
+          this.showEdit = false
+          this.edit = false
+          this.commentChanges = ''
+        })
     }
   }
 }

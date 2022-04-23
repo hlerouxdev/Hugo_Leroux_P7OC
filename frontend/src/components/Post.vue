@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="post">
-      <div class="picture-modal" v-if="imageZoom === true" @click="imageZoom = false">
+      <div class="picture-modal" v-if="imageZoom === true" @click="imageZoom = false" title="cliquez pour fermer">
         <div class="picture-modal-bg"></div>
-        <v-img class="picture-modal-img" v-if="postImage !== ''" :src="postImage"></v-img>
+        <v-img class="picture-modal-img" v-if="postImage !== ''" :src="postImage" transition="scale-transition"></v-img>
       </div>
       <div class="post-main" :id="`post_${postId}`">
         <div class="post-header">
@@ -67,7 +67,7 @@
           {{ postContent }}
         </div>
         <a v-if="postImage != ''" class="post-img" @click="imageZoom = true">
-          <img :src="postImage" alt="">
+          <img :src="postImage" :alt="postContent">
         </a>
         <div class="post-footer">
           <div class="post-likes">
@@ -146,6 +146,9 @@ export default {
         postId: postId,
         content: this.addComment
       })
+        .then(() => {
+          this.addComment = ''
+        })
     },
     submitModifyPost (postId) {
       console.log(this.picture[0], this.postChanges)
@@ -154,6 +157,9 @@ export default {
         content: this.postChanges,
         image: this.picture[0]
       })
+        .then(() => {
+          this.mode = ''
+        })
     }
   }
 }
