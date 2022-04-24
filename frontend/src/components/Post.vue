@@ -8,12 +8,18 @@
       <div class="post-main" :id="`post_${postId}`">
         <div class="post-header">
           <div class="post-header-section">
-            <v-avatar  class="post-avatar" size="45" >
+            <!-- Pfhoto de profil -->
+            <v-avatar  class="post-avatar" size="45" @click="profileMenu = true">
               <v-img v-if="userPicture === ''" src="../assets/user.jpg"></v-img>
               <v-img v-else :src="userPicture" cover class="post-avatar-img"></v-img>
             </v-avatar>
+            <!-- Menu de navigation utilisateur profil/messages -->
+            <div class="user-menu" v-if="profileMenu === true" @mouseleave="profileMenu = false">
+              <v-btn block class="mod user-menu-btn">Voir le profil</v-btn>
+              <v-btn block class="mod user-menu-btn">Envoyer un message</v-btn>
+            </div>
             <div>
-              <h3>{{ userName }}</h3>
+              <h3 @click="profileMenu = true">{{ userName }}</h3>
               <p>{{ postDate }}</p>
             </div>
           </div>
@@ -130,6 +136,7 @@ export default {
   },
   data () {
     return {
+      profileMenu: false,
       imageZoom: false,
       mode: '',
       postChanges: '',

@@ -40,6 +40,7 @@
 .post-header-section {
   display: flex;
   align-items: center;
+  position: relative;
 }
 .post-avatar {
   box-shadow: #3e3e3ed8 0 0 5px 2px;
@@ -101,6 +102,7 @@
 .post-comment {
   display: flex;
   margin-top: 20px;
+  position: relative;
 }
 .post-comment-avatar {
   box-shadow: #3e3e3ed8 0 0 5px 2px;
@@ -151,7 +153,11 @@
 .user-menu{
   background-color: #091f43;
   box-shadow: #3e3e3ed8 0 0 5px 2px;
-  
+  border-radius: 5px;
+  height: 80px;
+  position: absolute;
+  left: 50px;
+  top: -50px;
 }
 .user-menu h4{
   color: white;

@@ -4,8 +4,8 @@
       <v-img v-if="commentUserPicture === ''" src="../assets/user.jpg"></v-img>
       <v-img v-else :src="commentUserPicture" cover class="post-avatar-img"></v-img>
     </v-avatar>
-    <div class="comment-user-menu user-menu" v-if="commentMenu === true">
-      <h4>{{ commentUserName }}</h4>
+    <!--  -->
+    <div class="user-menu" v-if="commentMenu === true" @mouseleave="commentMenu = false" transition="scale-transition">
       <v-btn block class="mod user-menu-btn">Voir le profil</v-btn>
       <v-btn block class="mod user-menu-btn">Envoyer un message</v-btn>
     </div>
@@ -46,12 +46,16 @@ export default {
       commentMenu: false,
       commentChanges: '',
       items: [
-        { title: 'Voir le profil' },
-        { title: 'Envoyer un message' }
+        { title: 'Voir le profil', link: this.redirProfile },
+        { title: 'Envoyer un message', link: this.redirMessage }
       ]
     }
   },
   methods: {
+    redirProfile () {
+    },
+    redirMessage () {
+    },
     submitDeleteComment (commentId) {
       this.$store.dispatch('deleteComment', commentId)
     },

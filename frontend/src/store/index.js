@@ -42,28 +42,33 @@ export default createStore({
     },
     successMessage: '',
     errorMessage: '',
-    allPosts: []
+    allPosts: [],
+    messages: [],
+    messagesUsers: []
   },
   getters: {
   },
   mutations: {
-    setStatus: function (state, status) {
+    setStatus: (state, status) => {
       state.status = status
     },
-    logUser: function (state, user) {
+    logUser: (state, user) => {
       instance.defaults.headers.common.Authorization = `Bearer ${user.token}`
       localStorage.setItem('token', `Bearer ${user.token}`)
       state.user = user
       router.push({ path: '/feed' })
     },
-    getUserInfos: function (state, userInfos) {
+    getUserInfos: (state, userInfos) => {
       state.userInfos = userInfos
     },
-    setSuccessMessage: function (state, message) {
+    updateUserInfos: (state, updatedUser) => {
+      state.userInfos = Object.assign(state.userInfos, updatedUser)
+    },
+    setSuccessMessage: (state, message) => {
       state.successMessage = message
       setTimeout(() => { state.successMessage = '' }, 3000)
     },
-    setErrorMessage: function (state, message) {
+    setErrorMessage: (state, message) => {
       state.errorMessage = message
     },
     setUser: (state, user) => {
@@ -71,10 +76,18 @@ export default createStore({
     },
     setAllPosts: (state, posts) => {
       state.allPosts = posts
+    },
+    setMessages: (state, messages) => {
+      state.messages = messages
+    },
+    addMessageUser: (state, user) => {
+      state.messagesUsers.push(user)
+    },
+    clearMessagesUsers: (state) => {
+      state.messagesUsers = []
     }
   },
   actions: {
-    // ...userActions
     refresh: ({ state, dispatch }) => {
       console.log(router.currentRoute)
       const route = router.currentRoute._value.name
@@ -145,8 +158,8 @@ export default createStore({
       formData.append('image', image)
       instance.put(`/auth/user/${user}/profile-picture`, formData, config)
         .then(res => {
-          dispatch('getUser')
           commit('setSuccessMessage', res.data.message)
+          dispatch('getUser')
         })
         .catch(error => {
           commit('setErrorMessage', error.message)
@@ -155,7 +168,7 @@ export default createStore({
     changeUserInfos: ({ commit }, { user, form }) => {
       instance.put(`/auth/user/${user}`, form)
         .then(res => {
-          commit('getUserInfos', user)
+          commit('updateUserInfos', form)
           commit('setSuccessMessage', res.data.message)
         })
         .catch(error => {
@@ -308,6 +321,33 @@ export default createStore({
         })
         .catch(error => {
           commit('setErrorMessage', error.message)
+        })
+    },
+    getMessages: ({ commit, state, dispatch }) => {
+      instance.get('/messages/')
+        .then(res => {
+          const messagesUsers = []
+          res.data.forEach(message => {
+            if (!messagesUsers.includes(message.senderId) && message.senderId !== state.user.userId) {
+              dispatch('getMessageUserInfos', message.senderId)
+            }
+            if (!messagesUsers.includes(message.receiverId) && message.receiverId !== state.user.userId) {
+              dispatch('getMessageUserInfos', message.receiverId)
+            }
+          })
+          commit('setMessages', res.data)
+        })
+        .catch(error => {
+          commit('setErrorMessage', error.message)
+        })
+    },
+    getMessageUserInfos: ({ commit }, userId) => {
+      instance.get('/auth/user/' + userId)
+        .then(res => {
+          commit('addMessageUser', res.data)
+        })
+        .catch(error => {
+          console.log(error)
         })
     }
   },

@@ -4,6 +4,9 @@ const { Op } = require('@sequelize/core');
 
 exports.sendMessage =
   (req, res, next) => {
+    if(req.auth.userId === req.params.id) {
+      return res.status(403).json({ message: 'Vous ne pouvez pas envoyez un message à vous-même.' })
+    }
     const newMessage = new db.Message({
       senderId: req.auth.userId,
       receiverId: req.params.id,
@@ -17,17 +20,17 @@ exports.sendMessage =
       .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
   };
 
-exports.viewMessages =
+exports.getMessages =
   (req, res, next) => {
     db.Message.findAll({
       where: {
         [Op.or]: [
-          { senderId: req.auth.userId, receiverId: req.params.id },
-          { senderId: req.params.id, receiverId: req.auth.userId }
+          { senderId: req.auth.userId },
+          { receiverId: req.auth.userId }
         ]
       }
     })
-      .then(messagess => res.status(200).json(messagess))
+      .then(messages => res.status(200).json(messages))
       .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
   };
 

@@ -5,6 +5,7 @@ import Feed from '../views/Feed.vue'
 import Profile from '../views/Profile.vue'
 import Contact from '../views/Contact.vue'
 import UserProfile from '../views/UserProfile.vue'
+import Messages from '../views/Messages.vue'
 
 const routes = [
   {
@@ -35,16 +36,24 @@ const routes = [
     path: '/user/:id',
     name: 'userProfile',
     component: UserProfile
+  },
+  {
+    path: '/messages',
+    name: 'messages',
+    component: Messages
   }
 ]
 
 const router = createRouter({
   history: createWebHashHistory(),
-  mode: 'history',
+  // mode: 'history',
   routes
 })
 
 router.beforeEach((to, from, next) => {
+  if (from.name === 'messages' || to.name === 'messages') {
+    store.commit('clearMessagesUsers')
+  }
   if (store.state.user.userId >= 1) {
     if (to.name === 'home') {
       next({ name: 'feed' })
