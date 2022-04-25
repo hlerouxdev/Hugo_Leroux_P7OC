@@ -24,6 +24,7 @@ export default {
   background-color: #091f43;
   color: white;
   border-top: #d1515a solid 5px;
+  box-shadow: #3e3e3e 0 0 5px 2px;
   display: flex;
   flex-direction: column;
   align-items: center;

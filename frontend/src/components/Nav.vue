@@ -18,7 +18,7 @@
           </v-btn>
           <div v-else></div>
           <v-btn text v-if="this.$store.state.user.userId >= 1" prepend-icon="mdi-message-text" @click="this.$router.push('/messages')">Messages</v-btn>
-          <v-btn text  @click="logout" v-if="this.$store.state.user.userId >= 1">Déconnexion</v-btn>
+          <v-btn text prepend-icon="mdi-exit-run" @click="logout" v-if="this.$store.state.user.userId >= 1">Déconnexion</v-btn>
         </div>
       </div>
     </v-app-bar>

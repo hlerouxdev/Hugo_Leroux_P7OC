@@ -2,7 +2,6 @@ import { createStore } from 'vuex'
 import 'es6-promise/auto'
 import moment from 'moment'
 import router from '@/router'
-// import { commentPost } from './actions/comments'
 
 const axios = require('axios')
 const instance = axios.create({ baseURL: 'http://localhost:3000/api/' })
@@ -17,11 +16,13 @@ moment.locale('fr')
 export default createStore({
   state: {
     status: '',
+    // Connected user Basic infos
     user: {
       userId: -1,
       isAdmin: false,
       token: localStorage.getItem('token') ? localStorage.getItem('token').split(' ')[1] : ''
     },
+    // Connected User infos
     userInfos: {
       firstName: '',
       lastName: '',
@@ -31,7 +32,8 @@ export default createStore({
       department: '',
       profilePicture: ''
     },
-    userToDisplay: {
+    // User being looked at
+    otherUser: {
       firstName: '',
       lastName: '',
       bio: '',
@@ -40,8 +42,10 @@ export default createStore({
       department: '',
       profilePicture: ''
     },
+    // Messages alerts
     successMessage: '',
     errorMessage: '',
+    // Misc data to display
     allPosts: [],
     messages: [],
     messagesUsers: []
@@ -60,6 +64,9 @@ export default createStore({
     },
     getUserInfos: (state, userInfos) => {
       state.userInfos = userInfos
+    },
+    setOtherUser: (state, user) => {
+      state.otherUser = user
     },
     updateUserInfos: (state, updatedUser) => {
       state.userInfos = Object.assign(state.userInfos, updatedUser)
@@ -88,16 +95,7 @@ export default createStore({
     }
   },
   actions: {
-    refresh: ({ state, dispatch }) => {
-      console.log(router.currentRoute)
-      const route = router.currentRoute._value.name
-      if (route === 'my-profile') {
-        dispatch('getUserPosts', state.user.userId)
-      }
-      if (route === 'feed') {
-        dispatch('getAllPosts')
-      }
-    },
+    // ------------------------------------------------ Signup/Login ------------------------------------------------
     submitSignup: ({ commit }, newUser) => {
       return new Promise((resolve, reject) => {
         instance.post('/auth/signup', newUser)
@@ -125,16 +123,6 @@ export default createStore({
           })
       })
     },
-    getUser: ({ commit }) => {
-      instance.get('/auth/me')
-        .then(res => {
-          commit('getUserInfos', res.data)
-        })
-        .catch(error => {
-          commit('setStatus', 'error_login')
-          commit('setErrorMessage', error.message)
-        })
-    },
     checkToken: ({ commit }, token) => {
       instance.get('/auth/me', {
         headers: {
@@ -150,6 +138,27 @@ export default createStore({
           })
         })
         .catch(error => {
+          commit('setErrorMessage', error.message)
+        })
+    },
+    // ------------------------------------------------ User infos ------------------------------------------------
+    getUser: ({ commit }) => {
+      instance.get('/auth/me')
+        .then(res => {
+          commit('getUserInfos', res.data)
+        })
+        .catch(error => {
+          commit('setStatus', 'error_login')
+          commit('setErrorMessage', error.message)
+        })
+    },
+    getOtherUser: ({ commit }, userId) => {
+      instance.get('auth/user/' + userId)
+        .then(res => {
+          commit('setOtherUser', res.data)
+        })
+        .catch(error => {
+          commit('setStatus', 'error_login')
           commit('setErrorMessage', error.message)
         })
     },
@@ -205,6 +214,7 @@ export default createStore({
           commit('setErrorMessage', error.message)
         })
     },
+    // ------------------------------------------------ Posts ------------------------------------------------
     createPost: ({ commit, dispatch }, { content, image }) => {
       const formData = new FormData()
       if (image) {
@@ -220,51 +230,54 @@ export default createStore({
           commit('setErrorMessage', error.message)
         })
     },
-    getAllPosts: ({ commit, state }) => {
+    getAllPosts: ({ commit, dispatch }) => {
       return instance.get('/posts/') // va chercher tous les posts dans le back
         .then(res => {
           const posts = res.data
-          res.data.forEach(post => { // boucle dans le tableau des posts
-            post.liked = false
-            post.Likes.forEach(like => {
-              if (like.UserId === state.user.userId) {
-                post.liked = true
-              }
-            })
-            if (post.createdAt !== post.updatedAt) {
-              post.createdAt = moment(post.updatedAt).format('[posté le] Do MMMM YYYY [à] HH:mm')
-            } else {
-              post.createdAt = moment(post.createdAt).format('[posté le] Do MMMM YYYY [à] HH:mm')
-            }
-          })
+          dispatch('formatPosts', posts)
           commit('setAllPosts', posts.reverse())
         })
         .catch(error => {
           commit('setErrorMessage', error.message)
         })
     },
-    getUserPosts: ({ commit, state }, id) => {
+    getUserPosts: ({ commit, dispatch }, id) => {
       return instance.get(`/posts/user/${id}`)
         .then(res => {
-          const posts = res.data
-          posts.forEach(post => {
-            post.liked = false
-            post.Likes.forEach(like => {
-              if (like.UserId === state.user.userId) {
-                post.liked = true
-              }
-            })
-            if (post.createdAt !== post.updatedAt) {
-              post.createdAt = moment(post.updatedAt).format('[posté le] Do MMMM YYYY [à] HH:mm')
-            } else {
-              post.createdAt = moment(post.createdAt).format('[posté le] Do MMMM YYYY [à] HH:mm')
-            }
-          })
-          commit('setAllPosts', posts.reverse())
+          dispatch('formatPosts', res.data)
+          commit('setAllPosts', res.data.reverse())
         })
         .catch(error => {
           commit('setErrorMessage', error.message)
         })
+    },
+    formatPosts: ({ state }, posts) => {
+      return posts.forEach(post => {
+        post.liked = false
+        post.Likes.forEach(like => {
+          if (like.UserId === state.user.userId) {
+            post.liked = true
+          }
+        })
+        if (post.createdAt !== post.updatedAt) {
+          post.createdAt = moment(post.updatedAt).format('[posté le] Do MMMM YYYY [à] HH:mm')
+        } else {
+          post.createdAt = moment(post.createdAt).format('[posté le] Do MMMM YYYY [à] HH:mm')
+        }
+        post.Comments.forEach(comment => {
+          comment.createdAt = moment(comment.createdAt).format('Do MMMM YYYY [à] HH:mm')
+        })
+      })
+    },
+    refresh: ({ state, dispatch }) => {
+      console.log(router.currentRoute)
+      const route = router.currentRoute._value.name
+      if (route === 'my-profile' || route === 'user') {
+        dispatch('getUserPosts', state.user.userId)
+      }
+      if (route === 'feed') {
+        dispatch('getAllPosts')
+      }
     },
     modifyPost: ({ commit, dispatch }, { postId, content, image }) => {
       const formData = new FormData()
@@ -291,6 +304,17 @@ export default createStore({
           commit('setErrorMessage', error.message)
         })
     },
+    likePost: ({ commit, dispatch }, { postId, like }) => {
+      console.log(like)
+      instance.post(`/posts/${postId}/like`, { like })
+        .then(() => {
+          dispatch('refresh')
+        })
+        .catch(error => {
+          commit('setErrorMessage', error)
+        })
+    },
+    // ------------------------------------------------ Comments ------------------------------------------------
     commentPost: ({ commit, dispatch }, { postId, content }) => {
       console.log(postId)
       instance.post(`/posts/comment/${postId}`, { content })
@@ -323,17 +347,17 @@ export default createStore({
           commit('setErrorMessage', error.message)
         })
     },
+    // ------------------------------------------------ Messages ------------------------------------------------
     getMessages: ({ commit, state, dispatch }) => {
       instance.get('/messages/')
         .then(res => {
-          const messagesUsers = []
           res.data.forEach(message => {
-            if (!messagesUsers.includes(message.senderId) && message.senderId !== state.user.userId) {
+            if (message.senderId !== state.user.userId) {
               dispatch('getMessageUserInfos', message.senderId)
-            }
-            if (!messagesUsers.includes(message.receiverId) && message.receiverId !== state.user.userId) {
+            } else {
               dispatch('getMessageUserInfos', message.receiverId)
             }
+            message.createdAt = moment(message.updatedAt).format('[posté le] Do MMMM YYYY [à] HH:mm')
           })
           commit('setMessages', res.data)
         })
@@ -341,13 +365,30 @@ export default createStore({
           commit('setErrorMessage', error.message)
         })
     },
-    getMessageUserInfos: ({ commit }, userId) => {
-      instance.get('/auth/user/' + userId)
-        .then(res => {
-          commit('addMessageUser', res.data)
+    getMessageUserInfos: ({ commit, state }, userId) => {
+      let here = false
+      state.messagesUsers.forEach(userHere => {
+        if (userHere.id === userId) {
+          here = true
+        }
+      })
+      if (here === false) {
+        instance.get('/auth/user/' + userId)
+          .then(user => {
+            commit('addMessageUser', user.data)
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      }
+    },
+    sendMessage: ({ commit, dispatch }, { userId, content }) => {
+      instance.post('/messages/' + userId, { content })
+        .then(() => {
+          dispatch('getMessages')
         })
         .catch(error => {
-          console.log(error)
+          commit('setErrorMessage', error.message)
         })
     }
   },

@@ -6,47 +6,71 @@ import Profile from '../views/Profile.vue'
 import Contact from '../views/Contact.vue'
 import UserProfile from '../views/UserProfile.vue'
 import Messages from '../views/Messages.vue'
+import NotFound from '../views/NotFound.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: Home,
+    meta: {
+      title: 'acceuil Groupomania'
+    }
   },
   {
     path: '/feed',
     name: 'feed',
-    component: Feed
+    component: Feed,
+    meta: {
+      title: 'workplace Groupomania'
+    }
   },
   {
     path: '/my-profile',
     name: 'my-profile',
-    component: Profile
-  },
-  {
-    path: '/user/:id',
-    name: 'userProfile'
+    component: Profile,
+    meta: {
+      title: 'mon profil'
+    }
   },
   {
     path: '/contact',
     name: 'contact',
-    component: Contact
+    component: Contact,
+    meta: {
+      title: 'contact Groupomania'
+    }
   },
   {
-    path: '/user/:id',
+    path: '/user/',
     name: 'userProfile',
-    component: UserProfile
+    component: UserProfile,
+    // params: { id: userId },
+    props: true,
+    meta: {
+      title: 'profile utilisateur'
+    }
   },
   {
     path: '/messages',
     name: 'messages',
-    component: Messages
+    component: Messages,
+    meta: {
+      title: 'messages'
+    }
+  },
+  {
+    path: '/:pathMatch(.*)',
+    name: 'not-found',
+    component: NotFound,
+    meta: {
+      title: '404 adresse inconnue'
+    }
   }
 ]
 
 const router = createRouter({
   history: createWebHashHistory(),
-  // mode: 'history',
   routes
 })
 
@@ -67,6 +91,10 @@ router.beforeEach((to, from, next) => {
       next()
     }
   }
+})
+
+router.afterEach((to) => {
+  document.title = to.meta.title
 })
 
 export default router

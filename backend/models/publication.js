@@ -19,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
   Publication.init({
     id: {
       type: DataTypes.INTEGER,
-      allowNull: true,
       autoIncrement: true,
       primaryKey: true
     },

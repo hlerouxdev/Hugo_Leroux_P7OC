@@ -38,11 +38,15 @@
   }
   .profile-bio {
     margin-bottom: 20px;
-    width: 90%;
+    width: 70%;
     text-align: center;
   }
   .base-infos {
     margin-bottom: 30px;
+    width: 70%;
+  }
+  .base-infos p {
+    line-break: normal;
   }
   .button-group {
     display: flex;

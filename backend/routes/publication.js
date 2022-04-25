@@ -12,6 +12,6 @@ router.get('/:id', limiter.gen, publicationControl.getOnePost);
 router.get('/', limiter.gen, publicationControl.getAllPost);
 router.get('/user/:id', limiter.gen, publicationControl.getUserPosts);
 router.get('/user/me', jwt, publicationControl.getMyPosts);
-router.post('/:id/like', limiter.mod, jwt, publicationControl.likePost);
+router.post('/:id/like', jwt, publicationControl.likePost);
 
 module.exports = router

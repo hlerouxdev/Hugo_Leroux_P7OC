@@ -9,7 +9,7 @@
         <div class="post-header">
           <div class="post-header-section">
             <!-- Pfhoto de profil -->
-            <v-avatar  class="post-avatar" size="45" @click="profileMenu = true">
+            <v-avatar  class="post-avatar" size="45" @click="profileMenu = !profileMenu">
               <v-img v-if="userPicture === ''" src="../assets/user.jpg"></v-img>
               <v-img v-else :src="userPicture" cover class="post-avatar-img"></v-img>
             </v-avatar>
@@ -19,7 +19,7 @@
               <v-btn block class="mod user-menu-btn">Envoyer un message</v-btn>
             </div>
             <div>
-              <h3 @click="profileMenu = true">{{ userName }}</h3>
+              <h3 @click="profileMenu = !profileMenu">{{ userName }}</h3>
               <p>{{ postDate }}</p>
             </div>
           </div>
@@ -72,11 +72,11 @@
         <div v-else class="post-content">
           {{ postContent }}
         </div>
-        <a v-if="postImage != ''" class="post-img" @click="imageZoom = true">
+        <a v-if="postImage != '' || postImage" class="post-img" @click="imageZoom = true">
           <img :src="postImage" :alt="postContent">
         </a>
         <div class="post-footer">
-          <div class="post-likes">
+          <div class="post-likes" @click="likePost(postId, liked)">
             <v-btn
               icon
               small
@@ -116,7 +116,7 @@
           v-for="comment of comments"
           :key="comment.id"
           :commentId="comment.id" :commentUserName="comment.User.firstName + ' ' + comment.User.lastName"
-          :commentUserPicture="comment.User.profilePicture" :commentContent="comment.content" :commentUserId="comment.User.id"
+          :commentUserPicture="comment.User.profilePicture" :commentContent="comment.content" :commentUserId="comment.User.id" :commentDate="comment.createdAt"
           />
       </div>
     </div>
@@ -167,6 +167,19 @@ export default {
         .then(() => {
           this.mode = ''
         })
+    },
+    likePost (postId, postLiked) {
+      console.log(postId, postLiked)
+      let like
+      if (postLiked) {
+        like = 0
+      } else {
+        like = 1
+      }
+      this.$store.dispatch('likePost', {
+        postId: postId,
+        like: like
+      })
     }
   }
 }

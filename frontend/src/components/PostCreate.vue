@@ -15,6 +15,7 @@
       class="post-content"
       v-model="form.content"
       label="Créez un nouveau post"
+      v-on:keyup.enter="createPost"
       >
       </v-text-field>
       <div class="post-create-buttons">

@@ -11,7 +11,7 @@
     </div>
     <div class="post-comment-main" @mouseover="showEdit = true" @mouseleave="showEdit = false">
       <div class="post-comment-content">
-        <h4>{{ commentUserName }}</h4>
+        <h4 @click="commentMenu = !commentMenu">{{ commentUserName }}</h4>
         <v-text-field
         class="comment-text-field"
         v-if="edit === true"
@@ -30,6 +30,7 @@
         <v-icon class="comment-icon comment-icon-delete" @click="submitDeleteComment(commentId)">mdi-delete</v-icon>
       </div>
     </div>
+    <p class="comment-date">{{ commentDate }}</p>
   </div>
 </template>
 
@@ -37,7 +38,7 @@
 export default {
   name: 'CommentElement',
   props: [
-    'commentId', 'commentUserName', 'commentUserPicture', 'commentContent', 'commentUserId'
+    'commentId', 'commentUserName', 'commentUserPicture', 'commentContent', 'commentUserId', 'commentDate'
   ],
   data () {
     return {

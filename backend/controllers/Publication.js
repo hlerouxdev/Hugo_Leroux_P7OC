@@ -146,12 +146,12 @@ exports.likePost =
           const userId = req.auth.userId;
 
           if (like > 1 || like < 0) {
-               return res.status(401).json({ message: 'cette requête n\'est pas autorisé' });
+               return res.status(400).json({ message: 'cette requête n\'est pas autorisé' });
           };
           db.User.findOne({ where: { id: userId } })
                .then(user => {
                     if (!user) {
-                         return res.status(401).json({ message: 'cette requête n\'est pas autorisé' });
+                         return res.status(401).json({ message: 'cette requête n\'est pas autorisé l\'utilisateur n\'existe pas' });
                     }
                     db.Like.findOne({ where: { UserId: userId, PublicationId: PublicationLiked } })
                          .then(oldLike => {
@@ -161,7 +161,7 @@ exports.likePost =
                                              .then(() => { res.status(200).json({ message: 'like enlevé' }) })
                                              .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
                                    } else {
-                                        return res.status(401).json({ message: 'cette requête n\'est pas autorisé' });
+                                        return res.status(400).json({ message: 'Vous avez déjà liké ce post' });
                                    };
                               } else {
                                    if (like === 1) {
@@ -173,7 +173,7 @@ exports.likePost =
                                              .then(() => { res.status(200).json({ message: 'like ajouté' }) })
                                              .catch(error => res.status(500).json({ message: `oops! something went wrong... ${error}` }));
                                    } else {
-                                        return res.status(401).json({ message: 'cette requête n\'est pas autorisé' });
+                                        return res.status(400).json({ message: 'Vous devez liker le post avant d\'enlever le like' });
                                    };
                               };
                          })
