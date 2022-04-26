@@ -42,7 +42,7 @@ const routes = [
     }
   },
   {
-    path: '/user/',
+    path: '/user/:id',
     name: 'userProfile',
     component: UserProfile,
     // params: { id: userId },
@@ -75,9 +75,6 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (from.name === 'messages' || to.name === 'messages') {
-    store.commit('clearMessagesUsers')
-  }
   if (store.state.user.userId >= 1) {
     if (to.name === 'home') {
       next({ name: 'feed' })

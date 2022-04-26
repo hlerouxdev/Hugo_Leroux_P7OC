@@ -6,7 +6,15 @@
     </v-avatar>
     <!--  -->
     <div class="user-menu" v-if="commentMenu === true" @mouseleave="commentMenu = false" transition="scale-transition">
-      <v-btn block class="mod user-menu-btn">Voir le profil</v-btn>
+      <v-btn block class="mod user-menu-btn" @click="() => {
+          if (commentUserId !== this.$store.state.user.userId) {
+            this.$router.push('/user/' + commentUserId)
+          } else {
+            this.$router.push('my-profile/')
+          }
+        }">
+          Voir le profil
+        </v-btn>
       <v-btn block class="mod user-menu-btn">Envoyer un message</v-btn>
     </div>
     <div class="post-comment-main" @mouseover="showEdit = true" @mouseleave="showEdit = false">

@@ -3,6 +3,7 @@
     <div class="messages-main">
       <!-- Partie gauche, liste des utilisateurs -->
       <div class="messages-users">
+        <!-- Search Bar -->
         <div class="search-bar">
           <v-text-field
           v-model="userSearch"
@@ -11,25 +12,36 @@
           prepend-icon="mdi-magnify"
           single-line>
           </v-text-field>
-        </div>
-        <div class="messages-users-list">
-          <div class="user-card"
-          v-for="user of this.$store.state.messagesUsers" :key="user.id"
-          @click="switchUser(user.id)">
-            <v-avatar rounded size="80" class="user-card-avatar">
-              <v-img v-if="user.profilePicture != ''"
-                :src="user.profilePicture"
-                cover
-                class="profile-infos_left_avatar_image"></v-img>
-              <v-img v-else  src="../assets/user.jpg"></v-img>
-            </v-avatar>
-            <div>
-              <h1>
+          <div class="search-bar-list" v-if="userSearch.length > 3">
+            <div class="search-bar-result"
+            v-for="user of this.$store.state.allUsers" :key="user.id">
+              <div class="search-bar-user" v-if="user.firstName.toLowerCase() === searchUser || user.lastName == userSearch">
                 {{ user.firstName + ' ' + user.lastName }}
-              </h1>
-              <h2>
-                {{ user.department }}
-              </h2>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- User List -->
+        <div class="messages-users-list">
+          <div class="user-card-container"
+          v-for="user of this.$store.state.allUsers" :key="user.id"
+          @click="switchUser(user.id)">
+            <div class="user-card" v-if="user.messaged === true && user.id !== this.$store.state.user.userId">
+              <v-avatar rounded size="80" class="user-card-avatar">
+                <v-img v-if="user.profilePicture != ''"
+                  :src="user.profilePicture"
+                  cover
+                  class="profile-infos_left_avatar_image"></v-img>
+                <v-img v-else  src="../assets/user.jpg"></v-img>
+              </v-avatar>
+              <div>
+                <h1>
+                  {{ user.firstName + ' ' + user.lastName }}
+                </h1>
+                <h2>
+                  {{ user.department }}
+                </h2>
+              </div>
             </div>
           </div>
         </div>
@@ -88,8 +100,10 @@ export default {
     }
   },
   mounted: () => {
-    store.commit('clearMessagesUsers')
     store.dispatch('getMessages')
+      .then(() => {
+        store.dispatch('getAllUsers')
+      })
   },
   methods: {
     switchUser (userId) {
@@ -142,6 +156,31 @@ export default {
     padding: 10px;
     margin-bottom: 5px;
     box-shadow: #3e3e3e 0 0 5px 2px;
+    position: relative;
+  }
+  .search-bar-list {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    width: 90%;
+    max-height: 50vh;
+    border-radius: 0 0 10px 10px;
+    border: 2px solid #d1515a;
+    background-color: white;
+    overflow-y: scroll;
+    position: absolute;
+    bottom: -100;
+    right: 5px;
+    z-index: 10;
+  }
+  .search-bar-user {
+    background-color: white;
+    color: #091f43;
+    border: #3e3e3e 2px solid;
+    border-radius: 5px;
+    box-shadow: #3e3e3e 0 0 1px 2px;
+    padding: 5px;
+    margin: 5px;
   }
   .messages-users-list {
     display: flex;
@@ -149,8 +188,13 @@ export default {
     align-items: center;
     width: 100%;
     height: calc(100% - 100px);
+    background-color: white;
     overflow-y: scroll;
-    overflow-x: hidden;
+  }
+  .user-card-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
   .user-card {
     display: flex;

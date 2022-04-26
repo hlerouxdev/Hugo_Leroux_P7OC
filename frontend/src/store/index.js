@@ -48,7 +48,7 @@ export default createStore({
     // Misc data to display
     allPosts: [],
     messages: [],
-    messagesUsers: []
+    allUsers: []
   },
   getters: {
   },
@@ -87,11 +87,8 @@ export default createStore({
     setMessages: (state, messages) => {
       state.messages = messages
     },
-    addMessageUser: (state, user) => {
-      state.messagesUsers.push(user)
-    },
-    clearMessagesUsers: (state) => {
-      state.messagesUsers = []
+    setAllUsers: (state, users) => {
+      state.allUsers = users
     }
   },
   actions: {
@@ -169,6 +166,7 @@ export default createStore({
         .then(res => {
           commit('setSuccessMessage', res.data.message)
           dispatch('getUser')
+          dispatch('refresh')
         })
         .catch(error => {
           commit('setErrorMessage', error.message)
@@ -349,14 +347,9 @@ export default createStore({
     },
     // ------------------------------------------------ Messages ------------------------------------------------
     getMessages: ({ commit, state, dispatch }) => {
-      instance.get('/messages/')
+      return instance.get('/messages/')
         .then(res => {
           res.data.forEach(message => {
-            if (message.senderId !== state.user.userId) {
-              dispatch('getMessageUserInfos', message.senderId)
-            } else {
-              dispatch('getMessageUserInfos', message.receiverId)
-            }
             message.createdAt = moment(message.updatedAt).format('[posté le] Do MMMM YYYY [à] HH:mm')
           })
           commit('setMessages', res.data)
@@ -365,27 +358,27 @@ export default createStore({
           commit('setErrorMessage', error.message)
         })
     },
-    getMessageUserInfos: ({ commit, state }, userId) => {
-      let here = false
-      state.messagesUsers.forEach(userHere => {
-        if (userHere.id === userId) {
-          here = true
-        }
-      })
-      if (here === false) {
-        instance.get('/auth/user/' + userId)
-          .then(user => {
-            commit('addMessageUser', user.data)
-          })
-          .catch(error => {
-            console.log(error)
-          })
-      }
-    },
     sendMessage: ({ commit, dispatch }, { userId, content }) => {
       instance.post('/messages/' + userId, { content })
         .then(() => {
           dispatch('getMessages')
+        })
+        .catch(error => {
+          commit('setErrorMessage', error.message)
+        })
+    },
+    getAllUsers: ({ commit, state }) => {
+      instance.get('/auth/')
+        .then(res => {
+          res.data.forEach(user => {
+            user.messaged = false
+            state.messages.forEach(message => {
+              if (message.senderId === user.id || message.receiverid === user.id) {
+                user.messaged = true
+              }
+            })
+          })
+          commit('setAllUsers', res.data)
         })
         .catch(error => {
           commit('setErrorMessage', error.message)

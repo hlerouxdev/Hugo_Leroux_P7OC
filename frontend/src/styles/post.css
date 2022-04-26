@@ -17,6 +17,19 @@
   padding-top: 20px;
   padding-bottom: 20px;
 }
+.post-create-buttons{
+  display: flex;
+  width: 100%;
+  position: relative;
+}
+.word-count{
+  position: absolute;
+  right: 20px;
+  font-size: 0.8em;
+}
+.word-count-red {
+  color: #d1515a;
+}
 .post-delete {
   display: flex;
   align-items: center;
@@ -155,6 +168,7 @@
   margin-top: 20px;
   display: flex;
   width: 100%;
+  position: relative;
 }
 .post-comment-add-text {
   margin-left: 20px;

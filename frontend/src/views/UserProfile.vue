@@ -179,8 +179,9 @@ export default ({
     }
   },
   mounted: function () {
-    this.$store.dispatch('getUser')
-    this.$store.dispatch('getUserPosts', this.$store.state.otherUser.id)
+    console.log(this.$route.params.id)
+    this.$store.dispatch('getOtherUser', this.$route.params.id)
+    this.$store.dispatch('getUserPosts', this.$route.params.id)
   },
   methods: {
     changeProfilePicture () {

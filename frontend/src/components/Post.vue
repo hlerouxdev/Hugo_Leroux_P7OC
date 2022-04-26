@@ -15,8 +15,14 @@
             </v-avatar>
             <!-- Menu de navigation utilisateur profil/messages -->
             <div class="user-menu" v-if="profileMenu === true" @mouseleave="profileMenu = false">
-              <v-btn block class="mod user-menu-btn">Voir le profil</v-btn>
-              <v-btn block class="mod user-menu-btn">Envoyer un message</v-btn>
+              <v-btn block class="mod user-menu-btn" @click="() => {
+                  if (userId !== this.$store.state.user.userId) {
+                    this.$router.push('/user/' + userId)
+                  } else {
+                    this.$router.push('my-profile/')
+                  }
+                }">Voir le profil</v-btn>
+              <v-btn block class="mod user-menu-btn" @click="this.$router.push('/messages/')">Envoyer un message</v-btn>
             </div>
             <div>
               <h3 @click="profileMenu = !profileMenu">{{ userName }}</h3>
@@ -73,7 +79,7 @@
           {{ postContent }}
         </div>
         <a v-if="postImage != '' || postImage" class="post-img" @click="imageZoom = true">
-          <img :src="postImage" :alt="postContent">
+          <img :src="postImage" :alt="postContent" title="Cliquez pour aggrandir l'image">
         </a>
         <div class="post-footer">
           <div class="post-likes" @click="likePost(postId, liked)">
@@ -111,6 +117,12 @@
             label="Tapez un commentaire puis appuyez sur entrée pour le poster"
             v-on:keyup.enter="submitComment(postId)">
           </v-text-field>
+          <p v-if="addComment.length < 255" class="word-count">
+            {{ addComment.length }}/255
+          </p>
+          <p v-else class="word-count word-count-red">
+            {{ addComment.length }}/255
+          </p>
         </div>
         <Comment class="post-comments"
           v-for="comment of comments"

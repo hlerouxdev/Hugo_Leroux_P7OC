@@ -28,12 +28,28 @@
           density="compact"
         ></v-file-input>
         <v-btn
+          v-if="form.content === '' || form.content.length > 255"
+          small
+          disabled
+          class="create-btn"
+          @click="createPost"
+        >
+          Créer un Poste
+        </v-btn>
+        <v-btn
+          v-else
           small
           class="mod create-btn"
           @click="createPost"
         >
           Créer un Poste
         </v-btn>
+        <p v-if="form.content.length < 255" class="word-count">
+          {{ form.content.length }}/255
+        </p>
+        <p v-else class="word-count word-count-red">
+          {{ form.content.length }}/255
+        </p>
       </div>
     </div>
   </div>
@@ -72,7 +88,4 @@ export default {
 <style scoped>
   @import '../styles/post.css';
   @import '../styles/buttons.css';
-  .post-create-buttons{
-    display: flex;
-  }
 </style>
