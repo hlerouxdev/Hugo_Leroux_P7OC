@@ -16,23 +16,24 @@
             <div class="search-bar-result"
             v-for="user of this.$store.state.allUsers" :key="user.id">
               <div class="search-bar-user" v-if="user.firstName.toLowerCase() === searchUser || user.lastName == userSearch">
-                {{ user.firstName + ' ' + user.lastName }}
+                {{ user.firstName + ' ' + user.lastName }} ({{ user.department }})
               </div>
             </div>
           </div>
         </div>
         <!-- User List -->
         <div class="messages-users-list">
+          <!-- this.$router.push('/messages/' + user.id) -->
           <div class="user-card-container"
           v-for="user of this.$store.state.allUsers" :key="user.id"
           @click="switchUser(user.id)">
             <div class="user-card" v-if="user.messaged === true && user.id !== this.$store.state.user.userId">
               <v-avatar rounded size="80" class="user-card-avatar">
-                <v-img v-if="user.profilePicture != ''"
+                <v-img aspect-ratio="1" v-if="user.profilePicture != ''"
                   :src="user.profilePicture"
                   cover
                   class="profile-infos_left_avatar_image"></v-img>
-                <v-img v-else  src="../assets/user.jpg"></v-img>
+                <v-img aspect-ratio="1" v-else  src="../assets/user.jpg"></v-img>
               </v-avatar>
               <div>
                 <h1>
@@ -48,13 +49,13 @@
       </div>
       <!-- Partie droite, message de l'utilisateurs selectionné -->
       <div class="messages-container">
-        <div class="messages-display">
+        <div class="messages-display" v-if="loaded === true">
           <div class="message" v-for="message in this.$store.state.messages" :key="message.id">
             <!-- message envoyé -->
             <div class="message-container sent" v-if="message.receiverId === this.userId">
               <v-avatar  class="message-avatar" size="50">
-                <v-img v-if="this.$store.state.userInfos.profilePicture === ''" src="../assets/user.jpg"></v-img>
-                <v-img v-else :src="this.$store.state.userInfos.profilePicture" cover class="post-avatar-img"></v-img>
+                <v-img aspect-ratio="1" v-if="this.$store.state.userInfos.profilePicture === ''" src="../assets/user.jpg"></v-img>
+                <v-img aspect-ratio="1" v-else :src="this.$store.state.userInfos.profilePicture" cover class="post-avatar-img"></v-img>
               </v-avatar>
               <div class="message-infos infos-sent">
                 <p class="message-sender">{{ this.$store.state.userInfos.firstName }}</p>
@@ -64,8 +65,8 @@
             <!-- message reçu -->
             <div class="message-container received" v-if="message.senderId === this.userId">
               <v-avatar  class="message-avatar" size="50">
-                <v-img v-if="this.$store.state.otherUser.profilePicture === ''" src="../assets/user.jpg"></v-img>
-                <v-img v-else :src="this.$store.state.otherUser.profilePicture" cover class="post-avatar-img"></v-img>
+                <v-img aspect-ratio="1" v-if="this.$store.state.otherUser.profilePicture === ''" src="../assets/user.jpg"></v-img>
+                <v-img aspect-ratio="1" v-else :src="this.$store.state.otherUser.profilePicture" cover class="post-avatar-img"></v-img>
               </v-avatar>
               <div class="message-infos infos-received">
                 <p class="message-sender">{{ this.$store.state.otherUser.firstName }}</p>
@@ -74,11 +75,14 @@
             </div>
           </div>
         </div>
+        <!-- chmaps de texte message -->
         <v-text-field
         v-if="userId !== 0"
         class="message-send" v-model="messageToSend"
         label="Tapez un message et appuyez sur 'Entrée'"
         v-on:keyup.enter="sendMessage">
+        <p v-if="messageToSend.length < 255" class="word-count">{{messageToSend.length}}/255</p>
+        <p v-else class="word-count word-count-red">{{messageToSend.length}}/255</p>
         </v-text-field>
         <div v-else class="message-send not-selected">Cliquez sur un Utilisateur pour envoyer un message</div>
       </div>
@@ -93,6 +97,7 @@ export default {
   name: 'MessagesPage',
   data () {
     return {
+      loaded: false,
       userId: 0,
       userSearch: '',
       userInfos: {},
@@ -107,8 +112,12 @@ export default {
   },
   methods: {
     switchUser (userId) {
+      this.loaded = false
       this.userId = userId
       store.dispatch('getOtherUser', userId)
+        .then(() => {
+          this.loaded = true
+        })
     },
     sendMessage () {
       store.dispatch('sendMessage', {
@@ -162,14 +171,15 @@ export default {
     display: flex;
     flex-direction: column;
     padding: 5px;
-    width: 90%;
+    width: 87%;
     max-height: 50vh;
     border-radius: 0 0 10px 10px;
     border: 2px solid #d1515a;
+    border-top: transparent;
     background-color: white;
     overflow-y: scroll;
     position: absolute;
-    bottom: -100;
+    bottom: -95;
     right: 5px;
     z-index: 10;
   }
@@ -178,9 +188,13 @@ export default {
     color: #091f43;
     border: #3e3e3e 2px solid;
     border-radius: 5px;
-    box-shadow: #3e3e3e 0 0 1px 2px;
     padding: 5px;
     margin: 5px;
+  }
+  .search-bar-user:hover {
+    cursor: pointer;
+    box-shadow: #3e3e3e 0 0 5px 2px;
+    font-weight: bolder;
   }
   .messages-users-list {
     display: flex;
@@ -231,15 +245,17 @@ export default {
     justify-content: flex-end;
     height: 100%;
     width: 67%;
+    position:relative;
   }
   .messages-display {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
     overflow-y: scroll;
     height: calc(100% - 100px);
     width: 100%;
+    position: absolute;
+    bottom: 100px;
   }
   .message-send {
     width: 100%;
@@ -249,6 +265,22 @@ export default {
     padding-top: 20px;
     border-radius: 10px 10px 0 0;
     box-shadow: #3e3e3e 0 0 5px 2px;
+    position: relative;
+  }
+  :deep(.message-send .v-field__overlay) {
+    margin-left: 20px;
+    width: calc(100% - 100px);
+  }
+  :deep(.message-send .v-field__field) {
+    margin-left: 20px;
+    width: calc(100% - 100px);
+  }
+  .word-count {
+    position: absolute;
+    right: -60px;
+  }
+  .word-count-red {
+    color: red;
   }
   .not-selected {
     text-align: center;

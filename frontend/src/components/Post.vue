@@ -3,15 +3,15 @@
     <div class="post">
       <div class="picture-modal" v-if="imageZoom === true" @click="imageZoom = false" title="cliquez pour fermer">
         <div class="picture-modal-bg"></div>
-        <v-img class="picture-modal-img" v-if="postImage !== ''" :src="postImage" transition="scale-transition"></v-img>
+        <v-img aspect-ratio="1" class="picture-modal-img" v-if="postImage !== ''" :src="postImage" transition="scale-transition"></v-img>
       </div>
       <div class="post-main" :id="`post_${postId}`">
         <div class="post-header">
           <div class="post-header-section">
             <!-- Pfhoto de profil -->
             <v-avatar  class="post-avatar" size="45" @click="profileMenu = !profileMenu">
-              <v-img v-if="userPicture === ''" src="../assets/user.jpg"></v-img>
-              <v-img v-else :src="userPicture" cover class="post-avatar-img"></v-img>
+              <v-img aspect-ratio="1" v-if="userPicture === ''" src="../assets/user.jpg"></v-img>
+              <v-img aspect-ratio="1" v-else :src="userPicture" cover class="post-avatar-img"></v-img>
             </v-avatar>
             <!-- Menu de navigation utilisateur profil/messages -->
             <div class="user-menu" v-if="profileMenu === true" @mouseleave="profileMenu = false">
@@ -78,7 +78,7 @@
         <div v-else class="post-content">
           {{ postContent }}
         </div>
-        <a v-if="postImage != '' || postImage" class="post-img" @click="imageZoom = true">
+        <a v-if="postImage != '' && postImage != null" class="post-img" @click="imageZoom = true">
           <img :src="postImage" :alt="postContent" title="Cliquez pour aggrandir l'image">
         </a>
         <div class="post-footer">
@@ -108,8 +108,8 @@
         </div>
         <div class="post-comment-add">
           <v-avatar  class="post-comment-avatar" size="40" >
-            <v-img v-if="this.$store.state.userInfos.profilePicture === ''" src="../assets/user.jpg" cover class="post-avatar-img"></v-img>
-            <v-img v-else :src="this.$store.state.userInfos.profilePicture" cover class="post-avatar-img"></v-img>
+            <v-img aspect-ratio="1" v-if="this.$store.state.userInfos.profilePicture === ''" src="../assets/user.jpg" cover class="post-avatar-img"></v-img>
+            <v-img aspect-ratio="1" v-else :src="this.$store.state.userInfos.profilePicture" cover class="post-avatar-img"></v-img>
           </v-avatar>
           <v-text-field
             class="post-comment-add-text"

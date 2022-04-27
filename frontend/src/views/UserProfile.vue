@@ -1,5 +1,6 @@
 <template>
   <div class="main">
+    <v-btn @click="test">cccc</v-btn>
     <div class="main profile-form" v-if="change ===  true">
       <div class="profile-form-bg"></div>
       <v-form class="profile-form-container" v-if="mode === 'picture'">
@@ -8,12 +9,12 @@
           </v-btn>
         <v-container>
           <v-avatar rounded size="250" class="profile-infos_left_avatar form-avatar">
-            <v-img v-if="this.$store.state.userInfos.profilePicture != ''"
-              :src="this.$store.state.userInfos.profilePicture"
-              :href="this.$store.state.userInfos.profilePicture"
+            <v-img aspect-ratio="1" v-if="this.$store.state.otherUser.profilePicture != ''"
+              :src="this.$store.state.otherUser.profilePicture"
+              :href="this.$store.state.otherUser.profilePicture"
               target="_blank"
               ></v-img>
-            <v-img v-else  src="../assets/user.jpg"></v-img>
+            <v-img aspect-ratio="1" v-else  src="../assets/user.jpg"></v-img>
           </v-avatar>
           <v-file-input
           accept="image/png, image/jpeg, image/jpg"
@@ -23,7 +24,7 @@
           label="Sélectionner une nouvelle photo de profil"
           class="form-profile-picture"
         ></v-file-input>
-        <v-btn @click="changeProfilePicture" class="form-button mod">
+        <v-btn @click="changeProfilePicture(userId)" class="form-button mod">
           Changer la photo de profil
           </v-btn>
         </v-container>
@@ -60,7 +61,7 @@
             v-model="form.bio"
             label="à propos"
           ></v-text-field>
-          <v-btn @click="changeProfile" class="form-button mod">
+          <v-btn @click="changeProfile(userId)" class="form-button mod">
           Changer les informations
           </v-btn>
         </v-container>
@@ -82,7 +83,7 @@
             v-model="formPass.password"
             label="Mot de passe"
           ></v-text-field>
-          <v-btn @click="changePassword" class="form-button mod">
+          <v-btn @click="changePasswor(userId)" class="form-button mod">
           Changer le mot de passe
           </v-btn>
         </v-container>
@@ -94,7 +95,7 @@
         <v-container>
           <h2>Cette action est irreversible. Êtes-vous sûr de bien vouloir supprimer votre compte?</h2>
           <div class="form-row">
-            <v-btn @click="deleteUser" class="form-button del">
+            <v-btn @click="deleteUser(userId)" class="form-button del">
               Oui Je suis sûr!
             </v-btn>
             <v-btn @click="change = false; mode = ''" class="form-button mod">
@@ -106,13 +107,13 @@
       </v-form>
     </div>
     <div class="profile-infos">
-      <div class="profile-infos_left">
+      <div class="profile-infos_left" v-if="loaded === true">
         <v-avatar rounded size="150" class="profile-infos_left_avatar">
-          <v-img v-if="this.$store.state.otherUser.profilePicture != ''"
+          <v-img aspect-ratio="1" v-if="this.$store.state.otherUser.profilePicture != ''"
             :src="this.$store.state.otherUser.profilePicture"
             cover
             class="profile-infos_left_avatar_image"></v-img>
-          <v-img v-else  src="../assets/user.jpg"></v-img>
+          <v-img aspect-ratio="1" v-else  src="../assets/user.jpg"></v-img>
         </v-avatar>
         <h1>{{this.$store.state.otherUser.firstName + " " + this.$store.state.otherUser.lastName}}</h1>
         <h2 v-if="this.$store.state.otherUser.bio != ''">à propos</h2>
@@ -152,17 +153,12 @@ export default ({
   },
   data () {
     return {
+      userId: 0,
+      loaded: false,
       mode: '',
       change: false,
       profilePicture: [],
-      form: {
-        firstName: this.$store.state.otherUser.firstName,
-        lastName: this.$store.state.otherUser.lastName,
-        email: this.$store.state.otherUser.email,
-        adress: this.$store.state.otherUser.adress,
-        department: this.$store.state.otherUser.department,
-        bio: this.$store.state.otherUser.bio
-      },
+      form: {},
       formPass: {
         newPass1: '',
         newPass2: '',
@@ -181,9 +177,24 @@ export default ({
   mounted: function () {
     console.log(this.$route.params.id)
     this.$store.dispatch('getOtherUser', this.$route.params.id)
-    this.$store.dispatch('getUserPosts', this.$route.params.id)
+      .then(() => {
+        this.userId = this.$route.params.id
+        this.loaded = true
+        this.form = {
+          firstName: this.$store.state.otherUser.firstName,
+          lastName: this.$store.state.otherUser.lastName,
+          email: this.$store.state.otherUser.email,
+          adress: this.$store.state.otherUser.adress,
+          department: this.$store.state.otherUser.department,
+          bio: this.$store.state.otherUser.bio
+        }
+        this.$store.dispatch('getUserPosts', this.$route.params.id)
+      })
   },
   methods: {
+    test () {
+      console.log(this.$route.params.id)
+    },
     changeProfilePicture () {
       this.$store
         .dispatch('changeProfilePicture', {
@@ -195,14 +206,14 @@ export default ({
           this.mode = ''
         })
     },
-    changeProfile () {
+    changeProfile (userId) {
       this.$store
         .dispatch('changeUserInfos', {
           form: {
             ...this.form,
             profilePicture: this.$store.state.otherUser.profilePicture
           },
-          user: this.$store.state.user.userId
+          user: userId
         })
         .then(() => {
           this.change = false
@@ -210,14 +221,14 @@ export default ({
         })
         .catch(error => { console.log(error) })
     },
-    changePassword () {
+    changePassword (userId) {
       this.$store
         .dispatch('changeUserPassword', {
           form: {
             password: this.formPass.newPass1,
             oldPassword: this.formPass.password
           },
-          user: this.$store.state.user.userId
+          user: userId
         })
         .then(() => {
           this.change = false
@@ -225,11 +236,11 @@ export default ({
         })
         .catch(error => { console.log(error) })
     },
-    deleteUser () {
+    deleteUser (userId) {
       this.change = false
       this.mode = ''
       this.$store
-        .dispatch('deleteUser', this.$store.state.user.userId)
+        .dispatch('deleteUser', userId)
         .then(() => {
           this.$router.push({ name: 'home' })
         })

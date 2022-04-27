@@ -1,8 +1,8 @@
 <template>
   <div class="post-comment" :id="`comment_${commentId}`">
     <v-avatar  class="post-comment-avatar" size="40" @click="commentMenu = !commentMenu">
-      <v-img v-if="commentUserPicture === ''" src="../assets/user.jpg"></v-img>
-      <v-img v-else :src="commentUserPicture" cover class="post-avatar-img"></v-img>
+      <v-img aspect-ratio="1" v-if="commentUserPicture === ''" src="../assets/user.jpg"></v-img>
+      <v-img aspect-ratio="1" v-else :src="commentUserPicture" cover class="post-avatar-img"></v-img>
     </v-avatar>
     <!--  -->
     <div class="user-menu" v-if="commentMenu === true" @mouseleave="commentMenu = false" transition="scale-transition">

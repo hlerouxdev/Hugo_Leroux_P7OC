@@ -1,6 +1,7 @@
 const db = require('../models/index');
 const fs = require('fs');
-const validator = require('validator')
+const validator = require('validator');
+const { log } = require('console');
 
 exports.createPost =
      (req, res, next) => {
@@ -13,6 +14,8 @@ exports.createPost =
                });
                if (req.file) {
                     pub.filePath = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+               } else {
+                    pub.filepath = ''
                }
                //enregistre le nouveau post
                console.log(pub)

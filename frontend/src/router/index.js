@@ -7,8 +7,17 @@ import Contact from '../views/Contact.vue'
 import UserProfile from '../views/UserProfile.vue'
 import Messages from '../views/Messages.vue'
 import NotFound from '../views/NotFound.vue'
+import Admin from '../views/Admin.vue'
 
 const routes = [
+  {
+    path: '/admin/',
+    name: 'admin',
+    component: Admin,
+    meta: {
+      title: 'administration'
+    }
+  },
   {
     path: '/',
     name: 'home',
@@ -45,14 +54,20 @@ const routes = [
     path: '/user/:id',
     name: 'userProfile',
     component: UserProfile,
-    // params: { id: userId },
-    props: true,
     meta: {
       title: 'profile utilisateur'
     }
   },
   {
-    path: '/messages',
+    path: '/messages/:id',
+    name: 'messages',
+    component: Messages,
+    meta: {
+      title: 'messages'
+    }
+  },
+  {
+    path: '/messages/',
     name: 'messages',
     component: Messages,
     meta: {

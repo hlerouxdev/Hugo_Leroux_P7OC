@@ -140,7 +140,7 @@ export default createStore({
     },
     // ------------------------------------------------ User infos ------------------------------------------------
     getUser: ({ commit }) => {
-      instance.get('/auth/me')
+      return instance.get('/auth/me')
         .then(res => {
           commit('getUserInfos', res.data)
         })
@@ -150,7 +150,7 @@ export default createStore({
         })
     },
     getOtherUser: ({ commit }, userId) => {
-      instance.get('auth/user/' + userId)
+      return instance.get('auth/user/' + userId)
         .then(res => {
           commit('setOtherUser', res.data)
         })
@@ -159,13 +159,29 @@ export default createStore({
           commit('setErrorMessage', error.message)
         })
     },
+    getAllUsers: ({ commit, state }) => {
+      return instance.get('/auth/')
+        .then(res => {
+          res.data.forEach(user => {
+            user.messaged = false
+            state.messages.forEach(message => {
+              if (message.senderId === user.id || message.receiverid === user.id) {
+                user.messaged = true
+              }
+            })
+          })
+          commit('setAllUsers', res.data)
+        })
+        .catch(error => {
+          commit('setErrorMessage', error.message)
+        })
+    },
     changeProfilePicture: ({ commit, dispatch }, { user, image }) => {
       const formData = new FormData()
       formData.append('image', image)
-      instance.put(`/auth/user/${user}/profile-picture`, formData, config)
+      return instance.put(`/auth/user/${user}/profile-picture`, formData, config)
         .then(res => {
           commit('setSuccessMessage', res.data.message)
-          dispatch('getUser')
           dispatch('refresh')
         })
         .catch(error => {
@@ -173,7 +189,7 @@ export default createStore({
         })
     },
     changeUserInfos: ({ commit }, { user, form }) => {
-      instance.put(`/auth/user/${user}`, form)
+      return instance.put('/auth/user/' + user, form)
         .then(res => {
           commit('updateUserInfos', form)
           commit('setSuccessMessage', res.data.message)
@@ -183,7 +199,7 @@ export default createStore({
         })
     },
     changeUserPassword: ({ commit }, { user, form }) => {
-      instance.put(`/auth/user/${user}/password`, form)
+      return instance.put(`/auth/user/${user}/password`, form)
         .then(res => {
           commit('setSuccessMessage', res.data.message)
         })
@@ -191,22 +207,25 @@ export default createStore({
           commit('setErrorMessage', error.message)
         })
     },
-    deleteUser: ({ commit }, userId) => {
-      return instance.delete(`/auth/user/${userId}`)
+    deleteUser: ({ commit, state }, userId) => {
+      return instance.delete('/auth/user/' + userId)
         .then(res => {
-          commit('setUser', {
-            userId: -1,
-            token: ''
-          })
-          commit('getUserInfos', {
-            firstName: '',
-            lastName: '',
-            email: '',
-            adress: '',
-            department: '',
-            profilePicture: ''
-          })
-          localStorage.clear()
+          if (userId === state.user.userId) {
+            commit('setUser', {
+              userId: -1,
+              token: ''
+            })
+            commit('getUserInfos', {
+              firstName: '',
+              lastName: '',
+              email: '',
+              adress: '',
+              department: '',
+              profilePicture: ''
+            })
+            localStorage.clear()
+          }
+          commit('setSuccessMessage', res.data.message)
         })
         .catch(error => {
           commit('setErrorMessage', error.message)
@@ -270,8 +289,11 @@ export default createStore({
     refresh: ({ state, dispatch }) => {
       console.log(router.currentRoute)
       const route = router.currentRoute._value.name
-      if (route === 'my-profile' || route === 'user') {
+      if (route === 'my-profile') {
         dispatch('getUserPosts', state.user.userId)
+      }
+      if (route === 'user') {
+        dispatch('getUserPosts', state.otherUser.id)
       }
       if (route === 'feed') {
         dispatch('getAllPosts')
@@ -362,23 +384,6 @@ export default createStore({
       instance.post('/messages/' + userId, { content })
         .then(() => {
           dispatch('getMessages')
-        })
-        .catch(error => {
-          commit('setErrorMessage', error.message)
-        })
-    },
-    getAllUsers: ({ commit, state }) => {
-      instance.get('/auth/')
-        .then(res => {
-          res.data.forEach(user => {
-            user.messaged = false
-            state.messages.forEach(message => {
-              if (message.senderId === user.id || message.receiverid === user.id) {
-                user.messaged = true
-              }
-            })
-          })
-          commit('setAllUsers', res.data)
         })
         .catch(error => {
           commit('setErrorMessage', error.message)

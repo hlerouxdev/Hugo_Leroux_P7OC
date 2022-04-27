@@ -4,9 +4,9 @@
       <div class="post-header">
         <div class="post-header-section">
           <v-avatar rounded size="45" class="post-avatar">
-            <v-img v-if="this.$store.state.userInfos.profilePicture != '' ||
+            <v-img aspect-ratio="1" v-if="this.$store.state.userInfos.profilePicture != '' ||
               this.$store.state.userInfos.profilePicture == null" :src="this.$store.state.userInfos.profilePicture" cover class="post-avatar-img"></v-img>
-            <v-img v-else  src="../assets/user.jpg"></v-img>
+            <v-img aspect-ratio="1" v-else  src="../assets/user.jpg"></v-img>
           </v-avatar>
           <h3>{{this.$store.state.userInfos.firstName + " " + this.$store.state.userInfos.lastName}}</h3>
         </div>
