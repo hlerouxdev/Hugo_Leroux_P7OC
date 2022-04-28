@@ -128,7 +128,7 @@ export default {
   data () {
     return {
       show: false,
-      oassword: 'Password',
+      password: 'Password',
       mode: 'login',
       formData: {
         firstName: '',
@@ -228,7 +228,7 @@ export default {
             this.mode = 'login'
           })
           .catch((error) => {
-            this.errorMessage = `cette erreur est survenue: ${error}`
+            this.errorMessage = `cette erreur est survenue: ${error.message}`
           })
       }
     },

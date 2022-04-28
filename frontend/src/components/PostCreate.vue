@@ -17,12 +17,19 @@
       label="Créez un nouveau post"
       v-on:keyup.enter="createPost"
       >
+        <p v-if="form.content.length < 255" class="word-count">
+          {{ form.content.length }}/255
+        </p>
+        <p v-else class="word-count word-count-red">
+          {{ form.content.length }}/255
+        </p>
       </v-text-field>
       <div class="post-create-buttons">
         <v-file-input
-          accept="image/png, image/jpeg, image/jpg"
+          accept="image/png, image/jpeg, image/jpg, image/gif"
           v-model="form.image"
           class="mod btn-img"
+          title="Ajoutez une image"
           label="Image"
           prepend-icon="mdi-camera"
           density="compact"
@@ -44,12 +51,6 @@
         >
           Créer un Poste
         </v-btn>
-        <p v-if="form.content.length < 255" class="word-count">
-          {{ form.content.length }}/255
-        </p>
-        <p v-else class="word-count word-count-red">
-          {{ form.content.length }}/255
-        </p>
       </div>
     </div>
   </div>

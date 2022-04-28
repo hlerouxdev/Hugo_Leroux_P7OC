@@ -161,8 +161,8 @@ export default createStore({
     },
     getAllUsers: ({ commit, state }) => {
       return instance.get('/auth/')
-        .then(res => {
-          res.data.forEach(user => {
+        .then(users => {
+          users.data.forEach(user => {
             user.messaged = false
             state.messages.forEach(message => {
               if (message.senderId === user.id || message.receiverid === user.id) {
@@ -170,7 +170,7 @@ export default createStore({
               }
             })
           })
-          commit('setAllUsers', res.data)
+          commit('setAllUsers', users.data)
         })
         .catch(error => {
           commit('setErrorMessage', error.message)
@@ -210,7 +210,7 @@ export default createStore({
     deleteUser: ({ commit, state }, userId) => {
       return instance.delete('/auth/user/' + userId)
         .then(res => {
-          if (userId === state.user.userId) {
+          if (userId === state.user.userId) { // logout user if they delete their own account
             commit('setUser', {
               userId: -1,
               token: ''
@@ -292,7 +292,8 @@ export default createStore({
       if (route === 'my-profile') {
         dispatch('getUserPosts', state.user.userId)
       }
-      if (route === 'user') {
+      if (route === 'userProfile') {
+        dispatch('getOtherUser', state.otherUser.id)
         dispatch('getUserPosts', state.otherUser.id)
       }
       if (route === 'feed') {
@@ -368,7 +369,7 @@ export default createStore({
         })
     },
     // ------------------------------------------------ Messages ------------------------------------------------
-    getMessages: ({ commit, state, dispatch }) => {
+    getMessages: ({ commit }) => {
       return instance.get('/messages/')
         .then(res => {
           res.data.forEach(message => {

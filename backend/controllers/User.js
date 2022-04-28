@@ -96,12 +96,12 @@ exports.modifyUser =
 
 exports.changePicture =
      (req, res, next) => {
-          db.User.findOne({ where: { id: req.auth.userId } })
+          db.User.findOne({ where: { id: req.params.id } })
                .then(user => {
                     if (!user) {
                          return res.status(404).json({ message: 'utilisateur non trouvé' })
                     }
-                    if (user.id = req.auth || req.aauth.isAdmin == true) {
+                    if (user.id = req.auth.userId || req.auth.isAdmin == true) {
                          if (user.profilePicture != '') {
                               fs.unlink(`public/images/${user.profilePicture.split('/images/')[1]}`, () => { });
                          }

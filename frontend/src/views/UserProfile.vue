@@ -195,10 +195,10 @@ export default ({
     test () {
       console.log(this.$route.params.id)
     },
-    changeProfilePicture () {
+    changeProfilePicture (userId) {
       this.$store
         .dispatch('changeProfilePicture', {
-          user: this.$store.state.user.userId,
+          user: userId,
           image: this.profilePicture[0]
         })
         .then(() => {

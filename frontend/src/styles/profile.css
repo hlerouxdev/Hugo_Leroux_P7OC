@@ -62,6 +62,7 @@
     align-items: center;
     height: 100%;
     width: 66%;
+    padding: 20px;
     overflow-y: scroll;
   }
   .profile-form {

@@ -68,9 +68,11 @@
         >
         </v-text-field>
         <v-file-input
+          accept="image/png, image/jpeg, image/jpg, image/gif"
           v-if="mode === 'change'"
           class="mod btn-img"
           label="Image"
+          title="Ajoutez une image"
           v-model="picture"
           prepend-icon="mdi-camera"
           density="compact"
@@ -112,17 +114,17 @@
             <v-img aspect-ratio="1" v-else :src="this.$store.state.userInfos.profilePicture" cover class="post-avatar-img"></v-img>
           </v-avatar>
           <v-text-field
-            class="post-comment-add-text"
-            v-model="addComment"
-            label="Tapez un commentaire puis appuyez sur entrée pour le poster"
-            v-on:keyup.enter="submitComment(postId)">
+          class="post-comment-add-text"
+          v-model="addComment"
+          label="Tapez un commentaire puis appuyez sur entrée pour le poster"
+          v-on:keyup.enter="submitComment(postId)">
+            <p v-if="addComment.length < 255" class="word-count">
+              {{ addComment.length }}/255
+            </p>
+            <p v-else class="word-count word-count-red">
+              {{ addComment.length }}/255
+            </p>
           </v-text-field>
-          <p v-if="addComment.length < 255" class="word-count">
-            {{ addComment.length }}/255
-          </p>
-          <p v-else class="word-count word-count-red">
-            {{ addComment.length }}/255
-          </p>
         </div>
         <Comment class="post-comments"
           v-for="comment of comments"
@@ -200,4 +202,5 @@ export default {
 <style scoped>
   @import '../styles/post.css';
   @import '../styles/buttons.css';
+  @import '../styles/comment.css';
 </style>

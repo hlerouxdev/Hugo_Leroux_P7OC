@@ -95,7 +95,7 @@
         <v-container>
           <h2>Cette action est irreversible. Êtes-vous sûr de bien vouloir supprimer votre compte?</h2>
           <div class="form-row">
-            <v-btn @click="deleteUser(userId)" class="form-button del">
+            <v-btn @click="deleteUser()" class="form-button del">
               Oui Je suis sûr!
             </v-btn>
             <v-btn @click="change = false; mode = ''" class="form-button mod">
@@ -242,11 +242,11 @@ export default ({
         })
         .catch(error => { console.log(error) })
     },
-    deleteUser (userId) {
+    deleteUser () {
       this.change = false
       this.mode = ''
       this.$store
-        .dispatch('deleteUser', userId)
+        .dispatch('deleteUser', this.$store.state.user.userId)
         .then(() => {
           this.$router.push({ name: 'home' })
         })

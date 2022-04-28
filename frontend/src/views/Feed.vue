@@ -50,6 +50,7 @@ export default ({
   overflow-y: scroll;
   flex-direction: column;
   align-items: center;
+  padding: 20px;
   justify-content: space-between;
   background-color: #d8d8d8;
   box-shadow: #3e3e3e 0 0 5px 2px;

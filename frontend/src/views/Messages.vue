@@ -12,14 +12,14 @@
           prepend-icon="mdi-magnify"
           single-line>
           </v-text-field>
-          <div class="search-bar-list" v-if="userSearch.length > 3">
+          <!-- <div class="search-bar-list" v-if="userSearch.length > 2">
             <div class="search-bar-result"
-            v-for="user of this.$store.state.allUsers" :key="user.id">
-              <div class="search-bar-user" v-if="user.firstName.toLowerCase() === searchUser || user.lastName == userSearch">
+            v-for="user of searchResults" :key="user.id">
+              <div class="search-bar-user">
                 {{ user.firstName + ' ' + user.lastName }} ({{ user.department }})
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
         <!-- User List -->
         <div class="messages-users-list">
@@ -43,6 +43,14 @@
                   {{ user.department }}
                 </h2>
               </div>
+              <v-btn
+              class="mod mod-btn"
+              title="voir le profil"
+              @click="this.$router.push('/user/' + user.id)">
+                <v-icon>
+                  mdi-eye
+                </v-icon>
+              </v-btn>
             </div>
           </div>
         </div>
@@ -109,6 +117,24 @@ export default {
       .then(() => {
         store.dispatch('getAllUsers')
       })
+      .catch(error => {
+        store.commit('setErrorMessage', error)
+      })
+  },
+  comuted: {
+    searchResults: () => { // not working
+      console.log(this.userSearch)
+      const query = this.searchUser.toLowerCase()
+      console.log(query)
+      if (query.length > 2) {
+        return store.allUsers.filter(user => {
+          const userName = user.firstName.toLowerCase() + user.lastName.toLowerCase()
+          return userName.includes(query)
+        })
+      } else {
+        return store.allUsers
+      }
+    }
   },
   methods: {
     switchUser (userId) {
@@ -133,202 +159,5 @@ export default {
 </script>
 
 <style scoped>
-  .main {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-  }
-  .messages-main {
-    width: 100%;
-    max-width: 1300px;
-    background-color: white;
-    display: flex;
-    justify-content: space-between;
-  }
-  .messages-users {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 33%;
-    height: 100%;
-    background-color: #d7d7d7;
-    box-shadow: #3e3e3e 0 0 5px 2px;
-    z-index: 5;
-  }
-  .search-bar {
-    height: 100px;
-    width: 100%;
-    background-color: #091f43;
-    color: white;
-    border-radius: 0 0 10px 10px;
-    padding: 10px;
-    margin-bottom: 5px;
-    box-shadow: #3e3e3e 0 0 5px 2px;
-    position: relative;
-  }
-  .search-bar-list {
-    display: flex;
-    flex-direction: column;
-    padding: 5px;
-    width: 87%;
-    max-height: 50vh;
-    border-radius: 0 0 10px 10px;
-    border: 2px solid #d1515a;
-    border-top: transparent;
-    background-color: white;
-    overflow-y: scroll;
-    position: absolute;
-    bottom: -95;
-    right: 5px;
-    z-index: 10;
-  }
-  .search-bar-user {
-    background-color: white;
-    color: #091f43;
-    border: #3e3e3e 2px solid;
-    border-radius: 5px;
-    padding: 5px;
-    margin: 5px;
-  }
-  .search-bar-user:hover {
-    cursor: pointer;
-    box-shadow: #3e3e3e 0 0 5px 2px;
-    font-weight: bolder;
-  }
-  .messages-users-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    height: calc(100% - 100px);
-    background-color: white;
-    overflow-y: scroll;
-  }
-  .user-card-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-  .user-card {
-    display: flex;
-    align-items: center;
-    margin: 20px 0 10px 0;
-    padding: 10px 0 10px 0;
-    width: 90%;
-    border-radius: 10px;
-    box-shadow: #3e3e3e 0 0 5px 2px;
-    color: #091f43;;
-    background-color: white;
-  }
-  .user-card:hover {
-    cursor: pointer;
-  }
-  .user-card h1 {
-    font-size: 1.5rem;
-  }
-  .user-card h2 {
-    font-size: 1rem;
-  }
-  .user-card-avatar {
-    margin: 0 10px 0 10px;
-    box-shadow: #3e3e3e 0 0 5px 2px;
-  }
-  .user-card-avatar img {
-    min-width: 80px;
-    min-height: 80px;
-  }
-  .messages-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    height: 100%;
-    width: 67%;
-    position:relative;
-  }
-  .messages-display {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow-y: scroll;
-    height: calc(100% - 100px);
-    width: 100%;
-    position: absolute;
-    bottom: 100px;
-  }
-  .message-send {
-    width: 100%;
-    background-color: #091f43;
-    color: white;
-    max-height: 100px;
-    padding-top: 20px;
-    border-radius: 10px 10px 0 0;
-    box-shadow: #3e3e3e 0 0 5px 2px;
-    position: relative;
-  }
-  :deep(.message-send .v-field__overlay) {
-    margin-left: 20px;
-    width: calc(100% - 100px);
-  }
-  :deep(.message-send .v-field__field) {
-    margin-left: 20px;
-    width: calc(100% - 100px);
-  }
-  .word-count {
-    position: absolute;
-    right: -60px;
-  }
-  .word-count-red {
-    color: red;
-  }
-  .not-selected {
-    text-align: center;
-    line-height: 100px;
-  }
-  .message {
-    width: 100%;
-    padding: 0 20px 0 20px;
-  }
-  .message-container {
-    display: flex;
-    width: 100%;
-    padding: 10px;
-    align-items: flex-end;
-  }
-  .sent {
-    flex-direction: row-reverse;
-  }
-  .message-avatar {
-    box-shadow: #3e3e3ed8 0 0 5px 2px;
-    margin-bottom: 10px;
-  }
-  .message-infos {
-    max-width: 40%;
-    display: flex;
-    flex-direction: column;
-  }
-  .infos-sent {
-    align-items: flex-end;
-  }
-  .message-content {
-    text-align: center;
-    width: fit-content;
-    border-radius: 10px;
-    padding: 20px;
-    word-break: break-all;
-    margin: 0 10px 10px 10px;
-  }
-  .message-sent {
-    background-color: #091f43;
-    color: white;
-  }
-  .message-received {
-    background-color: #d7d7d7;
-    color: #091f43;
-  }
-  .message-sender {
-    font-size: 0.9rem;
-    margin-inline: 10px;
-  }
+@import '../styles/messages.css';
 </style>
