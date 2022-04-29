@@ -35,24 +35,5 @@ export default ({
 </script>
 
 <style scoped>
-.main {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  overflow-y: scroll;
-}
-  .main-view{
-  width: 100%;
-  max-width: 1300px;
-  height: 100%;
-  display: flex;
-  overflow-y: scroll;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  justify-content: space-between;
-  background-color: #d8d8d8;
-  box-shadow: #3e3e3e 0 0 5px 2px;
-  }
+  @import '../styles/pages/feed.css';
 </style>

@@ -89,6 +89,10 @@ export default createStore({
     },
     setAllUsers: (state, users) => {
       state.allUsers = users
+    },
+    clearMessages: (state) => {
+      state.messages = []
+      state.allUsers = []
     }
   },
   actions: {
@@ -121,7 +125,7 @@ export default createStore({
       })
     },
     checkToken: ({ commit }, token) => {
-      instance.get('/auth/me', {
+      return instance.get('/auth/me', {
         headers: {
           Authorization: token
         }
@@ -287,12 +291,11 @@ export default createStore({
       })
     },
     refresh: ({ state, dispatch }) => {
-      console.log(router.currentRoute)
       const route = router.currentRoute._value.name
       if (route === 'my-profile') {
         dispatch('getUserPosts', state.user.userId)
       }
-      if (route === 'userProfile') {
+      if (route === 'user-profile') {
         dispatch('getOtherUser', state.otherUser.id)
         dispatch('getUserPosts', state.otherUser.id)
       }
@@ -306,7 +309,7 @@ export default createStore({
         formData.append('image', image)
       }
       formData.append('content', content)
-      instance.put('/posts/' + postId, formData, config)
+      return instance.put('/posts/' + postId, formData, config)
         .then(res => {
           commit('setSuccessMessage', res.data.message)
           dispatch('refresh')
@@ -316,7 +319,7 @@ export default createStore({
         })
     },
     deletePost: ({ commit, dispatch }, id) => {
-      instance.delete(`/posts/${id}`)
+      return instance.delete(`/posts/${id}`)
         .then(res => {
           commit('setSuccessMessage', res.data.message)
           dispatch('refresh')
@@ -326,8 +329,7 @@ export default createStore({
         })
     },
     likePost: ({ commit, dispatch }, { postId, like }) => {
-      console.log(like)
-      instance.post(`/posts/${postId}/like`, { like })
+      return instance.post(`/posts/${postId}/like`, { like })
         .then(() => {
           dispatch('refresh')
         })
@@ -337,8 +339,7 @@ export default createStore({
     },
     // ------------------------------------------------ Comments ------------------------------------------------
     commentPost: ({ commit, dispatch }, { postId, content }) => {
-      console.log(postId)
-      instance.post(`/posts/comment/${postId}`, { content })
+      return instance.post(`/posts/comment/${postId}`, { content })
         .then(res => {
           commit('setSuccessMessage', res.data.message)
           dispatch('refresh')
@@ -348,8 +349,7 @@ export default createStore({
         })
     },
     modifyComment: ({ commit, dispatch }, { commentId, content }) => {
-      console.log(commentId, content)
-      instance.put('/posts/comment/' + commentId, { content })
+      return instance.put('/posts/comment/' + commentId, { content })
         .then(res => {
           commit('setSuccessMessage', res.data.message)
           dispatch('refresh')
@@ -359,7 +359,7 @@ export default createStore({
         })
     },
     deleteComment: ({ commit, dispatch }, commentId) => {
-      instance.delete('/posts/comment/' + commentId)
+      return instance.delete('/posts/comment/' + commentId)
         .then(res => {
           commit('setSuccessMessage', res.data.message)
           dispatch('refresh')
@@ -382,7 +382,7 @@ export default createStore({
         })
     },
     sendMessage: ({ commit, dispatch }, { userId, content }) => {
-      instance.post('/messages/' + userId, { content })
+      return instance.post('/messages/' + userId, { content })
         .then(() => {
           dispatch('getMessages')
         })

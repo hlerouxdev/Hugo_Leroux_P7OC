@@ -27,7 +27,7 @@ const routes = [
     }
   },
   {
-    path: '/feed',
+    path: '/feed/',
     name: 'feed',
     component: Feed,
     meta: {
@@ -35,7 +35,7 @@ const routes = [
     }
   },
   {
-    path: '/my-profile',
+    path: '/my-profile/',
     name: 'my-profile',
     component: Profile,
     meta: {
@@ -43,7 +43,7 @@ const routes = [
     }
   },
   {
-    path: '/contact',
+    path: '/contact/',
     name: 'contact',
     component: Contact,
     meta: {
@@ -52,7 +52,7 @@ const routes = [
   },
   {
     path: '/user/:id',
-    name: 'userProfile',
+    name: 'user-profile',
     component: UserProfile,
     meta: {
       title: 'profile utilisateur'
@@ -60,7 +60,7 @@ const routes = [
   },
   {
     path: '/messages/:id',
-    name: 'messages',
+    name: 'message-user',
     component: Messages,
     meta: {
       title: 'messages'
@@ -97,16 +97,15 @@ router.beforeEach((to, from, next) => {
       next()
     }
   } else {
-    if (to.name === 'feed' || to.name === 'my-profile' || to.name === 'userProfile' || to.name === 'messages') {
+    if (to.name === 'feed' || to.name === 'my-profile' || to.name === 'user-profile' || to.name === 'messages' || to.name === 'message-user') {
       next({ name: 'home' })
     } else {
       next()
     }
   }
-})
-
-router.afterEach((to) => {
-  document.title = to.meta.title
+  if ((from.name === 'messages' && to.name !== 'message-user') || (from.name === 'message-user' && to.name !== 'message' && to.name !== 'message-user')) {
+    store.commit('clearMessages')
+  }
 })
 
 export default router

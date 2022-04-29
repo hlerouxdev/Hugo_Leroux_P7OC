@@ -1,0 +1,48 @@
+.main {
+  background-image: url('../../assets/office.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+}
+.card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  max-width: 500px;
+  margin: 10px;
+  transform: translate(-50%, -50%);
+  color: #091f43;
+  box-shadow: #3e3e3ed8 0 0 5px 2px;
+}
+p {
+  padding: 16px;
+}
+.v-text-field {
+  padding-inline: 16px;
+}
+.name {
+  display: flex;
+}
+.change-mode {
+  text-decoration: underline;
+  color: rgb(57, 57, 255);
+}
+.alert-message {
+  margin: 0 16px 16px 16px;
+}
+.error {
+  background-color: #d1515a;
+}
+.success {
+  background-color: #091f43;
+}
+.btn-activ {
+  background-color: #091f43;
+}
+.btn-disabled {
+  background-color: #d7d7d7;
+}
+span {
+  cursor: pointer;
+}

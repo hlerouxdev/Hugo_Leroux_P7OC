@@ -22,7 +22,11 @@
                     this.$router.push('my-profile/')
                   }
                 }">Voir le profil</v-btn>
-              <v-btn block class="mod user-menu-btn" @click="this.$router.push('/messages/')">Envoyer un message</v-btn>
+              <v-btn
+              block class="mod user-menu-btn"
+              @click="messageUser(userId)">
+                Envoyer un message
+              </v-btn>
             </div>
             <div>
               <h3 @click="profileMenu = !profileMenu">{{ userName }}</h3>
@@ -84,13 +88,15 @@
           <img :src="postImage" :alt="postContent" title="Cliquez pour aggrandir l'image">
         </a>
         <div class="post-footer">
-          <div class="post-likes" @click="likePost(postId, liked)">
+          <div
+          class="post-likes"
+          @click="likePost(postId, liked)">
             <v-btn
-              icon
-              small
-              color="white"
-              class="post-likes-notliked"
-              v-if="liked === false"
+            icon
+            small
+            color="white"
+            class="post-likes-notliked"
+            v-if="liked === false"
             >
               <v-icon>mdi-thumb-up</v-icon>
             </v-btn>
@@ -194,6 +200,12 @@ export default {
         postId: postId,
         like: like
       })
+    },
+    messageUser (userId) {
+      this.$store.dispatch('getOtherUser', userId)
+        .then(() => {
+          this.$router.push('/messages/' + userId)
+        })
     }
   }
 }

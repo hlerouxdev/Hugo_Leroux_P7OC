@@ -19,47 +19,5 @@ export default {
 </script>
 
 <style scoped>
-.footer {
-  height: 100%;
-  background-color: #091f43;
-  color: white;
-  border-top: #d1515a solid 5px;
-  box-shadow: #3e3e3e 0 0 5px 2px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.footer-btn {
-  background-color: #091f43;
-  color: white;
-  box-shadow: none;
-  margin: 20px;
-}
-.message {
-  position: fixed;
-  border-radius: 10px;
-  bottom: 80px;
-}
-.close-icon {
-  color: white;
-  border-radius: 100%;
-  box-shadow: #3e3e3ed8 0 0 5px 2px;
-  margin-right: 10px;
-}
-.close-icon:hover {
-  cursor: pointer;
-}
-.success-message {
-  background-color: #091f43;
-  color: white;
-  border-radius: 10px 10px 0 0;
-  box-shadow: #3e3e3ed8 0 0 5px 2px;
-}
-.error-message {
-  background-color: #d1515a;
-  color: white;
-  border-radius: 10px 10px 0 0;
-  box-shadow: #3e3e3ed8 0 0 5px 2px;
-}
+  @import '../styles/footer.css';
 </style>

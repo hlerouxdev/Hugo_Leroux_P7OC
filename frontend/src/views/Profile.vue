@@ -256,7 +256,7 @@ export default ({
 </script>
 
 <style scoped>
-  @import '../styles/profile.css';
+  @import '../styles/pages/profile.css';
   @import '../styles/post.css';
   @import '../styles/buttons.css';
 </style>

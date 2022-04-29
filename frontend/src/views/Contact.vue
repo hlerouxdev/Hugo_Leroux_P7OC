@@ -63,34 +63,5 @@ export default {
 </script>
 
 <style scoped>
-.form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-content: center;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  color: #091f43;
-  width: 600px;
-  height: 700px;
-}
-.name-row {
-  display: flex;
-  margin-top: 16px;
-}
-:deep(.name input) {
-  width: 226px;
-}
-:deep(.v-textarea .v-field__input) {
-  height: 350px;
-}
-.v-btn {
-  background-color: #091f43;
-  color: white;
-  margin-inline: 16px;
-  margin-bottom: 16px;
-}
+  @import '../styles/pages/contact.css';
 </style>

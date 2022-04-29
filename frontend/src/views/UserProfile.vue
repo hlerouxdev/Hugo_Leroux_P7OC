@@ -1,6 +1,5 @@
 <template>
   <div class="main">
-    <v-btn @click="test">cccc</v-btn>
     <div class="main profile-form" v-if="change ===  true">
       <div class="profile-form-bg"></div>
       <v-form class="profile-form-container" v-if="mode === 'picture'">
@@ -123,11 +122,37 @@
           <p>Adresse: {{this.$store.state.otherUser.adress}}</p>
           <p>Fonction: {{this.$store.state.otherUser.department}}</p>
         </div>
-        <div class="button-group" v-if="this.$store.state.user.isAdmin === true">
-          <v-btn prepend-icon="mdi-camera" class="mod mod-button" @click="change = true; mode ='picture'">Modifier la photo de profil</v-btn>
-          <v-btn class="mod mod-button" @click="change = true; mode ='profile'">Modifier le Profil</v-btn>
-          <v-btn class="mod mod-button" @click="change = true; mode ='password'">Changer le mot de passe</v-btn>
-          <v-btn class="del mod-button" @click="change = true; mode ='delete'">Supprimer le compte</v-btn>
+        <div class="button-group">
+          <v-btn
+          prepend-icon="mdi-camera"
+          class="mod mod-button"
+          v-if="this.$store.state.user.isAdmin === true"
+          @click="change = true; mode ='picture'">
+            Modifier la photo de profil
+          </v-btn>
+          <v-btn
+          class="mod mod-button"
+          v-if="this.$store.state.user.isAdmin === true"
+          @click="change = true; mode ='profile'">
+            Modifier le Profil
+          </v-btn>
+          <v-btn
+          class="mod mod-button"
+          v-if="this.$store.state.user.isAdmin === true"
+          @click="change = true; mode ='password'">
+            Changer le mot de passe
+          </v-btn>
+          <v-btn
+          class="del mod-button"
+          v-if="this.$store.state.user.isAdmin === true"
+          @click="change = true; mode ='delete'">
+            Supprimer le compte
+          </v-btn>
+          <v-btn
+          class="mod mod-button"
+          @click="this.$router.push('/messages/' + this.$store.state.otherUser.id)">
+            Envoyer un message
+          </v-btn>
         </div>
       </div>
       <div class="profile-infos_right">
@@ -192,9 +217,6 @@ export default ({
       })
   },
   methods: {
-    test () {
-      console.log(this.$route.params.id)
-    },
     changeProfilePicture (userId) {
       this.$store
         .dispatch('changeProfilePicture', {
@@ -250,7 +272,7 @@ export default ({
 </script>
 
 <style scoped>
-  @import '../styles/profile.css';
+  @import '../styles/pages/profile.css';
   @import '../styles/post.css';
   @import '../styles/buttons.css';
 </style>

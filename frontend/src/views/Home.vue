@@ -1,12 +1,6 @@
 <template>
   <div class="main">
-    <!-- <div class="home-picture">
-      <v-img
-      src="../assets/logos/icon-transparent.png"
-      alt="logo groupomania"
-    />
-    </div> -->
-      <v-card class="mx-auto mt-9 card" width="500px">
+      <v-card class="card" width="500px">
         <v-card-title>Bienvenue sur notre Workplace</v-card-title>
         <v-card-title v-if="this.mode == 'login'"
           >Veuillez vous connecter</v-card-title
@@ -228,6 +222,7 @@ export default {
             this.mode = 'login'
           })
           .catch((error) => {
+            this.confirmationMessage = ''
             this.errorMessage = `cette erreur est survenue: ${error.message}`
           })
       }
@@ -242,7 +237,8 @@ export default {
           this.errorMessage = ''
         })
         .catch((error) => {
-          this.errorMessage = `L'identifiant donné n'est pas valide ${error.message}`
+          this.confirmationMessage = ''
+          this.errorMessage = `L'identifiant donné n'est pas valide ${error}`
         })
     }
   }
@@ -250,62 +246,5 @@ export default {
 </script>
 
 <style scoped>
-.main {
-  background-image: url('../assets/office.jpg');
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center;
-}
-.home-picture {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.home-picture .v-img {
-  width: 250px;
-  object-fit: cover;
-  object-position: center;
-}
-.card {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #091f43;
-  box-shadow: #3e3e3ed8 0 0 5px 2px;
-}
-p {
-  padding: 16px;
-}
-.v-text-field {
-  padding-inline: 16px;
-}
-.name {
-  display: flex;
-}
-.change-mode {
-  text-decoration: underline;
-  color: rgb(57, 57, 255);
-}
-.alert-message {
-  margin: 0 16px 16px 16px;
-}
-.error {
-  background-color: #d1515a;
-}
-.success {
-  background-color: #091f43;
-}
-.btn-activ {
-  background-color: #091f43;
-}
-.btn-disabled {
-  background-color: #d7d7d7;
-}
-span {
-  cursor: pointer;
-}
+  @import '../styles/pages/home.css';
 </style>

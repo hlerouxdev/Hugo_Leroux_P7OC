@@ -6,7 +6,9 @@
     </v-avatar>
     <!--  -->
     <div class="user-menu" v-if="commentMenu === true" @mouseleave="commentMenu = false" transition="scale-transition">
-      <v-btn block class="mod user-menu-btn" @click="() => {
+      <v-btn
+      block class="mod user-menu-btn"
+      @click="() => {
           if (commentUserId !== this.$store.state.user.userId) {
             this.$router.push('/user/' + commentUserId)
           } else {
@@ -15,11 +17,15 @@
         }">
           Voir le profil
         </v-btn>
-      <v-btn block class="mod user-menu-btn">Envoyer un message</v-btn>
+      <v-btn
+      block class="mod user-menu-btn"
+      v-if="commentUserId !== this.$store.state.user.userId"
+      @click="this.$router.push('/messages/' + commentUserId)">Envoyer un message</v-btn>
     </div>
-    <div class="post-comment-main" @mouseover="showEdit = true" @mouseleave="showEdit = false">
+    <div class="post-comment-infos">
+      <div class="post-comment-main" @mouseover="showEdit = true" @mouseleave="showEdit = false">
       <div class="post-comment-content">
-        <h4 @click="commentMenu = !commentMenu">{{ commentUserName }}</h4>
+        <h4>{{ commentUserName }}</h4>
         <v-text-field
         class="comment-text-field"
         v-if="edit === true"
@@ -39,6 +45,7 @@
       </div>
     </div>
     <p class="comment-date">{{ commentDate }}</p>
+    </div>
   </div>
 </template>
 

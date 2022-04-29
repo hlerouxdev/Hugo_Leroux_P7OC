@@ -1,0 +1,54 @@
+.header {
+  background-color: #091f43 !important;
+  padding: 5px;
+  border-bottom: #d1515a solid 5px;
+  height: 70px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.header .v-toolbar__content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.header-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  max-width: 1300px;
+}
+.header-nav {
+  display: flex;
+  align-items: center;
+}
+.header-nav .nav-btn {
+  color: white;
+  margin: 0 0 0 10px;
+}
+.search-field {
+  color: white!important;
+  width: 25%;
+  background-color: #091f43;
+}
+.logo {
+  max-height: 50px;
+  max-width: 350px;
+}
+.logo:hover {
+  cursor: pointer;
+}
+.user-pp {
+  margin-right: 10px;
+}
+.user-pp-img {
+  min-height: 40px;
+  min-width: 40px;
+}
+.account-dropdown {
+    width: 150px;
+}
+.v-app-bar {
+  overflow: hidden;
+}

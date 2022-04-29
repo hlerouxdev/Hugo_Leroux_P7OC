@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app dark class="header">
+    <v-app-bar class="header">
       <div class="header-content">
         <v-img
         class="logo"
@@ -9,7 +9,7 @@
           @click="redirectHome"
         />
         <div class="header-nav">
-          <v-btn text @click="redirectProfile" v-if="this.$store.state.user.userId >= 1">
+          <v-btn class="nav-btn" @click="redirectProfile" v-if="this.$store.state.user.userId >= 1">
           <v-avatar class="user-pp">
             <v-img v-if="this.$store.state.userInfos.profilePicture != ''" :src="this.$store.state.userInfos.profilePicture" cover class="user-pp-img"></v-img>
             <v-img v-else  src="../assets/user.jpg"></v-img>
@@ -17,8 +17,8 @@
             Mon Profil
           </v-btn>
           <div v-else></div>
-          <v-btn text v-if="this.$store.state.user.userId >= 1" prepend-icon="mdi-message-text" @click="this.$router.push('/messages')">Messages</v-btn>
-          <v-btn text prepend-icon="mdi-exit-run" @click="logout" v-if="this.$store.state.user.userId >= 1">Déconnexion</v-btn>
+          <v-btn class="nav-btn" v-if="this.$store.state.user.userId >= 1" prepend-icon="mdi-message-text" @click="this.$router.push('/messages')">Messages</v-btn>
+          <v-btn class="nav-btn" prepend-icon="mdi-exit-run" @click="logout" v-if="this.$store.state.user.userId >= 1">Déconnexion</v-btn>
         </div>
       </div>
     </v-app-bar>
@@ -58,51 +58,5 @@ export default {
 </script>
 
 <style scoped>
-  .header {
-    background: #091f43;
-    border-bottom: #d1515a solid 5px;
-    height: 70px !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .header :deep(.v-toolbar__content) {
-    display: flex;
-    justify-content: center;
-  }
-  .header-content {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    justify-content: space-between;
-    max-width: 1300px;
-  }
-  .v-btn {
-    color: white;
-  }
-  .search-field {
-    color: white!important;
-    width: 25%;
-    background-color: #091f43;
-  }
-  .logo {
-    max-height: 50px;
-    max-width: 350px;
-  }
-  .logo:hover {
-    cursor: pointer;
-  }
-  :deep(.user-pp){
-        margin-right: 10px;
-  }
-  .user-pp-img {
-    min-height: 40px;
-    min-width: 40px;
-  }
-  .account-dropdown {
-      width: 150px;
-  }
-  .v-app-bar {
-    overflow: hidden;
-  }
+  @import '../styles/nav.css';
 </style>

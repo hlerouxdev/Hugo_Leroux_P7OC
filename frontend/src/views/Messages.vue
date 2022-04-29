@@ -3,7 +3,7 @@
     <div class="messages-main">
       <!-- Partie gauche, liste des utilisateurs -->
       <div class="messages-users">
-        <!-- Search Bar -->
+        <!-- Search Bar non functional-->
         <div class="search-bar">
           <v-text-field
           v-model="userSearch"
@@ -43,14 +43,6 @@
                   {{ user.department }}
                 </h2>
               </div>
-              <v-btn
-              class="mod mod-btn"
-              title="voir le profil"
-              @click="this.$router.push('/user/' + user.id)">
-                <v-icon>
-                  mdi-eye
-                </v-icon>
-              </v-btn>
             </div>
           </div>
         </div>
@@ -99,14 +91,15 @@
 </template>
 
 <script>
-import store from '../store/index'
+import store from '../store/index.js'
+import router from '../router/index.js'
 
 export default {
   name: 'MessagesPage',
   data () {
     return {
       loaded: false,
-      userId: 0,
+      userId: router.currentRoute._value.params.id ? router.currentRoute._value.params.id : 0,
       userSearch: '',
       userInfos: {},
       messageToSend: ''
@@ -140,6 +133,7 @@ export default {
     switchUser (userId) {
       this.loaded = false
       this.userId = userId
+      router.push('/messages/' + userId)
       store.dispatch('getOtherUser', userId)
         .then(() => {
           this.loaded = true
@@ -152,6 +146,16 @@ export default {
       })
         .then(() => {
           this.messageToSend = ''
+          store.dispatch('getMessages')
+            .then(() => {
+              store.dispatch('getAllUsers')
+            })
+            .catch(error => {
+              store.commit('setErrorMessage', error)
+            })
+        })
+        .catch(error => {
+          store.commit('setErrorMessage', error)
         })
     }
   }
@@ -159,5 +163,5 @@ export default {
 </script>
 
 <style scoped>
-@import '../styles/messages.css';
+@import '../styles/pages/messages.css';
 </style>
