@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-      <v-card class="card" width="500px">
+      <v-card class="home-form">
         <v-card-title>Bienvenue sur notre Workplace</v-card-title>
         <v-card-title v-if="this.mode == 'login'"
           >Veuillez vous connecter</v-card-title
@@ -24,7 +24,7 @@
           dense
           outlined
           type="error"
-          class="alert-message error"
+          class="form-alert-message error"
           v-if="this.errorMessage != ''"
         >
           {{ errorMessage }}
@@ -33,14 +33,14 @@
       dense
       text
       type="success"
-      class="alert-message success"
+      class="form-alert-message success"
       v-if="mode == 'login' && this.confirmationMessage != ''"
     >
       {{ confirmationMessage }}
     </v-alert>
         <div class="name" v-if="this.mode === 'signup'">
-          <v-text-field label="Prénom" v-model="formData.firstName" />
-          <v-text-field label="Nom" v-model="formData.lastName" />
+          <v-text-field class="name-field" label="Prénom" v-model="formData.firstName" />
+          <v-text-field class="name-field" label="Nom" v-model="formData.lastName" />
         </div>
         <v-text-field label="email" type="email" v-model="formData.email" />
         <v-text-field
@@ -60,54 +60,44 @@
           :type="show ? 'text' : 'password'"
           @click:append="show = !show"
         />
-        <v-card-actions>
-          <v-btn
-            v-if="this.mode === 'signup' && checkEmpty"
-            class="btn-activ"
-            color="white"
-            block
-            plain
-            elevation="2"
-            @click="submitSignup"
-            @keyup.enter="submitSignup"
-            >S'enregistrer</v-btn
+        <v-btn
+          v-if="this.mode === 'signup' && checkEmpty"
+          class="form-btn btn-activ"
+          block
+          elevation="2"
+          @click="submitSignup"
+          @keyup.enter="submitSignup"
+          >S'enregistrer</v-btn
+        >
+        <v-btn
+          v-if="this.mode === 'signup' && !checkEmpty"
+          class="form-btn btn-disabled"
+          block
+          disabled
+          elevation="2"
+          >S'enregistrer</v-btn
+        >
+        <v-btn
+          v-if="this.mode === 'login' && checkEmpty"
+          class="form-btn btn-activ"
+          block
+          elevation="2"
+          @click="submitLogin"
+          @keyup.enter="submitLogin"
+        >
+          <span v-if="status == 'loading'">Connexion en cours ...</span>
+          <span v-else>Connexion</span>
+        </v-btn>
+        <v-btn
+          class="form-btn btn-disabled"
+          v-if="this.mode === 'login' && !checkEmpty"
+          color="white"
+          disabled
+          block
+          elevation="2"
           >
-          <v-btn
-            v-if="this.mode === 'signup' && !checkEmpty"
-            class="btn-disabled"
-            color="white"
-            block
-            disabled
-            plain
-            elevation="2"
-            >S'enregistrer</v-btn
-          >
-          <v-btn
-            v-if="this.mode === 'login' && checkEmpty"
-            class="btn-activ"
-            color="white"
-            block
-            plain
-            elevation="2"
-            @click="submitLogin"
-            @keyup.enter="submitLogin"
-          >
-            <span v-if="status == 'loading'">Connexion en cours ...</span>
-            <span v-else>Connexion</span>
+            Connexion
           </v-btn>
-          <v-btn
-            class="btn-disabled"
-            v-if="this.mode === 'login' && !checkEmpty"
-            color="white"
-            disabled
-            dark
-            block
-            plain
-            elevation="2"
-            >
-              Connexion
-            </v-btn>
-        </v-card-actions>
       </v-card>
   </div>
 </template>
@@ -223,7 +213,7 @@ export default {
           })
           .catch((error) => {
             this.confirmationMessage = ''
-            this.errorMessage = `cette erreur est survenue: ${error.message}`
+            this.errorMessage = `cette erreur est survenue: ${error.response.data.message}`
           })
       }
     },
@@ -238,7 +228,8 @@ export default {
         })
         .catch((error) => {
           this.confirmationMessage = ''
-          this.errorMessage = `L'identifiant donné n'est pas valide ${error}`
+          console.log(error.response)
+          this.errorMessage = `L'identifiant donné n'est pas valide: ${error.response.data.message}`
         })
     }
   }
