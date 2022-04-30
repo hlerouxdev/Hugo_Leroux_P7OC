@@ -118,9 +118,9 @@
         <h2 v-if="this.$store.state.otherUser.bio != ''">à propos</h2>
         <p v-if="this.$store.state.otherUser.bio != ''" class="profile-bio">{{this.$store.state.otherUser.bio}}</p>
         <div class ="base-infos">
-          <p>E-mail: {{this.$store.state.otherUser.email}}</p>
-          <p>Adresse: {{this.$store.state.otherUser.adress}}</p>
-          <p>Fonction: {{this.$store.state.otherUser.department}}</p>
+          <p><strong>E-mail:</strong> {{this.$store.state.otherUser.email}}</p>
+          <p><strong>Adresse:</strong> {{this.$store.state.otherUser.adress}}</p>
+          <p><strong>Fonction:</strong> {{this.$store.state.otherUser.department}}</p>
         </div>
         <div class="button-group">
           <v-btn
@@ -244,6 +244,7 @@ export default ({
         .catch(error => { console.log(error) })
     },
     changePassword (userId) {
+      this.loaded = false
       this.$store
         .dispatch('changeUserPassword', {
           form: {
@@ -253,6 +254,7 @@ export default ({
           user: userId
         })
         .then(() => {
+          this.loaded = true
           this.change = false
           this.mode = ''
         })

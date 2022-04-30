@@ -121,9 +121,9 @@
         <h2 v-if="this.$store.state.userInfos.bio != ''">à propos</h2>
         <p v-if="this.$store.state.userInfos.bio != ''" class="profile-bio">{{this.$store.state.userInfos.bio}}</p>
         <div class ="base-infos">
-          <p>E-mail: {{this.$store.state.userInfos.email}}</p>
-          <p>Adresse: {{this.$store.state.userInfos.adress}}</p>
-          <p>Fonction: {{this.$store.state.userInfos.department}}</p>
+          <p><strong>E-mail:</strong> {{this.$store.state.userInfos.email}}</p>
+          <p><strong>Adresse:</strong> {{this.$store.state.userInfos.adress}}</p>
+          <p><strong>Fonction:</strong> {{this.$store.state.userInfos.department}}</p>
         </div>
         <div class="button-group">
           <v-btn prepend-icon="mdi-camera" class="mod mod-button" @click="change = true; mode ='picture'">Modifier la photo de profil</v-btn>

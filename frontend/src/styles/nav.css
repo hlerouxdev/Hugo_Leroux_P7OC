@@ -33,8 +33,8 @@
   background-color: #091f43;
 }
 .logo {
-  max-height: 50px;
-  max-width: 350px;
+  max-height: 40px;
+  max-width: 300px;
 }
 .logo:hover {
   cursor: pointer;
@@ -51,4 +51,17 @@
 }
 .v-app-bar {
   overflow: hidden;
+}
+
+@media only screen and (min-width: 600px) and (max-width: 991px) {
+  .header {
+    height: 150px !important;
+  }
+  .header .v-toolbar__content {
+    height: 100%;
+  }
+  .header-content {
+    height: 100%;
+    flex-direction: column;
+  }
 }

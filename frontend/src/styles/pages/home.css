@@ -15,7 +15,7 @@
   color: #091f43;
   box-shadow: #3e3e3ed8 0 0 5px 2px;
 }
-p {
+.card p {
   padding: 16px;
 }
 .v-text-field {

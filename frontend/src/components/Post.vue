@@ -88,14 +88,12 @@
           <img :src="postImage" :alt="postContent" title="Cliquez pour aggrandir l'image">
         </a>
         <div class="post-footer">
-          <div
-          class="post-likes"
-          @click="likePost(postId, liked)">
+          <div class="post-likes" @click="likePost(postId, liked)">
             <v-btn
             icon
             small
             color="white"
-            class="post-likes-notliked"
+            class="post-likes-btn post-likes-notliked"
             v-if="liked === false"
             >
               <v-icon>mdi-thumb-up</v-icon>
@@ -104,7 +102,7 @@
               icon
               small
               color="white"
-              class="post-likes-liked"
+              class="post-likes-btn post-likes-liked"
               v-else
             >
               <v-icon>mdi-thumb-up</v-icon>

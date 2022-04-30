@@ -68,8 +68,12 @@ export default createStore({
     setOtherUser: (state, user) => {
       state.otherUser = user
     },
-    updateUserInfos: (state, updatedUser) => {
-      state.userInfos = Object.assign(state.userInfos, updatedUser)
+    updateUserInfos: (state, data) => {
+      if (state.user.userId === data.user) {
+        state.userInfos = Object.assign(state.userInfos, data.form)
+      } else {
+        state.otherUser = Object.assign(state.otherUser, data.form)
+      }
     },
     setSuccessMessage: (state, message) => {
       state.successMessage = message
@@ -195,7 +199,7 @@ export default createStore({
     changeUserInfos: ({ commit }, { user, form }) => {
       return instance.put('/auth/user/' + user, form)
         .then(res => {
-          commit('updateUserInfos', form)
+          commit('updateUserInfos', { user, form })
           commit('setSuccessMessage', res.data.message)
         })
         .catch(error => {

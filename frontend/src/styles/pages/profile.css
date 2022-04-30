@@ -21,6 +21,7 @@
     width: 33%;
     background-color: white;
     box-shadow: #3e3e3e 0 0 5px 2px;
+    padding: 10px;
   }
   .profile-infos_left h1{
     margin: 20px 0 20px 0px;
@@ -35,6 +36,8 @@
   .profile-infos_left_avatar {
     margin-top: 20px;
     box-shadow: #3e3e3e 0 0 5px 2px;
+    min-width: 150px;
+    min-height: 150px;
   }
   .profile-bio {
     margin-bottom: 20px;
