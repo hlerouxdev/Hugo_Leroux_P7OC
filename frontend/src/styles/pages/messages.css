@@ -200,3 +200,16 @@
   font-size: 0.9rem;
   margin-inline: 10px;
 }
+
+@media only screen and (max-width: 601px) {
+  .messages-main {
+    flex-direction: column;
+  }
+  .messages-users {
+    width: 100%;
+    height: 50%;
+  }
+  .messages-container {
+    width: 100%;
+  }
+}
