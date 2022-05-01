@@ -3,7 +3,7 @@
 # About the project
 
 ### The backend was made with **Nodejs/express** using **Mysql** as a database and **sequelize** for the ORM.
-### The frontend is still a work in progress and uses Vue3 and Vuetify
+### The frontend uses Vue3, Vuetify and Axios
 
 # Instructions
 
@@ -29,4 +29,4 @@
 
 - [ ] Install the dependencies with **"npm i"** in the **"frontend"** folder
 
-- [ ] run the app with the command **"npm start"**
+- [ ] run the app with the command **"npm run serve"**
