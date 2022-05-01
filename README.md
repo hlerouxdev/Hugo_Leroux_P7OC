@@ -18,7 +18,7 @@
 
 - [ ] Start by going in the backend folder with **'cd backend'** and install all the dependencies with **'npm install'**
  
-- [ ] Add an **"image"** folder in the "backend" folder to store the images.
+- [ ] Add **public** folder with an **"image"** inside in the "backend" folder to store the images.
 
 - [ ] You can then run the server with **'npm run start'**. 
 
