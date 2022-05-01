@@ -1,11 +1,11 @@
 <template>
   <div class="main">
-      <v-form v-model="valid" class="form">
+      <v-form v-model="valid" class="contact-form">
       <v-container>
-        <v-title>Contactez nous</v-title>
-        <div class="name-row">
-          <v-text-field label="Prénom" v-model="formData.firstName" class="name" />
-          <v-text-field label="Nom" v-model="formData.lastName" class="name" />
+        <h1>Contactez nous</h1>
+        <div class="contact-name-row">
+          <v-text-field label="Prénom" v-model="formData.firstName" class="contact-name"></v-text-field>
+          <v-text-field label="Nom" v-model="formData.lastName" class="contact-name"></v-text-field>
         </div>
           <v-text-field
             v-model="formData.email"
@@ -19,7 +19,7 @@
             required
           ></v-textarea>
       </v-container>
-      <v-btn large @click="sendMail">
+      <v-btn class="contact-form-btn" @click="sendMail">
         Envoyer
       </v-btn>
     </v-form>

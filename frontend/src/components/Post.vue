@@ -15,13 +15,7 @@
             </v-avatar>
             <!-- Menu de navigation utilisateur profil/messages -->
             <div class="user-menu" v-if="profileMenu === true" @mouseleave="profileMenu = false">
-              <v-btn block class="mod user-menu-btn" @click="() => {
-                  if (userId !== this.$store.state.user.userId) {
-                    this.$router.push('/user/' + userId)
-                  } else {
-                    this.$router.push('my-profile/')
-                  }
-                }">Voir le profil</v-btn>
+              <v-btn block class="mod user-menu-btn" @click="this.$router.push('/user/' + userId)">Voir le profil</v-btn>
               <v-btn
               block class="mod user-menu-btn"
               @click="messageUser(userId)">
@@ -109,8 +103,7 @@
             </v-btn>
             <p>{{ likesNumber }}</p>
           </div>
-          <p v-if="comments.length > 1">{{ comments.length }} commentaires</p>
-          <p v-else>{{ comments.length }} commentaire</p>
+          <p >{{ comments.length > 1? comments.length + ' commentaires': comments.length + ' commentaire' }}</p>
         </div>
         <div class="post-comment-add">
           <v-avatar  class="post-comment-avatar" size="40" >

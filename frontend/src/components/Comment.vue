@@ -23,7 +23,7 @@
       @click="this.$router.push('/messages/' + commentUserId)">Envoyer un message</v-btn>
     </div>
     <div class="post-comment-infos">
-      <div class="post-comment-main" @mouseover="showEdit = true" @mouseleave="showEdit = false">
+      <div class="post-comment-main" @click="showEdit = !showEdit" title="Cliquez pour modifier">
       <div class="post-comment-content">
         <h4>{{ commentUserName }}</h4>
         <v-text-field

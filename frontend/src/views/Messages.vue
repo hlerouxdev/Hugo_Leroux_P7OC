@@ -81,8 +81,8 @@
         class="message-send" v-model="messageToSend"
         label="Tapez un message et appuyez sur 'Entrée'"
         v-on:keyup.enter="sendMessage">
-        <p v-if="messageToSend.length < 255" class="word-count">{{messageToSend.length}}/255</p>
-        <p v-else class="word-count word-count-red">{{messageToSend.length}}/255</p>
+        <p v-if="messageToSend.length < 255" class="message-word-count">{{messageToSend.length}}/255</p>
+        <p v-else class="message-word-count word-count-red">{{messageToSend.length}}/255</p>
         </v-text-field>
         <div v-else class="message-send not-selected">Cliquez sur un Utilisateur pour envoyer un message</div>
       </div>

@@ -1,14 +1,14 @@
 <template>
-  <div class="main">
-    <div class="main profile-form" v-if="change ===  true">
+  <div class="profile-main">
+    <div class="profile-main profile-form" v-if="change ===  true">
       <div class="profile-form-bg"></div>
       <v-form class="profile-form-container" v-if="mode === 'picture'">
         <v-btn @click="change = false; mode = ''" color="white" fab class="close-btn">
             X
           </v-btn>
         <v-container>
-          <v-avatar rounded size="250" class="profile-infos_left_avatar form-avatar">
-            <v-img aspect-ratio="1" v-if="this.$store.state.otherUser.profilePicture != ''"
+          <v-avatar rounded size="200" class="profile-infos_left_avatar form-avatar">
+            <v-img aspect-ratio="1" cover v-if="this.$store.state.otherUser.profilePicture != ''"
               :src="this.$store.state.otherUser.profilePicture"
               :href="this.$store.state.otherUser.profilePicture"
               target="_blank"
@@ -107,52 +107,57 @@
     </div>
     <div class="profile-infos">
       <div class="profile-infos_left" v-if="loaded === true">
-        <v-avatar rounded size="150" class="profile-infos_left_avatar">
-          <v-img aspect-ratio="1" v-if="this.$store.state.otherUser.profilePicture != ''"
-            :src="this.$store.state.otherUser.profilePicture"
-            cover
-            class="profile-infos_left_avatar_image"></v-img>
-          <v-img aspect-ratio="1" v-else  src="../assets/user.jpg"></v-img>
-        </v-avatar>
-        <h1>{{this.$store.state.otherUser.firstName + " " + this.$store.state.otherUser.lastName}}</h1>
-        <h2 v-if="this.$store.state.otherUser.bio != ''">à propos</h2>
-        <p v-if="this.$store.state.otherUser.bio != ''" class="profile-bio">{{this.$store.state.otherUser.bio}}</p>
-        <div class ="base-infos">
-          <p><strong>E-mail:</strong> {{this.$store.state.otherUser.email}}</p>
-          <p><strong>Adresse:</strong> {{this.$store.state.otherUser.adress}}</p>
-          <p><strong>Fonction:</strong> {{this.$store.state.otherUser.department}}</p>
+        <div class="profile-infos_left_presentation">
+          <v-avatar rounded size="150" class="profile-infos_left_avatar">
+            <v-img aspect-ratio="1" v-if="this.$store.state.otherUser.profilePicture != ''"
+              :src="$store.state.otherUser.profilePicture"
+              cover
+              class="profile-infos_left_avatar_image"></v-img>
+            <v-img aspect-ratio="1" v-else  src="../assets/user.jpg"></v-img>
+          </v-avatar>
+          <h1>{{$store.state.otherUser.firstName + " " + this.$store.state.otherUser.lastName}}</h1>
+          <h2 v-if="$store.state.otherUser.bio != ''">à propos</h2>
+          <p v-if="$store.state.otherUser.bio != ''" class="profile-bio">{{this.$store.state.otherUser.bio}}</p>
         </div>
-        <div class="button-group">
-          <v-btn
-          prepend-icon="mdi-camera"
-          class="mod mod-button"
-          v-if="this.$store.state.user.isAdmin === true"
-          @click="change = true; mode ='picture'">
-            Modifier la photo de profil
-          </v-btn>
-          <v-btn
-          class="mod mod-button"
-          v-if="this.$store.state.user.isAdmin === true"
-          @click="change = true; mode ='profile'">
-            Modifier le Profil
-          </v-btn>
-          <v-btn
-          class="mod mod-button"
-          v-if="this.$store.state.user.isAdmin === true"
-          @click="change = true; mode ='password'">
-            Changer le mot de passe
-          </v-btn>
-          <v-btn
-          class="del mod-button"
-          v-if="this.$store.state.user.isAdmin === true"
-          @click="change = true; mode ='delete'">
-            Supprimer le compte
-          </v-btn>
-          <v-btn
-          class="mod mod-button"
-          @click="this.$router.push('/messages/' + this.$store.state.otherUser.id)">
-            Envoyer un message
-          </v-btn>
+        <div class="profile-infos_left_otherinfos">
+          <div class ="base-infos">
+            <p><strong>E-mail:</strong> {{this.$store.state.otherUser.email}}</p>
+            <p><strong>Adresse:</strong> {{this.$store.state.otherUser.adress}}</p>
+            <p><strong>Fonction:</strong> {{this.$store.state.otherUser.department}}</p>
+          </div>
+          <div class="button-group">
+            <v-btn
+            prepend-icon="mdi-camera"
+            class="mod mod-button"
+            v-if="this.$store.state.user.isAdmin === true"
+            @click="change = true; mode ='picture'">
+              Modifier la photo de profil
+            </v-btn>
+            <v-btn
+            class="mod mod-button"
+            v-if="this.$store.state.user.isAdmin === true"
+            @click="change = true; mode ='profile'">
+              Modifier le Profil
+            </v-btn>
+            <v-btn
+            class="mod mod-button"
+            v-if="this.$store.state.user.isAdmin === true"
+            @click="change = true; mode ='password'">
+              Changer le mot de passe
+            </v-btn>
+            <v-btn
+            class="del mod-button"
+            v-if="this.$store.state.user.isAdmin === true"
+            @click="change = true; mode ='delete'">
+              Supprimer le compte
+            </v-btn>
+            <v-btn
+            class="mod mod-button"
+            @click="this.$router.push('/messages/' + this.$store.state.otherUser.id)">
+              Envoyer un message
+            </v-btn>
+            <v-btn color="success" class="mod-button" @click="$router.push('/admin/')" v-if="this.$store.state.user.isAdmin === true">Page Admin</v-btn>
+          </div>
         </div>
       </div>
       <div class="profile-infos_right">
@@ -200,10 +205,9 @@ export default ({
     }
   },
   mounted: function () {
-    console.log(this.$route.params.id)
+    this.userId = this.$route.params.id
     this.$store.dispatch('getOtherUser', this.$route.params.id)
       .then(() => {
-        this.userId = this.$route.params.id
         this.loaded = true
         this.form = {
           firstName: this.$store.state.otherUser.firstName,

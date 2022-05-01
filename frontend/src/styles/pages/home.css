@@ -1,9 +1,3 @@
-.main {
-  background-image: url('../../assets/office.jpg');
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center;
-}
 .home-form {
   position: fixed;
   top: 50%;
@@ -49,6 +43,17 @@
 }
 .btn-disabled {
   background-color: #d7d7d7;
+}
+.password .v-field__input {
+  width: calc(100% - 40px);
+}
+.password-icon {
+  position:absolute;
+  right: 10px;
+  bottom: 15px;
+}
+.password-icon:hover {
+  cursor: pointer;
 }
 span {
   cursor: pointer;

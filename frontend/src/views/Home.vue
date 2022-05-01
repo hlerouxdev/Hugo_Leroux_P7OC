@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main home-main">
       <v-card class="home-form">
         <v-card-title>Bienvenue sur notre Workplace</v-card-title>
         <v-card-title v-if="this.mode == 'login'"
@@ -44,22 +44,24 @@
         </div>
         <v-text-field label="email" type="email" v-model="formData.email" />
         <v-text-field
-          label="mot de passe"
-          v-model="formData.password"
-          :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-          :type="show ? 'text' : 'password'"
-          @keyup.enter="() => {if (mode === 'login') {submitLogin()}}"
-          @click:append="show = !show"
-        />
+        class="password"
+        label="mot de passe"
+        v-model="formData.password"
+        :type="show ? 'text' : 'password'"
+        @keyup.enter="() => {if (mode === 'login') {submitLogin()}}"
+        >
+          <v-icon @click="show = !show" class="password-icon">{{ show ? 'mdi-eye' : 'mdi-eye-off' }}</v-icon>
+        </v-text-field>
         <v-text-field
-          v-if="this.mode === 'signup'"
-          label="confirmez le mot de passe"
-          v-model="formData.password2"
-          @keyup.enter="submitSignup"
-          :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-          :type="show ? 'text' : 'password'"
-          @click:append="show = !show"
-        />
+        class="password"
+        v-if="this.mode === 'signup'"
+        label="confirmez le mot de passe"
+        v-model="formData.password2"
+        @keyup.enter="submitSignup"
+        :type="show ? 'text' : 'password'"
+        >
+          <v-icon @click="show = !show" class="password-icon">{{ show ? 'mdi-eye' : 'mdi-eye-off' }}</v-icon>
+        </v-text-field>
         <v-btn
           v-if="this.mode === 'signup' && checkEmpty"
           class="form-btn btn-activ"
@@ -91,7 +93,6 @@
         <v-btn
           class="form-btn btn-disabled"
           v-if="this.mode === 'login' && !checkEmpty"
-          color="white"
           disabled
           block
           elevation="2"

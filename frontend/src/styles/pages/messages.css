@@ -144,11 +144,11 @@
   margin-left: 20px;
   width: calc(100% - 100px);
 }
-.word-count {
+.message-word-count {
   position: absolute;
   right: -60px;
 }
-.word-count-red {
+.message-word-count-red {
   color: red;
 }
 .not-selected {

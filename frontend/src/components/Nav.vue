@@ -4,12 +4,12 @@
       <div class="header-content">
         <v-img
         class="logo"
-          src="../assets/logos/icon-left-font-monochrome-white.png"
-          alt="logo groupomania"
-          @click="redirectHome"
+        src="../assets/logos/icon-left-font-monochrome-white.png"
+        alt="logo groupomania"
+        @click="this.$router.push('/')"
         />
         <div class="header-nav">
-          <v-btn class="nav-btn" @click="redirectProfile" v-if="this.$store.state.user.userId >= 1">
+          <v-btn class="nav-btn" @click="this.$router.push('/my-profile/')" v-if="this.$store.state.user.userId >= 1">
           <v-avatar class="user-pp">
             <v-img v-if="this.$store.state.userInfos.profilePicture != ''" :src="this.$store.state.userInfos.profilePicture" cover class="user-pp-img"></v-img>
             <v-img v-else  src="../assets/user.jpg"></v-img>
@@ -30,12 +30,6 @@
 export default {
   name: 'NavBar',
   methods: {
-    redirectHome () {
-      this.$router.push('/')
-    },
-    redirectProfile () {
-      this.$router.push('/my-profile')
-    },
     logout () {
       this.$store.state.user = {
         userId: -1,
@@ -51,7 +45,7 @@ export default {
         profilePicture: ''
       }
       localStorage.clear()
-      this.redirectHome()
+      this.$router.push('/')
     }
   }
 }
