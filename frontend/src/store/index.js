@@ -143,7 +143,7 @@ export default createStore({
           })
         })
         .catch(error => {
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     // ------------------------------------------------ User infos ------------------------------------------------
@@ -154,7 +154,7 @@ export default createStore({
         })
         .catch(error => {
           commit('setStatus', 'error_login')
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     getOtherUser: ({ commit }, userId) => {
@@ -164,7 +164,7 @@ export default createStore({
         })
         .catch(error => {
           commit('setStatus', 'error_login')
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     getAllUsers: ({ commit, state }) => {
@@ -181,7 +181,7 @@ export default createStore({
           commit('setAllUsers', users.data)
         })
         .catch(error => {
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     changeProfilePicture: ({ commit, dispatch }, { user, image }) => {
@@ -193,7 +193,7 @@ export default createStore({
           dispatch('refresh')
         })
         .catch(error => {
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     changeUserInfos: ({ commit }, { user, form }) => {
@@ -203,7 +203,7 @@ export default createStore({
           commit('setSuccessMessage', res.data.message)
         })
         .catch(error => {
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     changeUserPassword: ({ commit }, { user, form }) => {
@@ -212,7 +212,7 @@ export default createStore({
           commit('setSuccessMessage', res.data.message)
         })
         .catch(error => {
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     deleteUser: ({ commit, state }, userId) => {
@@ -236,7 +236,7 @@ export default createStore({
           commit('setSuccessMessage', res.data.message)
         })
         .catch(error => {
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     // ------------------------------------------------ Posts ------------------------------------------------
@@ -252,7 +252,7 @@ export default createStore({
           dispatch('refresh')
         })
         .catch(error => {
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     getAllPosts: ({ commit, dispatch }) => {
@@ -263,7 +263,7 @@ export default createStore({
           commit('setAllPosts', posts.reverse())
         })
         .catch(error => {
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     getUserPosts: ({ commit, dispatch }, id) => {
@@ -273,7 +273,7 @@ export default createStore({
           commit('setAllPosts', res.data.reverse())
         })
         .catch(error => {
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     formatPosts: ({ state }, posts) => {
@@ -319,7 +319,7 @@ export default createStore({
           dispatch('refresh')
         })
         .catch(error => {
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     deletePost: ({ commit, dispatch }, id) => {
@@ -329,7 +329,7 @@ export default createStore({
           dispatch('refresh')
         })
         .catch(error => {
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     likePost: ({ commit, dispatch }, { postId, like }) => {
@@ -349,7 +349,7 @@ export default createStore({
           dispatch('refresh')
         })
         .catch(error => {
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     modifyComment: ({ commit, dispatch }, { commentId, content }) => {
@@ -359,7 +359,7 @@ export default createStore({
           dispatch('refresh')
         })
         .catch(error => {
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     deleteComment: ({ commit, dispatch }, commentId) => {
@@ -369,7 +369,7 @@ export default createStore({
           dispatch('refresh')
         })
         .catch(error => {
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     // ------------------------------------------------ Messages ------------------------------------------------
@@ -382,7 +382,7 @@ export default createStore({
           commit('setMessages', res.data)
         })
         .catch(error => {
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     },
     sendMessage: ({ commit, dispatch }, { userId, content }) => {
@@ -391,7 +391,7 @@ export default createStore({
           dispatch('getMessages')
         })
         .catch(error => {
-          commit('setErrorMessage', error.response.data.message)
+          commit('setErrorMessage', error.response.data.message ? error.response.data.message : error.response.data)
         })
     }
   },
