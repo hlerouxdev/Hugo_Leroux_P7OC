@@ -48,3 +48,9 @@
 .error-message {
   background-color: #d1515a;
 }
+
+@media only screen and (max-width: 601px) {
+  .alert-message {
+    width: 100%;
+  }
+}

@@ -38,9 +38,9 @@
     >
       {{ confirmationMessage }}
     </v-alert>
-        <div class="name" v-if="this.mode === 'signup'">
-          <v-text-field class="name-field" label="Prénom" v-model="formData.firstName" />
-          <v-text-field class="name-field" label="Nom" v-model="formData.lastName" />
+        <div class="home-name" v-if="this.mode === 'signup'">
+          <v-text-field class="home-name-field" label="Prénom" v-model="formData.firstName" />
+          <v-text-field class="home-name-field" label="Nom" v-model="formData.lastName" />
         </div>
         <v-text-field label="email" type="email" v-model="formData.email" />
         <v-text-field

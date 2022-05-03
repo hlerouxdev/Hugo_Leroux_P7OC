@@ -8,17 +8,15 @@
   transform: translate(-50%, -50%);
   color: #091f43;
   box-shadow: #3e3e3ed8 0 0 5px 2px;
+  overflow-y: scroll;
 }
 .home-form p {
   padding: 16px;
 }
-/* .v-text-field {
-  padding-inline: 16px;
-} */
-.name {
+.home-name {
   display: flex;
 }
-.name-field {
+.home-name-field {
   width: 40%;
 }
 .change-mode {
