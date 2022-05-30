@@ -3,6 +3,34 @@
   flex-direction: column;
   align-items: center;
   padding: 2em;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button:hover {
+  cursor: pointer;
+  box-shadow: 0px 0px 11px 0px black;
+}
+
+.create-post {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.create-post-footer {
+  display: flex;
+  align-items: center;
+}
+
+.create-post-footer button {
+  color: white;
+  background-color: #091F43;
+  padding: 1em;
+  border-radius: 1.5em;
+}
+
+#create-post-field {
+  width: calc(100% - 3em);
 }
 
 .post {
@@ -10,7 +38,7 @@
   max-width: 700px;
   border-radius: 10px;
   box-shadow: 0px 0px 11px 0px rgba(0,0,0,0.91);
-  padding: 1em;
+  padding: 1.5em 1.5em;
 }
 
 .post-user-avatar {
@@ -18,7 +46,7 @@
   height: 70px;
   border-radius: 100%;
   object-fit: cover;
-  box-shadow: 0px 0px 11px 0px rgba(0,0,0,0.91);
+  box-shadow: 0 0 10px 0 black;
 }
 
 .post-header {
@@ -26,12 +54,19 @@
   align-items: center;
   width: 100%;
   gap: 1em;
+  border-bottom: 5px solid #091F43;
 }
 
 .post-image {
   max-height: 200px;
   width: 100%;
   object-fit: cover;
+  margin-bottom: 1em;
+}
+
+.post-image:hover {
+  cursor: -webkit-zoom-in ;
+  box-shadow: 0 0 10px 0 black;
 }
 
 .post-line {
@@ -39,4 +74,82 @@
   height: 5px;
   background-color: #d7d7d7;
   margin: 5px 0;
+}
+
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0.5em;
+}
+
+#add-comment-field {
+  width: 100%;
+}
+
+.likes {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+
+.fa-thumbs-up {
+  border-radius: 100%;
+  padding: 0.5em;
+  font-size: 1.3em;
+}
+
+.fa-thumbs-up:hover {
+  box-shadow: 0 0 10px 0 black;
+  cursor: pointer;
+}
+
+.not-liked {
+  color: white;
+  background-color: #d7d7d7;
+}
+
+.add-comment {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+
+.text-field {
+  border: none;
+  background-color: #d7d7d7;
+  border-radius: 1.5em;
+  padding: 1.5em;
+}
+
+.text-field:focus {
+  border: none;
+}
+
+.comment {
+  display: flex;
+  width: 100%;
+  padding: 0;
+  margin: 1em 0;
+}
+
+.comment-user-avatar {
+  width: 50px;
+  min-width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  object-fit: cover;
+  box-shadow: 0 0 10px 0 black;
+  margin: 0.5em 0;
+}
+
+.comment-main {
+  margin-left: 1em;
+  border-radius: 10px;
+  background-color: #d7d7d7;
+  padding: 0.5em 1em;
+}
+
+.comment-date {
+  font-size: 0.8em;
+  margin-left: 1.5em;
 }
